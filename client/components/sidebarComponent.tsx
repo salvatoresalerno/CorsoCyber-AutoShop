@@ -53,10 +53,10 @@ import SidebarLogoutButton from "./logoutButton"
                     <div className="h-full w-full">
                         <a
                             href={item.url}
-                            className="flex flex-row items-center justify-center gap-3"
+                            className="flex flex-row items-center justify-center w-full gap-3"
                         >
-                            <item.icon width={30} height={30} />
-                            <p className="mt-1 text-base font-medium">{item.title}</p>
+                            <item.icon width={35} height={35} />
+                            <p className="mt-1 text-base font-medium w-full">{item.title}</p>
                         </a>
                     </div>
                   </SidebarMenuButton>

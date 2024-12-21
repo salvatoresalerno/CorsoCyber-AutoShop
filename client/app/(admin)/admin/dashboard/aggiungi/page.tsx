@@ -29,13 +29,14 @@ export default async function AggiungiPage() {
 
     return ( <>
 
-        <div className="h-auto w-1/3">    
+        <div className="h-auto px-20 py-10">    
+            <h1 className="text-3xl font-bold uppercase text-center my-4">Veicoli in vendita</h1>
             {/* <AutocompleteInput 
                 brand=""
             /> */}
 
             <AddVeicoliForm 
-                ruolo={Ruolo.ADMIN}
+                //ruolo={Ruolo.ADMIN}
             />
 
         </div>
