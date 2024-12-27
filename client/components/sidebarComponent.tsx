@@ -11,7 +11,7 @@ import {
     SidebarMenuItem,
     SidebarSeparator,
   } from "@/components/ui/sidebar"
-import { SalesCar, SoldCar, Statistiche } from "./icone_mie"
+import { AddCar, SalesCar, SoldCar, Statistiche } from "./icone_mie"
 import SidebarLogoutButton from "./logoutButton"
 
 
@@ -29,7 +29,7 @@ import SidebarLogoutButton from "./logoutButton"
     {
       title: "Aggiungi Veicolo",
       url: "/admin/dashboard/aggiungi",
-      icon: SalesCar,
+      icon: AddCar,
     },
     {
       title: "Statistiche",

@@ -228,3 +228,62 @@ export const Statistiche: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     ></path>
   </svg>
 ); 
+
+
+export const AddCar: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg
+    id="Icons"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlnsXlink="http://www.w3.org/1999/xlink"
+    viewBox="0 0 32 32"
+    xmlSpace="preserve"
+    {...props}
+  >
+    <style type="text/css">
+      {
+        "\n\t.st0{fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}\n\t.st1{fill:none;stroke:#000000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:10;}\n"
+      }
+    </style>
+    <path
+      className="st0"
+      d="M24,13H4l2-4.6C6.6,7,8,6,9.6,6h8.7c1.6,0,3,1,3.7,2.4L24,13z"
+    />
+    <path className="st0" d="M8,23H2v2c0,1.1,0.9,2,2,2h2c1.1,0,2-0.9,2-2V23z" />
+    <line className="st0" x1={1} y1={12} x2={4.4} y2={12} />
+    <line className="st0" x1={24} y1={12} x2={27} y2={12} />
+    <line className="st0" x1={4} y1={18} x2={7} y2={18} />
+    <circle className="st0" cx={24} cy={23} r={7} />
+    <line className="st0" x1={24} y1={20} x2={24} y2={26} />
+    <line className="st0" x1={21} y1={23} x2={27} y2={23} />
+    <path
+      className="st0"
+      d="M17.6,20.1c-0.3-0.7-1-1.1-1.8-1.1h-3.5c-0.8,0-1.5,0.4-1.8,1.1L9,23"
+    />
+    <path
+      className="st0"
+      d="M17,23H3c-1.1,0-2-0.9-2-2v-4c0-2.2,1.8-4,4-4h18c2.1,0,3.8,1.6,4,3.7"
+    />
+  </svg>
+);
+
+
+export const UploadIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+      <path d="M12 12v9" />
+      <path d="m16 16-4-4-4 4" />
+    </svg>
+  )
+} 
