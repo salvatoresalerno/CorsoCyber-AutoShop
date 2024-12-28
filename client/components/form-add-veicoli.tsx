@@ -125,7 +125,7 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
   }
 
   return (
-    <form className="space-y-3 w-1/3"    onSubmit={handleSubmit(onSubmit)}    >
+    <form className="space-y-3 w-1/3 select-none"    onSubmit={handleSubmit(onSubmit)}    >
 
         <div className="relative mb-4 w-1/2">
           <Controller
@@ -134,11 +134,11 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
             render={({ field }) => (
               <RadioGroup className="flex gap-4 text-base md:justify-end lg:justify-start" value={field.value} onValueChange={field.onChange}>
                   <div className="flex items-center space-x-2">
-                      <RadioGroupItem value={TipoVeicolo.AUTO} id="AUTO" />
+                      <RadioGroupItem className="focus-visible:ring-0 focus:border-indigo-500" value={TipoVeicolo.AUTO} id="auto" />
                       <label htmlFor="auto">Auto</label>
                   </div>
                   <div className="flex items-center space-x-2">
-                      <RadioGroupItem value={TipoVeicolo.MOTO} id="moto" />
+                      <RadioGroupItem className="focus-visible:ring-0 focus:border-indigo-500" value={TipoVeicolo.MOTO} id="moto" />
                       <label htmlFor="moto">Moto</label>
                   </div>
               </RadioGroup> 
@@ -157,7 +157,7 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
             <Input
                 type="text"
                 id="brand"
-                className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0 focus:border-indigo-500"
                 placeholder="Inserisci Brand"
                 {...register("brand")}
             />
@@ -173,7 +173,7 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
             <Input
                 type="text"
                 id="modello"
-                className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0 focus:border-indigo-500"
                 placeholder="Inserisci Modello"
                 {...register("modello")}
             />
@@ -192,7 +192,7 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
               control={control}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger className={cn("text-base md:text-sm"  , !field.value && "text-muted-foreground"  )} >
+                    <SelectTrigger className={cn("text-base md:text-sm border-gray-300 focus:outline-none focus:ring-0 focus:border-indigo-500"  , !field.value && "text-muted-foreground"  )} >
                         <SelectValue placeholder="Alimentazione" /* className="placeholder:text-muted-foreground" */   />
                     </SelectTrigger>
                     <SelectContent>
@@ -221,7 +221,7 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
               control={control}              
               render={({ field }) => (
                 <Select  onValueChange={field.onChange} value={field.value} >
-                    <SelectTrigger    className={cn("text-base md:text-sm", !field.value && "text-muted-foreground")}   >
+                    <SelectTrigger    className={cn("text-base md:text-sm border-gray-300 focus:outline-none focus:ring-0 focus:border-indigo-500", !field.value && "text-muted-foreground")}   >
                           <SelectValue placeholder="Anno Immatricolazione" /> 
                     </SelectTrigger>
                     <SelectContent>
@@ -251,7 +251,7 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
             <Input
                 type="number"
                 id="km"
-                className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0   focus:border-indigo-500"
                 placeholder="Inserisci km"
                 {...register("km")}
             />
@@ -267,32 +267,34 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
             <Input
                 type="number"
                 id="prezzo"
-                className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                 className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0  focus:border-indigo-500"
                 placeholder="Inserisci prezzo"
                 {...register("prezzo")}
             />
             <ErrorValidationComponent error={errors.prezzo?.message} />
           </div> 
         </div>
-        <div /* className="relative mb-4 w-1/2" */ className="grid w-full lg:max-w-sm items-center gap-1.5">
+        <div className="relative mb-4 w-full items-center"  /* className="grid w-full lg:max-w-sm items-center gap-1.5"*/>
           <label
               htmlFor="image"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
           >
               Immagine
           </label>
-          <Input
-                type="file"
-                id="image"
-                className="w-full shadow-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:outline-none focus:border-indigo-500  focus:ring-indigo-500 "
-          
-                //className="file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 flex-1"
-                //className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                //placeholder="Seleziona un'immagine..."
-                /* {...register("prezzo")} */
-            />
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-              <UploadIcon className="h-5 w-5 text-muted-foreground" />
+          <div className="relative">
+            <Input
+                  type="file"
+                  id="image"
+                  className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none    focus:border-indigo-500"
+            
+                  //className="file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 flex-1"
+                  //className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  //placeholder="Seleziona un'immagine..."
+                  /* {...register("prezzo")} */
+              />
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <UploadIcon className="h-5 w-5 text-muted-foreground" />
+              </div>
             </div>
             {/* <ErrorValidationComponent error={errors.prezzo?.message} /> */}
         </div>
