@@ -28,7 +28,7 @@ export const getVeicoliStato = async (req: Request, res: Response): Promise<void
         }); 
 
     } catch (error) {
-        console.log('errori: ', error);
+        //console.log('errori: ', error);
         res.status(500).json({
             data: "",
             error: 'Errore durante il recupero dei veicoli.'

@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Euro, UploadIcon } from "./icone_mie";
 import { cn } from "@/lib/utils";
 import { ErrorValidationComponent } from "./ErrorValidationComponent";
+import { uploadImage, uploadImageWithData } from "@/app/(admin)/admin/action";
 /* type FormLoginProps = {
   ruolo: string;
 } */
@@ -80,7 +81,14 @@ const addFormSchema = z.object({   //schema validazione campi form
     const km = parseInt(val);
     return km >= 0 && km <= 100000;
   }, { message: 'Il Prezzo deve essere compres0 tra 0 e 100000' }),
-  
+  image: z
+    .instanceof(File, { message: 'Il file deve essere un\'immagineX' }) // Verifica che sia un'istanza di File (file caricato)
+    .refine((file) => file.type.startsWith('image/'), {
+      message: 'Il file deve essere un\'immagine',
+    })
+    .refine((file) => file.size <= 5 * 1024 * 1024, { // 5MB
+      message: 'Il file deve essere più piccolo di 5MB',
+    }),
 
   
 });
@@ -92,40 +100,66 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
+
+  
   
 
-    const {register, control,  handleSubmit, reset, formState: { errors } } = useForm<AddFormInputs>({
-      resolver: zodResolver(addFormSchema),
-      mode: "onChange",
-      defaultValues: {
-        tipo: undefined,
-        brand: "",
-        modello: "",
-        alimentazione: undefined,
-        anno: "",
-        km: undefined,
-        prezzo: undefined,        
-      }
-    });  
+  const {register, control,  handleSubmit, reset, formState: { errors } } = useForm<AddFormInputs>({
+    resolver: zodResolver(addFormSchema),
+    mode: "onChange",
+    defaultValues: {
+      tipo: undefined,
+      brand: "",
+      modello: "",
+      alimentazione: undefined,
+      anno: "",
+      km: undefined,
+      prezzo: undefined, 
+      image: undefined
+    }
+  });  
 
   //creo array per anni da 1900 ad oggi:
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 1900 + 1 }, (_, i) => 1900 + i); // Da 1900 all'anno corrente
 
 
-
+ 
    
 
   const onSubmit = async (formData: AddFormInputs) => {
-    setLoading(true);        
-    setErrorMessage("");
+     
+    setLoading(true);
 
-    console.log('ricevuto: ',formData  )
-    
+    const data = new FormData();
+    data.append('tipo', formData.tipo);
+    data.append('brand', formData.brand);
+    data.append('model', formData.modello);
+    data.append('alim', formData.alimentazione);
+    data.append('anno', formData.anno);
+    data.append('km', formData.km);
+    data.append('prezzo', formData.prezzo);
+    data.append('image', formData.image);  
+
+    const { message, error} = await uploadImageWithData(data); 
+
+       
+      
+    if (message) {
+      alert(message)
+    } else {
+      // Gestisci l'errore
+      alert(`Errore durante l\'upload: ${error}`);
+    }
+    reset()
+    setLoading(false);
+     
   }
 
-  return (
-    <form className="space-y-3 w-1/3 select-none"    onSubmit={handleSubmit(onSubmit)}    >
+  
+
+  return ( 
+    <form className="space-y-3 w-1/3 select-none" onSubmit={handleSubmit(onSubmit)}>
 
         <div className="relative mb-4 w-1/2">
           <Controller
@@ -282,32 +316,50 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
               Immagine
           </label>
           <div className="relative">
-            <Input
+              {/* <Input
                   type="file"
                   id="image"
                   className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none    focus:border-indigo-500"
-            
-                  //className="file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 flex-1"
-                  //className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  //placeholder="Seleziona un'immagine..."
-                  /* {...register("prezzo")} */
+                  //{...register("image")} 
+                  onChange={handleFileChange}
               />
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <UploadIcon className="h-5 w-5 text-muted-foreground" />
-              </div>
-            </div>
-            {/* <ErrorValidationComponent error={errors.prezzo?.message} /> */}
+              </div> 
+            </div>  */}
+            {/* className="file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:border file:border-solid file:border-blue-700 file:rounded-md border-blue-600" */}
+            <Controller
+              name="image"
+              control={control}              
+              render={({ field }) => (<>
+                <Input                 
+                  type="file"
+                  id="image"
+                  className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-indigo-500"
+                  onChange={(event) => {
+                    field.onChange(event.target.files?.[0]);
+                  }}                   
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <UploadIcon className="h-5 w-5 text-muted-foreground" />
+                </div> 
+              </>)}
+            /> 
+            </div>             
+            <ErrorValidationComponent error={errors.image?.message} />  
         </div>
 
         <div className="flex items-center py-2 gap-2">
-           <Button type="submit" className={`px-3 bg-orange-400 hover:bg-orange-400/80  ${Object.keys(errors).length > 0 ? 'cursor-not-allowed' : ''}`}>
+          <Button type="submit" className={`px-3 bg-orange-400 hover:bg-orange-400/80  ${Object.keys(errors).length > 0 ? 'cursor-not-allowed' : ''}`}>
             Login            
           </Button>  
           {loading && <Spinner />}   
           {errorMessage && <span className="text-red-500">{errorMessage}</span>} 
         </div>    
     </form> 
-  )
+
+ 
+   )
 }
 
 
@@ -315,48 +367,3 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
 
 
 
-/* import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-
-export default function Component() {
-  return (
-    <div className="grid w-full max-w-sm items-center gap-1.5">
-      <Label htmlFor="file-upload" className="flex items-center gap-2">
-        <CloudUploadIcon className="h-5 w-5 text-muted-foreground" />
-        <span>Drag and drop a file or click to browse</span>
-      </Label>
-      <div className="relative">
-        <Input
-          id="file-upload"
-          type="file"
-          className="w-full rounded-md border border-muted bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          placeholder="Drag and drop a file or click to browse"
-        />
-        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-          <CloudUploadIcon className="h-5 w-5 text-muted-foreground" />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function CloudUploadIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
-      <path d="M12 12v9" />
-      <path d="m16 16-4-4-4 4" />
-    </svg>
-  )
-} */

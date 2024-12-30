@@ -56,7 +56,7 @@ export const poolConnection: Pool = mysql.createPool(poolConfig);
 app.use("/api/auth", authRoutes);
 app.use("/api/veicoli", veicoliRoutes);
 
-app.use("api/images", imagesRoutes)
+app.use("/api/images", imagesRoutes)
 
 
 

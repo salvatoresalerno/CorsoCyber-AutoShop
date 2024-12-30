@@ -15,7 +15,7 @@ export default function SidebarLogoutButton() {
 
   return (
     <SidebarMenuButton asChild >
-        <div className="flex items-center justify-between px-5"   onClick={handleLogout}  >
+        <div className="flex items-center justify-between px-5 hover:cursor-pointer"   onClick={handleLogout}  >
             LogOut
             <FaPowerOff />
         </div>    

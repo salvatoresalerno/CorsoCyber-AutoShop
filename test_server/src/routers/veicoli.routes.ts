@@ -9,7 +9,7 @@ import { authenticate } from "../middleware/authenticate";
 const router: Router = Router();
 
 
-router.get('/getVeicoliStato/:stato', statoVeicoliValidator,  getVeicoliStato);
+router.get('/getVeicoliStato/:stato', statoVeicoliValidator, validateReq,  getVeicoliStato);
 //router.get('/getVeicoliVenduti',  getVeicoliVenduti);
 
 

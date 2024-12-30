@@ -22,8 +22,8 @@ export default async function AggiungiPage() {
 
     //const {data, error} = await getBrand()
     const {data, error} = await getBrandAndModel()
-    console.log('data in page: ', data)
-    console.log('error in page: ', error)
+    //console.log('data in page: ', data)
+   // console.log('error in page: ', error)
 
    console.log('ricarico pagina')
 

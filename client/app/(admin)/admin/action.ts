@@ -2,6 +2,8 @@
 'use server'
 
 
+ 
+import { ResponseResult } from "@/lib/types";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -79,6 +81,36 @@ export async function getBrand() {
 
 //solo brand: SELECT DISTINCT brand FROM veicoli;
 //modelliassociati ai brand: SELECT DISTINCT modello FROM veicoli WHERE brand = 'NomeDelBrand';
+
+
+export async function uploadImageWithData(formData: FormData) {   
+  try {
+    
+    const response = await fetch('http://localhost:5000/api/images/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const  result:ResponseResult = await response.json();
+
+    return result;
+
+    /* if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Error uploading image');
+    }
+
+    const data = await response.json();
+    return { success: true, data }; */
+
+  } catch (error) {
+    //console.error('Error in server action:', error);
+    return { 
+      message: "", 
+      error: error instanceof Error ? error.message : 'Errore sconosciuto' 
+    };
+  }
+}
 
 
 
