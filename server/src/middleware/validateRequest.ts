@@ -5,7 +5,9 @@ import {  validationResult, ValidationError } from 'express-validator';
 
 
 export const validateReq  = (req: Request, res: Response, next: NextFunction): void => {  //valida senza notificare dettagli errori
-    const errors = validationResult(req);    
+    const errors = validationResult(req);  
+    
+    console.log('errori: ', errors)
 
     if (!errors.isEmpty()) {
         res.status(400).json({

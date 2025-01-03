@@ -36,6 +36,9 @@ const MainUser = async () => {
 
   const { data } = await getVeicoliStato(Stato.VENDESI);  //veicoli usari (in Vendita) per vetrina random e per estrarre brand, modello, ecc nel cruscotto
     
+  
+  console.log('veicoli data: ', data)
+  
   function creaVetrina(length: number, count:number): number[] {  //ritorna un array di count elementi che sono gli indici per i veicoli della vetrina random
     const indici = new Set<number>();
     while (indici.size < count) {

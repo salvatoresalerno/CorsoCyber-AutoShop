@@ -1,6 +1,6 @@
 
 
-import { body, CustomValidator  } from "express-validator";
+import { body, CustomValidator, param  } from "express-validator";
 import { Alimentazione, Stato, TipoVeicolo } from "../types/types";
 import formidable from 'formidable';
 import { UPLOAD_DIR } from "..";
@@ -49,7 +49,7 @@ export const filteredVeicoliValidator = [
 
 
 export const statoVeicoliValidator = [
-    body("stato")
+    param("stato")
         .isString()
         .trim()
         .notEmpty().withMessage('Il campo non può essere vuoto')
