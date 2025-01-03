@@ -6,17 +6,13 @@ import mysql, { Pool, PoolOptions } from "mysql2/promise";
 import cookieParser from 'cookie-parser';
 import authRoutes from './routers/auth.routes';
 import veicoliRoutes from './routers/veicoli.routes';
-import imagesRoutes from './routers/image.routes';
 import cors from 'cors'; 
 import fs from 'fs/promises';
 import path from 'path'; 
 
  
 export const UPLOAD_DIR = path.join(__dirname, 'uploads');  //dir per upload immagini veicoli 
-//const __dirname2 = path.dirname(__filename);
-
-//console.log('dirName: ', __dirname)
-//console.log('filName: ', __filename)
+ 
 
 dotenv.config({ path: '../.env' });
 
@@ -56,7 +52,7 @@ export const poolConnection: Pool = mysql.createPool(poolConfig);
 app.use("/api/auth", authRoutes);
 app.use("/api/veicoli", veicoliRoutes);
 
-app.use("/api/images", imagesRoutes)
+ 
 
 
 

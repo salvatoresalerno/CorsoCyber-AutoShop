@@ -86,7 +86,7 @@ export async function getBrand() {
 export async function uploadImageWithData(formData: FormData) {   
   try {
     
-    const response = await fetch('http://localhost:5000/api/images/upload', {
+    const response = await fetch('http://localhost:5000/api/veicoli/addVeicolo', {
       method: 'POST',
       body: formData,
     });

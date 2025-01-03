@@ -17,6 +17,7 @@ import { Euro, UploadIcon } from "./icone_mie";
 import { cn } from "@/lib/utils";
 import { ErrorValidationComponent } from "./ErrorValidationComponent";
 import { uploadImage, uploadImageWithData } from "@/app/(admin)/admin/action";
+import Image from "next/image";
 /* type FormLoginProps = {
   ruolo: string;
 } */
@@ -100,7 +101,8 @@ export type AddFormInputs = z.infer<typeof addFormSchema>;
 export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
-
+  const [successMessage, setSuccessMessage] = useState<string>("");
+  const [preview, setPreview] = useState<string | undefined>(undefined);
 
   
   
@@ -126,9 +128,9 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 1900 + 1 }, (_, i) => 1900 + i); // Da 1900 all'anno corrente
 
-console.log('image: ', selectedFile)
  
-   
+  const ttt = watch("tipo");
+   console.log('tipo: ', ttt)
 
   const onSubmit = async (formData: AddFormInputs) => {
      
@@ -149,27 +151,45 @@ console.log('image: ', selectedFile)
        
       
     if (message) {
-      alert(message)
+      //alert(message)
+      setSuccessMessage(message);
     } else {
       // Gestisci l'errore
-      alert(`Errore durante l\'upload: ${error}`);
+      //alert(`Errore durante l\'upload: ${error}`);
+      setErrorMessage(error);
     }
     reset()
     setLoading(false);
-     
+    setTimeout(() => {  //--> dopo 5 sec. resetto error e succ e preview (aternativa al banner di notifica che scompare!)
+      setErrorMessage("");   
+      setSuccessMessage("")    
+      setPreview(undefined);   
+  }, 5000); 
   }
+
+  const handlePreview = (file: File | undefined) => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreview(undefined);
+    }
+  };
 
   
 
-  return ( 
-    <form className="space-y-3 w-1/3 select-none" onSubmit={handleSubmit(onSubmit)}>
+  return (<div className="flex flex-col sm:flex-row sm:justify-around"> 
+    <form className="space-y-3 w-full h-full sm:w-1/2 lg:w-1/3 select-none" onSubmit={handleSubmit(onSubmit)}>
 
-        <div className="relative mb-4 w-1/2">
+        <div className="relative w-full mb-4  ">
           <Controller
             name="tipo"
             control={control}
             render={({ field }) => (
-              <RadioGroup className="flex gap-4 text-base md:justify-end lg:justify-start" value={field.value} onValueChange={field.onChange}>
+              <RadioGroup key={field.value || 'reset'} className="flex gap-4 text-base md:justify-end lg:justify-start" value={field.value} onValueChange={field.onChange}>
                   <div className="flex items-center space-x-2">
                       <RadioGroupItem className="focus-visible:ring-0 focus:border-indigo-500" value={TipoVeicolo.AUTO} id="auto" />
                       <label htmlFor="auto">Auto</label>
@@ -326,11 +346,11 @@ console.log('image: ', selectedFile)
                 <Input                 
                   type="file"
                   id="image"
-                  //accept="image/png, image/jpeg"
                   accept=".jpeg,.jpg,.png,.webp"
                   className={cn("shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-indigo-500  hover:cursor-pointer", !selectedFile && "text-muted-foreground")}
                   onChange={(event) => {
                     field.onChange(event.target.files?.[0]);
+                    handlePreview(event.target.files?.[0]);
                   }}                   
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -344,15 +364,28 @@ console.log('image: ', selectedFile)
 
         <div className="flex items-center py-2 gap-2">
           <Button type="submit" className={`px-3 bg-orange-400 hover:bg-orange-400/80  ${Object.keys(errors).length > 0 ? 'cursor-not-allowed' : ''}`}>
-            Login            
+            Aggiungi            
           </Button>  
           {loading && <Spinner />}   
-          {errorMessage && <span className="text-red-500">{errorMessage}</span>} 
+          {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
+          {successMessage && <span className="text-green-500 text-balance mt-2 ">{successMessage}</span>}
         </div>    
     </form> 
 
- 
-   )
+    <div className="w-full sm:w-1/3  flex flex-col">
+        <h3 className="font-medium text-center">Anteprima immagine...</h3>
+        <div className="flex flex-1 justify-center items-center">
+          {preview && <div className="relative w-64 h-64 sm:w-80 sm:h-80 border border-gray-300 rounded overflow-hidden">
+            <Image
+              src={preview}
+              alt="Anteprima"             
+              className="object-contain"
+              fill
+            />
+          </div>}
+        </div>
+    </div>
+  </div>)
 }
 
 

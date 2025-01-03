@@ -1,9 +1,10 @@
 
 import { Router } from "express";
-import { getBrand, getBrandAndModel, getFilteredVeicoli, getVeicoliStato } from "../controller/veicoli.controller";
-import { filteredVeicoliValidator, statoVeicoliValidator } from "../validators/veicolo.schema";
+import { getBrand, getBrandAndModel, getFilteredVeicoli, getVeicoliStato, addVeicolo } from "../controller/veicoli.controller";
+import { addVeicoloValidator, filteredVeicoliValidator, statoVeicoliValidator } from "../validators/veicolo.schema";
 import { validateReq } from "../middleware/validateRequest";
 import { authenticate } from "../middleware/authenticate";
+import { parseFormData } from "../middleware/parseFormData";
 
 
 const router: Router = Router();
@@ -18,6 +19,8 @@ router.post('/getFilteredVeicoli', filteredVeicoliValidator, validateReq, getFil
  
 router.get('/brand', authenticate, getBrand);
 router.get('/brand_model', authenticate, getBrandAndModel);
+
+router.post('/addVeicolo', parseFormData, addVeicoloValidator,   validateReq,  addVeicolo);
 
 
 
