@@ -82,13 +82,14 @@ const addFormSchema = z.object({   //schema validazione campi form
     return km >= 0 && km <= 100000;
   }, { message: 'Il Prezzo deve essere compres0 tra 0 e 100000' }),
   image: z
-    .instanceof(File, { message: 'Il file deve essere un\'immagineX' }) // Verifica che sia un'istanza di File (file caricato)
+    .instanceof(File, { message: 'Il file deve essere un\'immagine' })  
     .refine((file) => file.type.startsWith('image/'), {
       message: 'Il file deve essere un\'immagine',
     })
     .refine((file) => file.size <= 5 * 1024 * 1024, { // 5MB
       message: 'Il file deve essere più piccolo di 5MB',
-    }),
+    })
+    .optional(),
 
   
 });
@@ -104,7 +105,7 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
   
   
 
-  const {register, control,  handleSubmit, reset, formState: { errors } } = useForm<AddFormInputs>({
+  const {register, control,  handleSubmit, reset, formState: { errors }, watch } = useForm<AddFormInputs>({
     resolver: zodResolver(addFormSchema),
     mode: "onChange",
     defaultValues: {
@@ -119,11 +120,13 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
     }
   });  
 
+  const selectedFile = watch("image");
+
   //creo array per anni da 1900 ad oggi:
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 1900 + 1 }, (_, i) => 1900 + i); // Da 1900 all'anno corrente
 
-
+console.log('image: ', selectedFile)
  
    
 
@@ -139,7 +142,7 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
     data.append('anno', formData.anno);
     data.append('km', formData.km);
     data.append('prezzo', formData.prezzo);
-    data.append('image', formData.image);  
+    data.append('image', formData.image ? formData.image : '');  
 
     const { message, error} = await uploadImageWithData(data); 
 
@@ -316,18 +319,6 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
               Immagine
           </label>
           <div className="relative">
-              {/* <Input
-                  type="file"
-                  id="image"
-                  className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none    focus:border-indigo-500"
-                  //{...register("image")} 
-                  onChange={handleFileChange}
-              />
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <UploadIcon className="h-5 w-5 text-muted-foreground" />
-              </div> 
-            </div>  */}
-            {/* className="file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:border file:border-solid file:border-blue-700 file:rounded-md border-blue-600" */}
             <Controller
               name="image"
               control={control}              
@@ -335,18 +326,20 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
                 <Input                 
                   type="file"
                   id="image"
-                  className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-indigo-500"
+                  //accept="image/png, image/jpeg"
+                  accept=".jpeg,.jpg,.png,.webp"
+                  className={cn("shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-indigo-500  hover:cursor-pointer", !selectedFile && "text-muted-foreground")}
                   onChange={(event) => {
                     field.onChange(event.target.files?.[0]);
                   }}                   
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <UploadIcon className="h-5 w-5 text-muted-foreground" />
+                  <UploadIcon className={cn("h-5 w-5", !selectedFile && "text-muted-foreground")} />
                 </div> 
               </>)}
             /> 
-            </div>             
-            <ErrorValidationComponent error={errors.image?.message} />  
+          </div>             
+          <ErrorValidationComponent error={errors.image?.message} />  
         </div>
 
         <div className="flex items-center py-2 gap-2">

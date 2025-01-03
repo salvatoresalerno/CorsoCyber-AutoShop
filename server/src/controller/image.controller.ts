@@ -28,13 +28,15 @@ export const uploadImage = async (req: Request, res: Response) => {
 
     const uploadedFile = req.files?.image?.[0].filepath;
 
+    console.log('upload: ', uploadedFile)
+
     //salvo nel db tutti i dati:
        
     const query = `INSERT INTO veicoli 
       (brand, modello, tipo, anno, alimentazione, kilometri, prezzo, stato, image)
       VALUES (?,?,?,?,?,?,?,?,?)`; 
      
-    const values = [brand, modello, tipo, anno, alimentazione, km, prezzo, stato, uploadedFile];
+    const values = [brand, modello, tipo, anno, alimentazione, km, prezzo, stato, uploadedFile ? uploadedFile : null];
 
     await poolConnection.execute(query, values);
     
