@@ -58,6 +58,14 @@ export const statoVeicoliValidator = [
 
 
 export const addVeicoloValidator = [  //valida i campi come array (formidable restituisce cosi dopo il parse)
+    body('id')
+      .isArray({ min: 1 })  
+      .withMessage('Il campo non può essere vuoto')
+      .bail()
+      .trim()
+      .isUUID()
+      .withMessage('Formato parametro non valido.')
+      .optional(),
     body('tipo')
       .isArray({ min: 1 }) 
       .withMessage('Il campo non può essere vuoto')
@@ -121,6 +129,24 @@ export const addVeicoloValidator = [  //valida i campi come array (formidable re
       .bail()
       .isInt({ min: 0, max: 100000 })
       .withMessage('Prezzo non valido'),
+    body('image')
+      .isArray({ min: 1 })  
+      .withMessage('Il campo non può essere vuoto')
+      .bail()
+      /* .custom((value) => value[0] && value[0].trim() !== '')  
+      .withMessage('Il campo non può essere vuoto')
+      .bail() */
+      .optional()
   ];
+
+  
+export const getVeicoloValidator = [
+  param("id")      
+      .trim()
+      .isUUID()
+      .withMessage('Formato parametro non valido.')
+];
+
+
 
 

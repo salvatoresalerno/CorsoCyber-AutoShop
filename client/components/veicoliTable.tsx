@@ -8,7 +8,10 @@ import { cn } from "@/lib/utils";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "./ui/select";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "./ui/pagination";
 import { Veicolo } from "@/lib/types";
-
+import { Button } from "./ui/button";
+import { CiEdit } from "react-icons/ci";
+import { PiTrash } from "react-icons/pi";
+import { useRouter } from "next/navigation";
 
 type VeicoliTableProps = {
     veicoli: Veicolo[] | null;
@@ -24,6 +27,8 @@ const sortedIcon = (
 
 const VeicoliTable = ({ veicoli, className }: VeicoliTableProps) => {
 
+    const router = useRouter();
+
     const [veicoliFiltrati, setVeicoliFiltrati] = useState<Veicolo[] | null>(null);
     const [sortConfig, setSortConfig] = useState<{ key: keyof Veicolo; direction: 'ascending' | 'descending' } >({key: 'modello', direction: 'ascending'});
 
@@ -33,7 +38,7 @@ const VeicoliTable = ({ veicoli, className }: VeicoliTableProps) => {
     const { filtri } = useFiltriContext();
 
     //ricevuti i filtri, filtro i veicoli in base ai filtri ricevuti
-     useEffect(() => {
+    useEffect(() => {
         if (veicoli && filtri) {
             let _veicoliFiltrati =  veicoli.filter((veicolo) => {
                 const matchesTipo = filtri.tipo ? veicolo.tipo === filtri.tipo : true;
@@ -51,11 +56,13 @@ const VeicoliTable = ({ veicoli, className }: VeicoliTableProps) => {
             if (sortConfig !== null) {  //ordinamento di default --> modello
                 if (_veicoliFiltrati) {
                     _veicoliFiltrati.sort((a, b) => {
-                        if (a[sortConfig.key] < b[sortConfig.key]) {
-                            return sortConfig.direction === 'ascending' ? -1 : 1;
-                        }
-                        if (a[sortConfig.key] > b[sortConfig.key]) {
-                            return sortConfig.direction === 'ascending' ? 1 : -1;
+                        if (sortConfig.key !== 'id') {  //esclude la key id dall'ordinamento
+                            if (a[sortConfig.key] < b[sortConfig.key]) {
+                                return sortConfig.direction === 'ascending' ? -1 : 1;
+                            }
+                            if (a[sortConfig.key] > b[sortConfig.key]) {
+                                return sortConfig.direction === 'ascending' ? 1 : -1;
+                            }
                         }
                         return 0;
                     });
@@ -81,7 +88,7 @@ const VeicoliTable = ({ veicoli, className }: VeicoliTableProps) => {
 
     const totalVeicoli = veicoliFiltrati ? veicoliFiltrati.length : 0;
     const totalPages = Math.ceil(totalVeicoli / itemsPerPage);
-    console.log('tot pag. ', totalPages)
+    //console.log('tot pag. ', totalPages)
     const paginatedVeicoli = veicoliFiltrati ? veicoliFiltrati.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
@@ -121,6 +128,18 @@ const VeicoliTable = ({ veicoli, className }: VeicoliTableProps) => {
 
         return pageNumbers;
     };
+
+    const handleButtonClick = (veicolo: Veicolo, action: 'update' | 'delete') => async (event: React.MouseEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        if (action === 'update') {
+           console.log('update del veicolo: ', veicolo)
+           router.push(`/admin/dashboard/veicolo/${veicolo.id}`);
+        } else if (action === 'delete') { 
+            console.log('canc. del veicolo: ', veicolo)
+        }
+      };
     
     return (
         <div className={cn(className)}>
@@ -164,6 +183,7 @@ const VeicoliTable = ({ veicoli, className }: VeicoliTableProps) => {
                                     <span className="w-[18px] cursor-pointer" onClick={() => requestSort('prezzo')}>{sortedIcon}</span>
                                 </div>
                             </TableHead> 
+                            <TableHead ></TableHead>
                         </TableRow>
                     </TableHeader> 
                     <TableBody>
@@ -176,7 +196,27 @@ const VeicoliTable = ({ veicoli, className }: VeicoliTableProps) => {
                                 <TableCell className="text-center">{veicolo.anno}</TableCell>
                                 <TableCell className="hidden sm:table-cell text-center">{veicolo.alimentazione}</TableCell>
                                 <TableCell className="hidden sm:table-cell text-center">{veicolo.kilometri}</TableCell>
-                                <TableCell className="sm:table-cell text-center">{veicolo.prezzo}</TableCell>                           
+                                <TableCell className="sm:table-cell text-center">{veicolo.prezzo}</TableCell> 
+                                <TableCell>
+                                    <div className="flex gap-3 justify-center">
+                                        <Button 
+                                            title='Modifica Veicolo'
+                                            size='sm' 
+                                            className="bg-transparent text-blueShop hover:bg-blueShop/80 hover:text-white p-1  xl:flex xl:items-center xl:justify-center xl:p-2"
+                                            onClick={handleButtonClick(veicolo, 'update')}                                            
+                                        >
+                                            <CiEdit className="h-4 w-4 xl:h-5 xl:w-5"/>
+                                        </Button>
+                                        <Button 
+                                            title='Cancella Veicolo'
+                                            size='sm' 
+                                            className="bg-transparent text-red-400 hover:bg-red-400 hover:text-white p-1 xl:flex xl:items-center xl:justify-center xl:p-2"
+                                            onClick={handleButtonClick(veicolo, 'delete')}
+                                        >
+                                            <PiTrash className="h-4 w-4 xl:h-5 xl:w-5"/>
+                                        </Button>                                        
+                                    </div>
+                                </TableCell>                          
                             </TableRow> 
                         ))}
                     </TableBody> 

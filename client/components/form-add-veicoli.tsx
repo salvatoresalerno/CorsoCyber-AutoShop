@@ -3,40 +3,26 @@
 
 import { Button } from "./ui/button";
 import { Spinner } from "./spinner";
-import { useRouter } from 'next/navigation';
-import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { Alimentazione, Ruolo, TipoVeicolo } from "@/lib/types";
+import { useEffect, useState } from "react";
+import { Alimentazione, TipoVeicolo, Veicolo } from "@/lib/types";
 import { Input } from "./ui/input";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
-import { Euro, UploadIcon } from "./icone_mie";
+import { UploadIcon } from "./icone_mie";
 import { cn } from "@/lib/utils";
 import { ErrorValidationComponent } from "./ErrorValidationComponent";
-import { uploadImage, uploadImageWithData } from "@/app/(admin)/admin/action";
+import { uploadImageWithData } from "@/app/(admin)/admin/action";
 import Image from "next/image";
-/* type FormLoginProps = {
-  ruolo: string;
-} */
 
-/* const signinSchema = z.object({   //schema validazione campi form   
-  email: z.string()
-    .trim()
-    .email("Formato email non valido.")
-    .max(255, {message: "la mail deve essere massimo 255 caratteri"}), 
-  password: z
-    .string()
-    .trim()
-    .min(8, "La password deve essere minimo 8 caratteri")
-    .regex(/[A-Z]/, "La password deve contenere almeno una lettera maiuscola")
-    .regex(/\d/, "La password deve contenere almeno un numero")
-    .regex(/[$!%&=[\]#\-.\(\)]/, "La password deve contenere almeno un carattere speciale tra !$%&=[]#-.( )"),  
-});
 
-export type SigninFormInputs = z.infer<typeof signinSchema>;  */
+type AddFormProps = {
+  data: Veicolo | null;
+} 
+
+
 
 const addFormSchema = z.object({   //schema validazione campi form   
   tipo: z
@@ -98,16 +84,15 @@ const addFormSchema = z.object({   //schema validazione campi form
 export type AddFormInputs = z.infer<typeof addFormSchema>;
 
 
-export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
+export const AddVeicoliForm = ({ data }: AddFormProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [preview, setPreview] = useState<string | undefined>(undefined);
 
   
-  
-
-  const {register, control,  handleSubmit, reset, formState: { errors }, watch } = useForm<AddFormInputs>({
+   
+  const {register, control,  handleSubmit, reset, formState: { errors }, watch, setValue } = useForm<AddFormInputs>({
     resolver: zodResolver(addFormSchema),
     mode: "onChange",
     defaultValues: {
@@ -122,49 +107,97 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
     }
   });  
 
+ 
+
+  useEffect(() => {
+     
+    if (data) {
+      let imageUrl;
+      if (data.image) { 
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';  
+        imageUrl = `${baseUrl}${data.image}`;
+      } else {
+        imageUrl = undefined;
+      }
+      setTimeout(() => {
+        setValue("tipo", data.tipo);
+        setValue("brand", data.brand);
+        setValue("modello", data.modello);        
+        setValue("alimentazione", data.alimentazione);
+        setValue("anno", data.anno.toString());
+        setValue("km", data.kilometri.toString());
+        setValue("prezzo", data.prezzo.toString());
+        setPreview(imageUrl); 
+      }, 0);
+    }
+  }, [data, setValue]);
+
   const selectedFile = watch("image");
 
   //creo array per anni da 1900 ad oggi:
   const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: currentYear - 1900 + 1 }, (_, i) => 1900 + i); // Da 1900 all'anno corrente
-
+  const years = Array.from({ length: currentYear - 1900 + 1 }, (_, i) => 1900 + i); // Da 1900 all'anno corrente 
  
-  const ttt = watch("tipo");
-   console.log('tipo: ', ttt)
 
   const onSubmit = async (formData: AddFormInputs) => {
      
     setLoading(true);
 
-    const data = new FormData();
-    data.append('tipo', formData.tipo);
-    data.append('brand', formData.brand);
-    data.append('model', formData.modello);
-    data.append('alim', formData.alimentazione);
-    data.append('anno', formData.anno);
-    data.append('km', formData.km);
-    data.append('prezzo', formData.prezzo);
-    data.append('image', formData.image ? formData.image : '');  
+    const VeicoloData = new FormData();
+    VeicoloData.append('tipo', formData.tipo);
+    VeicoloData.append('brand', formData.brand);
+    VeicoloData.append('model', formData.modello);
+    VeicoloData.append('alim', formData.alimentazione);
+    VeicoloData.append('anno', formData.anno);
+    VeicoloData.append('km', formData.km);
+    VeicoloData.append('prezzo', formData.prezzo);
+    //VeicoloData.append('image', formData.image ? formData.image : '');  
 
-    const { message, error} = await uploadImageWithData(data); 
+    if (formData.image){  //immagine selezionata
+      VeicoloData.append('image', formData.image);  
+    } else if (!formData.image && preview) {  //immagine non selezionata ma anteprima presente, sono in update
+      VeicoloData.append('image', data?.image ?? '');
+    } else {  //nessun file selezionato
+      VeicoloData.append('image', '');
+    }
 
-       
+
+
+
+    /* let message; 
+    let error; */
+
+    /* if (data) {  //se esiste data sono in upload
+      const result = await uploadImageWithData(VeicoloData, data.id);
+      message = result.message;
+      error = result.error;
+    } else {  //salvataggio normale
+      const result = await uploadImageWithData(VeicoloData);
+      message = result.message;
+      error = result.error;
+    } */
+   
+    if (data?.id) {  //se esiste id sono in upload
+      VeicoloData.append('id', data.id);
+    } 
+
+
+    const { message, error} = await uploadImageWithData(VeicoloData);        
       
     if (message) {
-      //alert(message)
       setSuccessMessage(message);
     } else {
-      // Gestisci l'errore
-      //alert(`Errore durante l\'upload: ${error}`);
       setErrorMessage(error);
     }
+
     reset()
     setLoading(false);
+
     setTimeout(() => {  //--> dopo 5 sec. resetto error e succ e preview (aternativa al banner di notifica che scompare!)
       setErrorMessage("");   
       setSuccessMessage("")    
       setPreview(undefined);   
-  }, 5000); 
+    }, 5000); 
   }
 
   const handlePreview = (file: File | undefined) => {
@@ -246,6 +279,7 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
             </label>
             <Controller
               name="alimentazione"
+              defaultValue={undefined}
               control={control}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} value={field.value}>
@@ -351,7 +385,7 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
                   onChange={(event) => {
                     field.onChange(event.target.files?.[0]);
                     handlePreview(event.target.files?.[0]);
-                  }}                   
+                  }}                                   
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                   <UploadIcon className={cn("h-5 w-5", !selectedFile && "text-muted-foreground")} />
@@ -364,7 +398,7 @@ export const AddVeicoliForm = (/* {ruolo}: FormLoginProps */) => {
 
         <div className="flex items-center py-2 gap-2">
           <Button type="submit" className={`px-3 bg-orange-400 hover:bg-orange-400/80  ${Object.keys(errors).length > 0 ? 'cursor-not-allowed' : ''}`}>
-            Aggiungi            
+            {data ? "Modifica" : "Aggiungi"}            
           </Button>  
           {loading && <Spinner />}   
           {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}

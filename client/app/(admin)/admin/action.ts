@@ -3,7 +3,7 @@
 
 
  
-import { ResponseResult } from "@/lib/types";
+import { ResponseResult, Veicolo } from "@/lib/types";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -83,13 +83,32 @@ export async function getBrand() {
 //modelliassociati ai brand: SELECT DISTINCT modello FROM veicoli WHERE brand = 'NomeDelBrand';
 
 
-export async function uploadImageWithData(formData: FormData) {   
+export async function uploadImageWithData(formData: FormData, id?: string) {
+
+  const token = cookies().get("token")?.value;
+  if(!token) {  
+    redirect('/admin');      
+  }
+
   try {
-    
-    const response = await fetch('http://localhost:5000/api/veicoli/addVeicolo', {
-      method: 'POST',
-      body: formData,
-    });
+    let response;
+    if (!id) {  //salva
+      response = await fetch('http://localhost:5000/api/veicoli/addVeicolo', {
+        method: 'POST',
+        body: formData,
+        headers: {       
+          Cookie: `token=${token}; `
+        },
+      });
+    } else {
+      response = await fetch('http://localhost:5000/api/veicoli/addVeicolo', {
+        method: 'PUT',
+        body: formData,
+        headers: {       
+          Cookie: `token=${token}; `
+        },
+      });
+    }
 
     const  result:ResponseResult = await response.json();
 
@@ -111,6 +130,85 @@ export async function uploadImageWithData(formData: FormData) {
     };
   }
 }
+
+
+export async function loadVeicoloById(id: string) {
+  const token = cookies().get("token")?.value;
+  if(!token) {  
+    redirect('/admin');      
+  }
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/veicoli/getVeicolo/${id}`, {
+      method: 'GET',
+      headers: {       
+        Cookie: `token=${token}; `
+      },
+    });
+
+    const resultData = await res.json()
+//console.log('resultData: ', resultData)
+
+    return {
+      data: resultData.data as Veicolo,
+      error: resultData.error as string
+    }
+
+  
+  } catch (error) {
+    console.log('errore status: ', error)
+    return {
+      data: null,
+      error: 'errore recupero veicolo'
+    }
+  }
+
+
+}
+
+
+/*
+export async function updateNewsClick(id: string): Promise<void> {
+   
+  if (!validateGuid(id)) {
+    //se l'id non è un guid valido, non segnala errori e non apre la pagina
+    return;
+  } 
+
+    redirect(`/admin/dashboard/news/page-editor/${id}`)
+}
+
+export async function deleteNews(id: string): Promise<DbResponse> {
+    if (!validateGuid(id)) {
+      //se l'id non è un guid valido, genera errore
+      throw new Error('Errore durante la cancellazione dei dati - code: V400');
+    }
+    const supabaseClient =  createClient();
+    try {
+      const { error } = await supabaseClient
+        .from('news')
+        .delete()
+        .eq('id', id)
+      if (error) {  
+        throw new Error(`Errore durante la cancellazione dei dati - code: ${error.code}`);
+      } else {
+        return {
+          message: 'News cancellata correttamente',
+          error: null,
+        }
+      }
+    } catch (err) {  
+      const errorDB: ErrorDB = err instanceof Error ? {message: err.message} : {message: 'Unknown error occurred', code: 999}
+  
+      return {
+          message: null,
+          error: errorDB,
+      };
+    }
+
+}    
+*/
+
 
 
 

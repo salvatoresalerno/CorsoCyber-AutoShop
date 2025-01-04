@@ -228,7 +228,7 @@ const AdminSearchBar = ({veicoli}: AdminSearchBarProps) => {
                                 onRangeChange={onRangePrezzoChange}
                                 styles={{
                                     //rail: { backgroundColor: 'red', height: 15 },
-                                    track: { backgroundColor: 'lime' },
+                                    track: { backgroundColor: '#2d7dd2' },
                                     handle: { borderWidth: 1, height: 24, width: 24, marginTop: -10,   boxShadow: '0 0 0 1px #C6C6C6'   },
                                 }}
                             />
@@ -256,7 +256,7 @@ const AdminSearchBar = ({veicoli}: AdminSearchBarProps) => {
                                 onRangeChange={onRangeKmChange}
                                 styles={{
                                     //rail: { backgroundColor: 'red', height: 15 },
-                                    track: { backgroundColor: 'lime' },
+                                    track: { backgroundColor: '#2d7dd2' },
                                     handle: { borderWidth: 1, height: 24, width: 24, marginTop: -10,   boxShadow: '0 0 0 1px #C6C6C6'   },
                                 }}
                             />

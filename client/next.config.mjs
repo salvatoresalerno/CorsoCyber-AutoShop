@@ -13,6 +13,18 @@ const nextConfig = {
         PASSWORD_MAIL:process.env.PASSWORD_MAIL,
         REFRESH_TOKEN_EXPIRY:process.env.REFRESH_TOKEN_EXPIRY,
       },
+      images: {
+        remotePatterns: [
+          {
+            protocol: 'http',
+            hostname: 'localhost',  //dominio backend per preview image in upload form
+            port: '5000',  
+            pathname: '/uploads/**', // Consenti solo i percorsi relativi specifici
+          },
+        ],
+      },
+    
+    
 };
 
 

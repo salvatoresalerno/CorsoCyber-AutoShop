@@ -37,6 +37,7 @@ export enum Alimentazione {
 }
 
 export type Veicolo = {
+    id?: string;
     brand: string,
     modello: string,
     tipo: TipoVeicolo,

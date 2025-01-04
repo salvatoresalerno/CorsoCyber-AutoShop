@@ -9,12 +9,14 @@ export type CustomPayload = {
 }
 
 
+type UploadedFile = formidable.File & { relativePath?: string };  //aggiunta props relativePath per path relativa
+
 
 declare global {
   namespace Express {
     interface Request {      
       payload?: CustomPayload
-      files?: Files; //per i file da fare upload
+      files?: Files | UploadedFile | undefined; //per i file da fare upload
     }
   }
 }

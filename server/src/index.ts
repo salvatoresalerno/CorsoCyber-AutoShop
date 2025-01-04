@@ -11,7 +11,11 @@ import fs from 'fs/promises';
 import path from 'path'; 
 
  
-export const UPLOAD_DIR = path.join(__dirname, 'uploads');  //dir per upload immagini veicoli 
+//export const UPLOAD_DIR = path.join(__dirname, 'uploads');  //dir per upload immagini veicoli 
+export const UPLOAD_DIR = path.join(__dirname, '../uploads');  //dir per upload immagini veicoli 
+
+
+ 
  
 
 dotenv.config({ path: '../.env' });
@@ -34,6 +38,8 @@ app.use(
       credentials: true, 
   })
 );
+
+app.use('/uploads', express.static(path.join(__dirname, '../uploads'))); //midd per percorso immagini
 
 const poolConfig: PoolOptions = {
   waitForConnections: true,

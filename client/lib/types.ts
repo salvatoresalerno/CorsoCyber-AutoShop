@@ -64,6 +64,7 @@ export enum Stato {
 }
 
 export type Veicolo = {
+    id?: string;
     brand: string,
     modello: string,
     tipo: TipoVeicolo,

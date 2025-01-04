@@ -27,8 +27,8 @@ import SidebarLogoutButton from "./logoutButton"
       icon: SalesCar,
     },
     {
-      title: "Aggiungi Veicolo",
-      url: "/admin/dashboard/aggiungi",
+      title: "Veicolo Manager",
+      url: "/admin/dashboard/veicolo",
       icon: AddCar,
     },
     {

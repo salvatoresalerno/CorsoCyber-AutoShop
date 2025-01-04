@@ -12,7 +12,7 @@ server/*.pid
 server/*.seed
 server/*.pid.lock
 server/*.txt
-server/src/uploads
+server/uploads
 
 # Next.js (Client)
 client/.next/
