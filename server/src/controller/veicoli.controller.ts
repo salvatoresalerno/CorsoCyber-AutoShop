@@ -167,7 +167,7 @@ export const addVeicolo = async (req: Request, res: Response) => {
 
         const img = imagePath ? imagePath : image ? image : null;
 
-        console.log('campo img: ', img)
+        //console.log('campo img: ', img)
   
         if(!id) {
             //salvo nel db tutti i dati:       
@@ -224,4 +224,29 @@ export const getVeicoloByID = async (req: Request, res: Response): Promise<void>
             error: 'Errore durante il recupero dei veicoli.'
         });     
     }  
+}
+
+export const setVenduto = async (req: Request, res: Response): Promise<void>  => {
+
+    const id = req.body.id;
+
+    try {
+        const query = `UPDATE veicoli SET stato = ? WHERE id=?`;
+            
+        const values = [Stato.VENDUTO, id];
+        await poolConnection.execute(query, values);
+        
+        res.status(200).json({
+            message: "Stato veicolo aggiornato con successo",
+            error: null
+        }); 
+
+    } catch (error) {
+        //console.log('errori: ', error);
+        res.status(500).json({
+            message: null,
+            error: 'Errore durante aggiornamento stato veicolo.'
+        });     
+    }  
+
 }

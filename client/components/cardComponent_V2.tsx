@@ -7,6 +7,7 @@ import { formatEuro } from "@/lib/utils";
 import Image from "next/image";
 import { useState } from "react";
 import { Spinner } from "./spinner";
+import { setVeicoloVenduto } from "@/app/(user)/action";
 
 type CardProps = {
     veicolo: Veicolo;
@@ -24,8 +25,17 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
     const [acquistato, setAcquistato] = useState<boolean>(false);
 
     const handlerInviaMail = async () => {
-        setLoading(true)
+        setLoading(true);
+
+        
+
         try {
+            //contrassegna il veicolo come acquistato
+            const {error} = await setVeicoloVenduto(veicolo.id ?? '');
+            if (error) {
+                throw new Error(error || 'Errore durante l\'aggiornamento stato');
+            }
+
             const response = await fetch('/api/sendMail', {
                 method: 'POST',
                 headers: {
@@ -40,6 +50,7 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
             })
             if (response.ok) {
                 setSuccess('Ordine ricevuto con successo!');
+                setAcquistato(true);  //appare barra acquistato
             } else {
                 setError("Errore durante l'elaborazione dell'ordine.");
             }
@@ -47,7 +58,7 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
             setTimeout(() => {  //--> dopo 5 sec. resetto error e succ (aternativa al banner di notifica che scompare!)
                 setSuccess(null);   
                 setError(null)    
-                setAcquistato(true);  //appare barra acquistato
+                //setAcquistato(true);  //appare barra acquistato
             }, 5000);
             
         } catch (error) {
@@ -62,7 +73,7 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
   
     return (
         <div className="relative flex flex-col justify-between bg-white pt-2 pl-2 w-full sm:pt-3 sm:pl-3 lg:pt-4 lg:pl-4 rounded-xl overflow-hidden select-none">
-            {veicolo.stato === Stato.VENDUTO && <div className="absolute top-7 right-[-45px] w-[180px] transform rotate-45 bg-red-400/80 z-50 text-white font-bold text-center py-1 shadow-md">
+            {veicolo.stato === Stato.VENDUTO && !acquistato && <div className="absolute top-7 right-[-45px] w-[180px] transform rotate-45 bg-red-400/80 z-50 text-white font-bold text-center py-1 shadow-md">
                 VENDUTO
             </div>}
             {acquistato && <div className="absolute top-9 right-[-38px] w-[180px] transform rotate-45 bg-lime-400/80 z-50 text-white font-bold text-center py-1 shadow-md">
@@ -108,7 +119,7 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
                     <div className="bg-[#f5f7f8] p-2 rounded-tl-lg">
                     <button 
                         onClick={handlerInviaMail} 
-                        disabled={loading || veicolo.stato === Stato.VENDUTO} 
+                        disabled={loading || veicolo.stato === Stato.VENDUTO || acquistato} 
                         className='bg-orange-400 text-white font-normal rounded-[4px] py-[4px] px-4 sm:px-5 text-base hover:opacity-80 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-60'
                     >                            
                         Acquista

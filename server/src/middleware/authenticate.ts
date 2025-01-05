@@ -27,7 +27,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
         return;
     }
 
-    console.log('faccio passare ed aggiungo payload all req.', payload)
+    //console.log('faccio passare ed aggiungo payload all req.', payload)
 
     req.payload = payload as CustomPayload;   //tutto ok e invio il payload  
     next();

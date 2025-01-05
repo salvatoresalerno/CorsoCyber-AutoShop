@@ -43,9 +43,7 @@ export async function getBrandAndModel() {
 
 export async function getBrand() {
   console.log('ciao sono Pluto')
-  const token = cookies().get("token")?.value;
-
-  //console.log('token in getPluto: ', token)
+  const token = cookies().get("token")?.value;   
 
   if(!token) {  //se qui manca token è perchè il middleware lo ha rimosso per manomissione, altrimenti qui ho un cookie valido
     console.log('Qui manca il token!!!');

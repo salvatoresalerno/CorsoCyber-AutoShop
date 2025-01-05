@@ -1,8 +1,8 @@
-import { FilterParams, VeicoliSuggeriti, VeicoloWithImg } from "@/lib/types";
-import { filtraVeicoli, getCurrentUser, getFilteredVeicoli } from "@/app/(user)/action";
-import { isVeicoliSuggeriti } from "@/lib/utils";
+import { FilterParams } from "@/lib/types";
+import { getFilteredVeicoli } from "@/app/(user)/action";
 import ErrorComponent from "@/components/errorComponent";
 import CardComponent_V2 from "@/components/cardComponent_V2";
+import { headers } from "next/headers";
 
 
 
@@ -10,17 +10,19 @@ import CardComponent_V2 from "@/components/cardComponent_V2";
 
 export default async function RisultatiPage({ params }: { params: { slug: string } }) {
 
+    //recupero User eventualmente esistente in headers
+    const currentHeaders = headers();
+    const currentUserHeader = currentHeaders.get('X-Current-User');
+    const currentUser = currentUserHeader ? JSON.parse(currentUserHeader) : null;
     
-    //let filtro:FilterParams;
-    //let result: VeicoloWithImg[] | VeicoliSuggeriti = [];
+    console.log('utente in risultati: ', currentUser)
+     
     let titolo: string = '';
 
     //NB questa pagina è normalmente pubblica, ma se loggato posso acquistare i veicoli, quindi saranno visibili i pulsanti 
 
     const filtri: FilterParams = JSON.parse(decodeURIComponent(params.slug));
-
-    const { user } = await getCurrentUser(); //controllo esistenza user autenticato
-
+ 
     const {data, suggerito, error} = await getFilteredVeicoli(filtri);
 
     if (suggerito) {
@@ -63,7 +65,7 @@ export default async function RisultatiPage({ params }: { params: { slug: string
                                     <CardComponent_V2
                                         key={index} 
                                         veicolo={veicolo}
-                                        user={user}
+                                        user={currentUser}
                                     />
                                 )
                             })}                 

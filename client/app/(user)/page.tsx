@@ -32,7 +32,7 @@ const MainUser = async () => {
   const currentUserHeader = currentHeaders.get('X-Current-User');
   const currentUser = currentUserHeader ? JSON.parse(currentUserHeader) : null;
 
-  //se inietto X-Current-User potrei vedere risorse protette <------------------CONTROLLARE
+   
 
   const { data } = await getVeicoliStato(Stato.VENDESI);  //veicoli usari (in Vendita) per vetrina random e per estrarre brand, modello, ecc nel cruscotto
     

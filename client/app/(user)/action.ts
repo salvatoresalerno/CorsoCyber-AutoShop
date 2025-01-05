@@ -4,6 +4,7 @@
 import { SignupFormInputs } from "@/components/form-signup";
 import { DataFilterResult, FilterParams, ResponseResult } from "@/lib/types";
 import { cookies } from 'next/headers';
+import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 
 
@@ -293,6 +294,48 @@ export async function getFilteredVeicoli(params: FilterParams): Promise<DataFilt
       error: err instanceof Error ? err.message : "Errore Inaspettato"
     }
   }
+}
+
+
+export async function setVeicoloVenduto(id: string): Promise<ResponseResult> {
+  if (!id) {
+    return {
+      message: '',
+      error: 'errore aggiornamento veicolo'
+    }
+  }
+  const token = cookies().get("token")?.value;
+  if(!token) {  
+    redirect('/login');      
+  }
+  try {
+      const res = await fetch(`http://localhost:5000/api/veicoli/setVenduto`, {
+        method: 'PUT',
+        headers: {    
+          'Content-Type': 'application/json',   
+          Cookie: `token=${token}; `
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      console.log('risposta: ', res)
+
+      if (!res.ok) {
+        return {
+          message: '',
+          error: 'errore aggiornamento veicolo'
+        }
+      }
+
+      return await res.json();
+    
+    } catch (error) {
+      console.log('errore status: ', error)
+      return {
+        message: '',
+        error: 'errore aggiornamento veicolo'
+      }
+    }
 }
 
 

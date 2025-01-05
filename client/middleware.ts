@@ -13,7 +13,7 @@ const REFRESH_TOKEN_EXPIRY =  Number(process.env.REFRESH_TOKEN_EXPIRY) || 7 * 24
     const response = NextResponse.next();
 
 
-    if (request.nextUrl.pathname.startsWith('/admin/dashboard') && request.method === 'POST') {  //intercetto server action del ramo admin/dasboard
+    if (request.nextUrl.pathname.startsWith('/admin/dashboard')  && request.method === 'POST') {  //intercetto server action del ramo admin/dasboard
 
       console.log('beccata server action')
       
@@ -86,7 +86,7 @@ const REFRESH_TOKEN_EXPIRY =  Number(process.env.REFRESH_TOKEN_EXPIRY) || 7 * 24
     response.headers.set('X-Current-User', requestHeaders.get('X-Current-User') || '');
  
 
-    if(request.nextUrl.pathname==='/') {  //sperimentale
+    if(request.nextUrl.pathname==='/' || request.nextUrl.pathname.startsWith('/risultati')) {  //sperimentale
       return response       
     }
 
@@ -108,7 +108,7 @@ const REFRESH_TOKEN_EXPIRY =  Number(process.env.REFRESH_TOKEN_EXPIRY) || 7 * 24
   
    
   export const config = {
-    matcher: ['/', '/private/:path*', '/admin/dashboard/:path*', /* '/api/:path*' */],
+    matcher: ['/', '/risultati/:path*', '/private/:path*', '/admin/dashboard/:path*', /* '/api/:path*' */],
   }; 
 
 
