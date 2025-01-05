@@ -282,7 +282,7 @@ export const AddVeicoliForm = ({ data }: AddFormProps) => {
               defaultValue={undefined}
               control={control}
               render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select onValueChange={field.onChange} value={field.value} key={field.value || 'reset'}>
                     <SelectTrigger className={cn("text-base md:text-sm border-gray-300 focus:outline-none focus:ring-0 focus:border-indigo-500"  , !field.value && "text-muted-foreground"  )} >
                         <SelectValue placeholder="Alimentazione" /* className="placeholder:text-muted-foreground" */   />
                     </SelectTrigger>
@@ -415,6 +415,8 @@ export const AddVeicoliForm = ({ data }: AddFormProps) => {
               alt="Anteprima"             
               className="object-contain"
               fill
+              sizes="(max-width: 640px) 256px, 320px"
+              priority
             />
           </div>}
         </div>
