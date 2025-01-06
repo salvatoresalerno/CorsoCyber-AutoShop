@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
 import { User } from "@/lib/types";
+import { useState } from "react";
 
 type UserMenuProps = {
     user: User;
@@ -38,6 +39,8 @@ const UserMenu = ({user}: UserMenuProps) => {
     fetchAvatar();
   },[]) */
 
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+
     const router = useRouter();
 
     const logout = async () => {
@@ -45,9 +48,13 @@ const UserMenu = ({user}: UserMenuProps) => {
       
       router.refresh();
     };    
+
+    const handleClose = () => {
+      setIsOpen(false);
+    };
  
     return (<div className="flex items-center gap-4">
-        <DropdownMenu>
+        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
             <DropdownMenuTrigger className=" select-none outline-none rounded-full data-[state=open]:ring-4 data-[state=open]:ring-blueShop">                
                 {/* {avatarDataUrl && (
                     <Image 
@@ -66,7 +73,9 @@ const UserMenu = ({user}: UserMenuProps) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuLabel>{user.username}</DropdownMenuLabel>
-                <DropdownMenuItem ><Link className="w-full" href={'/private/profilo'} >Profilo</Link></DropdownMenuItem>
+                <DropdownMenuItem >
+                  <Link className="w-full" href={'/private/profilo'} onClick={handleClose}>Profilo</Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />                
                 <DropdownMenuItem className="cursor-pointer" onClick={logout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
