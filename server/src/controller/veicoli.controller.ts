@@ -231,7 +231,7 @@ export const setVenduto = async (req: Request, res: Response): Promise<void>  =>
     const id = req.body.id;
 
     try {
-        const query = `UPDATE veicoli SET stato = ? WHERE id=?`;
+        const query = `UPDATE veicoli SET stato = ? WHERE id = ?`;
             
         const values = [Stato.VENDUTO, id];
         await poolConnection.execute(query, values);
@@ -242,11 +242,35 @@ export const setVenduto = async (req: Request, res: Response): Promise<void>  =>
         }); 
 
     } catch (error) {
-        //console.log('errori: ', error);
+        console.log('errori: ', error);
         res.status(500).json({
             message: null,
             error: 'Errore durante aggiornamento stato veicolo.'
         });     
-    }  
+    } 
+}
 
+
+export const deleteVeicoloByID = async (req: Request, res: Response): Promise<void>  => {
+
+    const id = req.body.id;
+
+    try {
+        const query = `DELETE FROM veicoli WHERE id = ?`;
+            
+        const values = [id];
+        await poolConnection.execute(query, values);
+        
+        res.status(200).json({
+            message: "Veicolo cancellato con successo",
+            error: null
+        }); 
+
+    } catch (error) {
+        //console.log('errori: ', error);
+        res.status(500).json({
+            message: null,
+            error: 'Errore durante cancellazione veicolo.'
+        });     
+    }  
 }

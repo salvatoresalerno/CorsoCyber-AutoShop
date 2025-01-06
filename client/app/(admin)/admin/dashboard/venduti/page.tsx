@@ -22,6 +22,7 @@ export default async function InVendita() {
           <VeicoliTable 
               className="px-10 pb-10"
               veicoli={data}
+              stato={Stato.VENDUTO}
           />
 
       </FiltriProvider>

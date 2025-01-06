@@ -7,15 +7,17 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell,  } from 
 import { cn } from "@/lib/utils";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "./ui/select";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "./ui/pagination";
-import { Veicolo } from "@/lib/types";
+import { Stato, Veicolo } from "@/lib/types";
 import { Button } from "./ui/button";
 import { CiEdit } from "react-icons/ci";
 import { PiTrash } from "react-icons/pi";
 import { useRouter } from "next/navigation";
+import { deleteVeicoloByID } from "@/app/(admin)/admin/action";
 
 type VeicoliTableProps = {
     veicoli: Veicolo[] | null;
     className?: string;
+    stato: string;
 }
 
 const sortedIcon = (
@@ -25,7 +27,7 @@ const sortedIcon = (
     </svg>
 );
 
-const VeicoliTable = ({ veicoli, className }: VeicoliTableProps) => {
+const VeicoliTable = ({ veicoli, className, stato }: VeicoliTableProps) => {
 
     const router = useRouter();
 
@@ -34,6 +36,9 @@ const VeicoliTable = ({ veicoli, className }: VeicoliTableProps) => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+
+    const [errore, setErrore] = useState<string>('');
+    const [success, setSuccess] = useState<string>('');
 
     const { filtri } = useFiltriContext();
 
@@ -85,6 +90,8 @@ const VeicoliTable = ({ veicoli, className }: VeicoliTableProps) => {
         }
         setSortConfig({ key, direction });
     };
+
+    console.log('calcolo ')
 
     const totalVeicoli = veicoliFiltrati ? veicoliFiltrati.length : 0;
     const totalPages = Math.ceil(totalVeicoli / itemsPerPage);
@@ -138,12 +145,37 @@ const VeicoliTable = ({ veicoli, className }: VeicoliTableProps) => {
            router.push(`/admin/dashboard/veicolo/${veicolo.id}`);
         } else if (action === 'delete') { 
             console.log('canc. del veicolo: ', veicolo)
+            const { message, error } = await deleteVeicoloByID(veicolo.id ?? '');
+            console.log('pagin prima: ', veicoliFiltrati)
+            if (message){ //se tutto ok
+                setSuccess(message);
+                setVeicoliFiltrati(prevItems => {
+                    if (!prevItems) return [];
+                    const index = prevItems.findIndex(item => item.id === veicolo.id); //rimuovo dai dati già caricati per evitare chiamata a BE
+                    if (index !== -1) {
+                      prevItems.splice(index, 1);
+                    }
+                    return [...prevItems];
+                  });                
+            }
+            if (error) {
+                setErrore(error);
+            }
+            setTimeout(() => {
+                setErrore('');
+                setSuccess('');
+            }, 5000);
+
+            
         }
       };
     
     return (
         <div className={cn(className)}>
-            <div className="overflow-x-auto">
+            
+            <div className="overflow-x-auto relative">  
+                {errore && <span className="absolute text-red-500 ">{errore}</span>}
+                {success && <span className="absolute text-lime-500 ">{success}</span>}
                 <Table>        
                     <TableHeader className='text-[16px] border-b-2 [&_tr]:hover:bg-transparent dark:[&_tr]:hover:bg-transparent'>
                         <TableRow>
@@ -183,7 +215,7 @@ const VeicoliTable = ({ veicoli, className }: VeicoliTableProps) => {
                                     <span className="w-[18px] cursor-pointer" onClick={() => requestSort('prezzo')}>{sortedIcon}</span>
                                 </div>
                             </TableHead> 
-                            <TableHead ></TableHead>
+                            {stato === Stato.VENDESI && <TableHead ></TableHead>}
                         </TableRow>
                     </TableHeader> 
                     <TableBody>
@@ -197,7 +229,7 @@ const VeicoliTable = ({ veicoli, className }: VeicoliTableProps) => {
                                 <TableCell className="hidden sm:table-cell text-center">{veicolo.alimentazione}</TableCell>
                                 <TableCell className="hidden sm:table-cell text-center">{veicolo.kilometri}</TableCell>
                                 <TableCell className="sm:table-cell text-center">{veicolo.prezzo}</TableCell> 
-                                <TableCell>
+                                {stato === Stato.VENDESI && <TableCell>
                                     <div className="flex gap-3 justify-center">
                                         <Button 
                                             title='Modifica Veicolo'
@@ -216,7 +248,7 @@ const VeicoliTable = ({ veicoli, className }: VeicoliTableProps) => {
                                             <PiTrash className="h-4 w-4 xl:h-5 xl:w-5"/>
                                         </Button>                                        
                                     </div>
-                                </TableCell>                          
+                                </TableCell>}                          
                             </TableRow> 
                         ))}
                     </TableBody> 
