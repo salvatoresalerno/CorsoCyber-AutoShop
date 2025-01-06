@@ -83,6 +83,26 @@ export type DataResult = {
 
 export type DataFilterResult = DataResult & { suggerito: boolean;}
 
+export type Profilo = {
+    id: string;
+    email: string;
+    username: string;
+    nome: string;
+    cognome: string;
+    avatar: string;
+    cellulare: string;
+    telefono: string;
+    citta: string;
+    stato: string;
+    via: string;
+    cap: string;
+    provincia: string;    
+}
+
+export type UserDataResult = {
+    data: Profilo | null;
+    error: string | null;
+}
 
 
 

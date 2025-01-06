@@ -90,6 +90,10 @@ const config: Config = {
 		boxShadow: {
 			'bottom-only': '0 4px 6px -1px rgba(209, 213, 219, 1)',  
 		},
+		fontFamily: {
+			roboto: ['var(--font-roboto)', 'sans-serif'],
+			openSans: ['var(--font-open_sans)', 'sans-serif'],
+		},
 	
   	}
   },

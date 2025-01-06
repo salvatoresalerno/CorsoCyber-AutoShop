@@ -66,9 +66,9 @@ const UserMenu = ({user}: UserMenuProps) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuLabel>{user.username}</DropdownMenuLabel>
-                <DropdownMenuItem ><Link href={'/private/profilo'} >Profilo</Link></DropdownMenuItem>
+                <DropdownMenuItem ><Link className="w-full" href={'/private/profilo'} >Profilo</Link></DropdownMenuItem>
                 <DropdownMenuSeparator />                
-                <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer" onClick={logout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
         {user && <span className="font-medium md:hidden">{user.username}</span>}

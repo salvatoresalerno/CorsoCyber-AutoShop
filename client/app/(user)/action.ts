@@ -2,7 +2,7 @@
 'use server'
  
 import { SignupFormInputs } from "@/components/form-signup";
-import { DataFilterResult, FilterParams, ResponseResult } from "@/lib/types";
+import { DataFilterResult, FilterParams, Profilo, ResponseResult, UserDataResult } from "@/lib/types";
 import { cookies } from 'next/headers';
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
@@ -336,6 +336,40 @@ export async function setVeicoloVenduto(id: string): Promise<ResponseResult> {
         error: 'errore aggiornamento veicolo'
       }
     }
+}
+
+
+
+export async function getProfilo(username: string | undefined): Promise<UserDataResult> {
+
+  const token = cookies().get("token")?.value;
+  if(!token || !username) {  
+    redirect('/login');      
+  }
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/user/getProfilo/${username}`, {
+      method: 'GET',
+      headers: {       
+        Cookie: `token=${token}; `
+      },
+    });
+
+    const resultData = await res.json();
+
+    return {
+      data: resultData.data as Profilo,
+      error: resultData.error as string
+    }
+
+  
+  } catch (error) {
+    console.log('errore profilo: ', error)
+    return {
+      data: null,
+      error: 'errore recupero profilo'
+    }
+  }
 }
 
 

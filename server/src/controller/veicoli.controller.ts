@@ -2,7 +2,6 @@
 import { Request, Response, NextFunction } from  'express';
 import { poolConnection } from '../index';
 import { Stato, Veicolo, VeicoloParams } from '../types/types';
-import { RowDataPacket } from 'mysql2';
 
 
 export const getVeicoliStato = async (req: Request, res: Response): Promise<void>  => {

@@ -67,7 +67,23 @@ export type VeicoloParams = {
     anno: number;
     km: Range;
     prezzo: Range;
-  };
+};
+
+export type Profilo = {
+    id: string;
+    email: string;
+    username: string;
+    nome: string;
+    cognome: string;
+    avatar: string;
+    cellulare: string;
+    telefono: string;
+    citta: string;
+    stato: string;
+    via: string;
+    cap: string;
+    provincia: string;    
+}
 
 
 /* export type UserLogin = {
