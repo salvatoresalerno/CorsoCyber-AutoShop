@@ -79,7 +79,6 @@ export type Profilo = {
     cellulare: string;
     telefono: string;
     citta: string;
-    stato: string;
     via: string;
     cap: string;
     provincia: string;    
