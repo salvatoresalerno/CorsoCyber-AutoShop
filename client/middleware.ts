@@ -55,7 +55,6 @@ const REFRESH_TOKEN_EXPIRY =  Number(process.env.REFRESH_TOKEN_EXPIRY) || 7 * 24
 
     const res = await getCurrentUser(); 
     const { user, token, refreshToken } = await res.json();
-    console.log('ricevuto dati del GetUser')
     if (token) {
       response.cookies.set('token', token, {
         httpOnly: true,

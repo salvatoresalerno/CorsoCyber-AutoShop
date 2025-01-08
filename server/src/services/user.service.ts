@@ -33,7 +33,6 @@ export const findUserById = async (id:string): Promise<User | null> => {
                        WHERE u.id=?`        
         const values = [id]
         const [result] = await poolConnection.execute(query, values);
-
         
         return (result as User[])[0] ?? null;
     } catch (error) {

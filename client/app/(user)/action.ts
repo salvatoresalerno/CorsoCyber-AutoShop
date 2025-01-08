@@ -210,9 +210,9 @@ export async function getCurrentUser() {
     }, 
   });
 
+   
   if (res.status === 401) {
     const data = await res.json();
-
     const refreshToken = cookies().get("refreshToken")?.value;
       if(!refreshToken) {
         return NextResponse.json({

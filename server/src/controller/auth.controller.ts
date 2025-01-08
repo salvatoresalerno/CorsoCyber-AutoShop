@@ -184,7 +184,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 
     const user = await findUserById(payload.id);
 
-    if (!user) {         
+    if (!user) {       
         res.status(200).json({ 
             errors:  'Errore Imprevisto, riprovare più tardi',
             user: null

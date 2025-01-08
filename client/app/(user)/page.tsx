@@ -51,7 +51,7 @@ const MainUser = async () => {
     image: decodeEscapedHtml(item.image ? item.image : '')  
   })) : null;
   
-  console.log('veicoli data: ', data)
+  //console.log('veicoli data: ', data)
   
   function creaVetrina(length: number, count:number): number[] {  //ritorna un array di count elementi che sono gli indici per i veicoli della vetrina random
     const indici = new Set<number>();
