@@ -1,8 +1,9 @@
-import { FilterParams } from "@/lib/types";
+import { FilterParams, Veicolo } from "@/lib/types";
 import { getFilteredVeicoli } from "@/app/(user)/action";
 import ErrorComponent from "@/components/errorComponent";
 import CardComponent_V2 from "@/components/cardComponent_V2";
 import { headers } from "next/headers";
+import { decodeEscapedHtml } from "@/lib/utils";
 
 
 
@@ -23,7 +24,21 @@ export default async function RisultatiPage({ params }: { params: { slug: string
 
     const filtri: FilterParams = JSON.parse(decodeURIComponent(params.slug));
  
-    const {data, suggerito, error} = await getFilteredVeicoli(filtri);
+    const {data: veicoli, suggerito, error} = await getFilteredVeicoli(filtri);
+
+    const data: Veicolo[] | null = veicoli ? 
+        veicoli.map((item) => ({
+          id: item.id,  
+          brand: decodeEscapedHtml(item.brand),
+          modello: decodeEscapedHtml(item.modello),
+          tipo: item.tipo,
+          anno: item.anno,
+          kilometri: item.kilometri,
+          alimentazione: item.alimentazione,
+          prezzo: item.prezzo,
+          stato: item.stato,  
+          image: decodeEscapedHtml(item.image ? item.image : '')  
+        })) : null;
 
     if (suggerito) {
         titolo = 'La tua ricerca non ha prodotto risultati, ecco dei suggerimenti per te...';

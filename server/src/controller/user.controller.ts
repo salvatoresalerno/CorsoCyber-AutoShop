@@ -26,3 +26,29 @@ export const getProfilo = async (req: Request, res: Response): Promise<void>  =>
         });     
     }  
 }
+
+export const setProfilo = async (req: Request, res: Response) => {
+    try {
+  
+        const {id, nome, cognome, cellulare, telefono, citta, via, cap, provincia  } = req.body;
+  
+        const query = `UPDATE profiles SET 
+                nome = ?, cognome = ?, cellulare = ?, telefono = ?, citta = ?, via = ?, cap = ?, provincia = ?
+                WHERE id = ?`;
+                 
+        const values = [nome, cognome, cellulare, telefono, citta, via, cap, provincia, id];
+
+        await poolConnection.execute(query, values);       
+        
+        res.status(200).json({
+            error: null,
+            message: id ? 'Profilo aggiornato con successo' : 'Profilo aggiornato con successo'
+        });
+    } catch (error) {
+        console.error('Errore in aggiornamento profilo:', error);
+        res.status(500).json({
+            error: 'Errore imprevisto in aggiornamento profilo',
+            message: null
+        });
+    }
+};

@@ -73,6 +73,26 @@ export const formatDate = ({date, onlyDate = false, format = Format.SHORT, withD
   return `${formattedDate} ${formattedTime}`;
 };
 
+export function escapeHtml(unsafe: string): string {
+  return unsafe
+      .replace(/&/g, "&amp;")    // '&' --> '&amp;'
+      .replace(/</g, "&lt;")     // '<' --> '&lt;'
+      .replace(/>/g, "&gt;")     // '>' --> '&gt;'
+      .replace(/"/g, "&quot;")   // '"' --> '&quot;'
+      .replace(/'/g, "&#39;")
+      .replace(/\//g, "&#x2F;");   // "'" --> '&#39;'
+}
+
+export function decodeEscapedHtml(encodedString: string): string {
+  return encodedString
+    .replace(/&amp;/g, "&")      // '&amp;' --> '&'
+    .replace(/&lt;/g, "<")       // '&lt;' --> '<'
+    .replace(/&gt;/g, ">")       // '&gt;' --> '>'
+    .replace(/&quot;/g, '"')     // '&quot;' --> '"'
+    .replace(/&#39;/g, "'")      // '&#39;' --> "'"
+    .replace(/&#x2F;/g, "/");    // '&#x2F;' --> '/'
+} 
+
 
 
 

@@ -3,15 +3,17 @@
 
 import { Button } from "./ui/button";
 import { Spinner } from "./spinner";
-import { useRouter } from 'next/navigation';
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Profilo } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { CiEdit } from "react-icons/ci";
 import { useRef } from "react";
+import { ErrorValidationComponent } from "./ErrorValidationComponent";
+import { setProfilo } from "@/app/(user)/action";
+import { decodeEscapedHtml } from "@/lib/utils";
 
 type ProfileComponentProps = {
   profiloData: Profilo;
@@ -31,12 +33,16 @@ const profileSchema = z.object({   //schema validazione campi form
     .max(50, { message: "Nome deve essere max 50 caratteri" }),
   cellulare: z
     .string()
-    .trim()
-    .max(20, { message: "Cellulare deve essere max 20 caratteri" }),
+    .trim() 
+    .refine(val => val === "" || /^\d{1,3}(\/?\d{1,11})?$/.test(val), {
+      message: "Il numero deve contenere al massimo un '/' come separatore e deve avere da 10 a 14 cifre",
+    }),
   telefono: z
     .string()
     .trim()
-    .max(20, { message: "Telefono deve essere max 20 caratteri" }),
+    .refine(val => val === "" || /^\d{1,3}(\/?\d{1,11})?$/.test(val), {
+      message: "Il numero deve contenere al massimo un '/' come separatore e deve avere da 10 a 14 cifre",
+    }),
   citta: z
     .string()
     .trim()
@@ -48,8 +54,11 @@ const profileSchema = z.object({   //schema validazione campi form
   cap: z
     .string()
     .trim()
-    .max(5, { message: "CAP deve essere max 5 numeri" }),
-  provincia: z
+    .regex(
+      /^(\d{5})?$/,
+      "Il numero deve contenere al massimo un '/' come separatore e deve avere da 10 a 14 cifre"
+    ),
+  provincia: z    
     .string()
     .trim()
     .max(3, { message: "Provincia deve essere max 3 caratteri" }),
@@ -61,57 +70,73 @@ export type ProfileFormInputs = z.infer<typeof profileSchema>;
 export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
   const [editProfile, setEditProfile] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
 
-  const {register, handleSubmit, reset, formState: { errors } } = useForm<ProfileFormInputs>({
+  const {register, handleSubmit, reset, setValue, formState: { errors } } = useForm<ProfileFormInputs>({
     resolver: zodResolver(profileSchema),
     mode: "onChange",
+    defaultValues: {
+      id: "",
+      cognome: "",
+      nome: "",
+      via: "",
+      citta: "",
+      cap: "",
+      provincia: "",
+      telefono: "",
+      cellulare: "",
+    }
   });
 
-  const router = useRouter();
+   
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(()=>{
+    if(editProfile) {
+      setValue("id", profiloData.id);
+      setValue("nome", profiloData.nome);
+      setValue("cognome", profiloData.cognome);
+      setValue("via", profiloData.via);
+      setValue("citta", profiloData.citta);
+      setValue("cap", profiloData.cap);
+      setValue("provincia", profiloData.provincia);
+      setValue("telefono", profiloData.telefono);
+      setValue("cellulare", profiloData.cellulare);
+      setUsername(profiloData.username);
+      setEmail(profiloData.email);
+    } else {
+      reset();
+      setUsername('');
+      setEmail('');
+    }
+  }, [editProfile]);
 
   const onSubmit = async (formData: ProfileFormInputs) => {
     setLoading(true);        
     setErrorMessage("");
 
-    //inserire manualmente nel register id del profilo
+    const {message, error} = await setProfilo(formData);
 
-    
-    /* try {
-      const response = await fetch('http://localhost:5000/api/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email: formData.email, password: formData.password, role: ruolo }),
-      });
+    if (message) {
+      setSuccessMessage(message);
+    } else {
+      setErrorMessage(error);
+    }
 
-      const {message, errors} = await response.json();
       
-      if (errors) {
-        setErrorMessage(errors || 'Login Fallito');
-      } 
+    setLoading(false);
 
-       if (message && ruolo === Ruolo.USER) { //refresh componenti server per aggiornare layout dopo login (alternativa stato globale!)
-        router.push('/');
-        router.refresh();
-      } else if (message && ruolo === Ruolo.ADMIN) {
-        router.push('/admin/dashboard/in_vendita');
-        router.refresh();
-      }       
+    setTimeout(() => {  //--> dopo 5 sec. resetto error e succ  (aternativa al banner di notifica che scompare!)
+      setErrorMessage("");   
+      setSuccessMessage("");   
+    }, 5000);
+     
+
     
-    } catch (err: unknown) {  //errore impostato uguale per usare la var 'err' che se inutilizzata potrebbe dare problemi in produzione         
-      setErrorMessage(
-        err instanceof Error ? 'Login Fallito' : 'Login Fallito'
-      );
-    } finally {
-      setLoading(false);
-      reset();
-    } */
-
   }
 
   const handleAvatarClick = () => {
@@ -125,6 +150,8 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
       // Puoi aggiungere qui il codice per gestire il caricamento del file
     }
   };
+
+  
 
   return (
     <div className="flex justify-center gap-4 mt-14 p-10">
@@ -140,8 +167,9 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
               </label>
               <input
                   type="text"
-                  className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0 focus:border-indigo-500"
+                  className="text-gray-500 shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0 focus:border-indigo-500"
                   placeholder="Username"
+                  value={username}
                   disabled
               />
             </div>
@@ -153,12 +181,47 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
               </label>
               <input
                   type="text"
-                  className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0 focus:border-indigo-500"
+                  className="text-gray-500 shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0 focus:border-indigo-500"
                   placeholder="Email"
+                  value={email}
                   disabled
               /> 
             </div>
           </div>
+          <div className="flex gap-3 "> 
+            <div className="relative mb-4 w-1/2">
+              <label 
+                htmlFor="nome"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                  Nome
+              </label>
+              <input
+                  type="text"
+                  id="nome"
+                  className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0 focus:border-indigo-500"
+                  placeholder="Nome"
+                  {...register("nome")}
+              />              
+              <ErrorValidationComponent error={errors.nome?.message} />
+            </div>
+            <div className="relative mb-4 w-1/2">
+              <label 
+                htmlFor="cognome"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                  Cognome
+              </label>
+              <input
+                  type="text"
+                  id="cognome"
+                  className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0 focus:border-indigo-500"
+                  placeholder="Cognome"
+                  {...register("cognome")}
+              />              
+              <ErrorValidationComponent error={errors.cognome?.message} />
+            </div>       
+          </div>      
           <div className="flex gap-3 "> 
             <div className="relative mb-4 w-full">
               <label 
@@ -174,7 +237,8 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
                   placeholder="Indirizzo"
                   {...register("via")}
               />
-            </div>
+            </div>            
+            <ErrorValidationComponent error={errors.via?.message} />
           </div>
           <div className="flex gap-3 "> 
             <div className="relative mb-4 w-[60%]">
@@ -190,7 +254,8 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
                   className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0 focus:border-indigo-500"
                   placeholder="Citta"
                   {...register("citta")}
-              />
+              />              
+              <ErrorValidationComponent error={errors.citta?.message} />
             </div>
             <div className="relative mb-4 w-[20%]">
               <label 
@@ -205,7 +270,8 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
                   className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0 focus:border-indigo-500"
                   placeholder="CAP"
                   {...register("cap")}
-              />
+              />              
+              <ErrorValidationComponent error={errors.cap?.message} />
             </div>            
             <div className="relative mb-4 w-[20%]">
               <label 
@@ -220,7 +286,8 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
                   className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0 focus:border-indigo-500"
                   placeholder="Prov."
                   {...register("provincia")}
-              />
+              />              
+              <ErrorValidationComponent error={errors.provincia?.message} />
             </div>
           </div>
           <div className="flex gap-3 "> 
@@ -232,12 +299,13 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
                   Telefono
               </label>
               <input
-                  type="text"
+                  type="tel"
                   id="telefono"
                   className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0 focus:border-indigo-500"
                   placeholder="Telefono"
                   {...register("telefono")}
-              />
+              />              
+              <ErrorValidationComponent error={errors.telefono?.message} />
             </div>
             <div className="relative mb-4 w-1/2">
               <label 
@@ -252,7 +320,8 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
                   className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus-visible:ring-0 focus:border-indigo-500"
                   placeholder="Cellulare"
                   {...register("cellulare")}
-              />
+              />              
+              <ErrorValidationComponent error={errors.cellulare?.message} />
             </div>       
           </div>          
           <div className="flex justify-between items-center py-2 gap-2">
@@ -264,6 +333,7 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
             </Button>
             {loading && <Spinner />}   
             {errorMessage && <span className="text-red-500">{errorMessage}</span>} 
+            {successMessage && <span className="text-green-500 text-balance mt-2 ">{successMessage}</span>}
           </div>    
         </form>      
       </div>}  
@@ -273,8 +343,7 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
             <div className="absolute flex justify-center rounded-full -top-[72px] left-1/2 transform -translate-x-1/2 hover:cursor-pointer  group">
                 <Avatar className="w-36 h-36 ring-8 ring-[#f5f7f8]" onClick={handleAvatarClick}>
                     <AvatarImage src="https://thispersondoesnotexist.com" />
-                    <AvatarFallback>A</AvatarFallback>
-                    
+                    <AvatarFallback>A</AvatarFallback>                    
                 </Avatar>
                 <CiEdit className="absolute h-4 w-4 xl:h-5 xl:w-5  bottom-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <input
@@ -287,7 +356,7 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
             </div>
             <h2 className="text-3xl font-bold text-center">{profiloData.username}</h2>
             <p className="text-xl font-medium  text-center">{`${profiloData.nome} ${profiloData.cognome}`}</p>                
-            <p className="mt-10 text-xl font-normal text-center">{`${profiloData.via} - ${profiloData.cap} - ${profiloData.citta} (${profiloData.provincia})`}</p> 
+            <p className="mt-10 text-xl font-normal text-center">{`${profiloData.via} - ${profiloData.cap} - (${profiloData.provincia})`}</p> 
             <p className="mt-10 text-xl font-normal text-center">{`${profiloData.telefono} - ${profiloData.cellulare}`}</p>
           </div>
           <div className="text-end mt-5">

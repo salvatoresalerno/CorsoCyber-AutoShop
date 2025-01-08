@@ -2,6 +2,7 @@
 'use server'
  
 import { SignupFormInputs } from "@/components/form-signup";
+import { ProfileFormInputs } from "@/components/profileComponent";
 import { DataFilterResult, FilterParams, Profilo, ResponseResult, UserDataResult } from "@/lib/types";
 import { cookies } from 'next/headers';
 import { redirect } from "next/navigation";
@@ -370,6 +371,51 @@ export async function getProfilo(username: string | undefined): Promise<UserData
       error: 'errore recupero profilo'
     }
   }
+}
+
+export async function setProfilo(formData: ProfileFormInputs): Promise<ResponseResult> {
+  
+  const token = cookies().get("token")?.value;
+  if(!token) {  
+    redirect('/login');      
+  }
+
+  const id = formData.id;
+  const nome = formData.nome;
+  const cognome = formData.cognome;
+  const via = formData.via;
+  const citta = formData.citta;
+  const cap = formData.cap;
+  const provincia = formData.provincia;
+  const telefono = formData.telefono;
+  const cellulare = formData.cellulare;
+
+  try {
+      const res = await fetch('http://localhost:5000/api/user/setProfilo', {
+        method: 'PUT',
+        headers: {    
+          'Content-Type': 'application/json',   
+          Cookie: `token=${token}; `
+        },        
+        body: JSON.stringify({id, nome, cognome, via, citta, cap, provincia, telefono, cellulare}),
+      });
+
+      if (!res.ok) {        
+        return {
+          message: '',
+          error: 'errore aggiornamento profilo'
+        }
+      }
+
+      return await res.json();
+    
+    } catch (error) {
+      console.log('errore profilo: ', error)
+      return {
+        message: '',
+        error: 'errore aggiornamento profilo'
+      }
+    }
 }
 
 

@@ -20,7 +20,8 @@ import ContattiForm from "@/components/form-contatti";
 import CardComponent_V2 from "@/components/cardComponent_V2";
 import { headers } from "next/headers";
 import { getVeicoliStato } from "../action";
-import { Stato } from "@/lib/types";
+import { Stato, Veicolo } from "@/lib/types";
+import { decodeEscapedHtml } from "@/lib/utils";
 
 
 
@@ -34,8 +35,21 @@ const MainUser = async () => {
 
    
 
-  const { data } = await getVeicoliStato(Stato.VENDESI);  //veicoli usari (in Vendita) per vetrina random e per estrarre brand, modello, ecc nel cruscotto
-    
+  const { data: veicoli  } = await getVeicoliStato(Stato.VENDESI);  //veicoli usari (in Vendita) per vetrina random e per estrarre brand, modello, ecc nel cruscotto
+  
+  const data: Veicolo[] | null = veicoli ? 
+  veicoli.map((item) => ({
+    id: item.id,  
+    brand: decodeEscapedHtml(item.brand),
+    modello: decodeEscapedHtml(item.modello),
+    tipo: item.tipo,
+    anno: item.anno,
+    kilometri: item.kilometri,
+    alimentazione: item.alimentazione,
+    prezzo: item.prezzo,
+    stato: item.stato,  
+    image: decodeEscapedHtml(item.image ? item.image : '')  
+  })) : null;
   
   console.log('veicoli data: ', data)
   

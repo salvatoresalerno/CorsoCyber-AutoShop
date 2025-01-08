@@ -102,7 +102,7 @@ export async function getAuthenticate() {
       if (!refreshRes.ok) {
         return NextResponse.json({
           error: 'Impossibile rinnovareX',
-          token: 'xx',
+          token: '',
           refreshToken: null
         });
       }

@@ -32,7 +32,7 @@ export const signUp = async (req: Request, res: Response): Promise<void> => {
         const query = `INSERT INTO users (email, password, username) VALUES (?, ?, ?);`;
         
         const hashedPassword = await hashPassword(password); 
-        const values = [email, hashedPassword, username];   
+        const values = [email, hashedPassword, username];           
 
         await poolConnection.execute(query, values);
  
@@ -50,6 +50,7 @@ export const signUp = async (req: Request, res: Response): Promise<void> => {
     }    
 }
 
+ 
 
 
 

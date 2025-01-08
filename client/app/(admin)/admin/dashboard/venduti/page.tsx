@@ -3,7 +3,8 @@ import { getVeicoliStato } from "@/app/action";
 import AdminSearchBar from "@/components/admin-SearchBar";
 import { FiltriProvider } from "@/components/context/filtriContext";
 import VeicoliTable from "@/components/veicoliTable";
-import { Stato } from "@/lib/types";
+import { Stato, Veicolo } from "@/lib/types";
+import { decodeEscapedHtml } from "@/lib/utils";
 
 
 export default async function InVendita() {
@@ -11,7 +12,22 @@ export default async function InVendita() {
    
    
    
-  const { data } = await getVeicoliStato(Stato.VENDUTO);
+  const { data: veicoli } = await getVeicoliStato(Stato.VENDUTO);
+
+  const data: Veicolo[] | null = veicoli ? 
+      veicoli.map((item) => ({
+        id: item.id,  
+        brand: decodeEscapedHtml(item.brand),
+        modello: decodeEscapedHtml(item.modello),
+        tipo: item.tipo,
+        anno: item.anno,
+        kilometri: item.kilometri,
+        alimentazione: item.alimentazione,
+        prezzo: item.prezzo,
+        stato: item.stato,  
+        image: decodeEscapedHtml(item.image ? item.image : '')  
+      })) : null;
+
    
   return (
     <div className="h-auto">

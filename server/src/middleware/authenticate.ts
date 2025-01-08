@@ -4,7 +4,11 @@ import { verifyJWT } from '../services/jwt.service';
 import { CustomPayload } from '../@types/global';
 
 
-export const authenticate = async (req: Request, res: Response, next: NextFunction) : Promise<void>=> {    
+export const authenticate = async (req: Request, res: Response, next: NextFunction) : Promise<void>=> {   
+    
+    console.log('richiedente authenticate: ', req.originalUrl)
+    console.log('req.body in auth: ', req.body)
+    
 
     const token = req.cookies.token;
 

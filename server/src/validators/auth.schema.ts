@@ -18,8 +18,7 @@ export const signUpValidator = [
         .notEmpty().withMessage('Il campo non può essere vuoto')
         .isEmail().withMessage("Invalid email format")
         .normalizeEmail()    
-        .isLength({max: 255}).withMessage('La mail deve essere lunga max 255 caratteri'),
-        
+        .isLength({max: 255}).withMessage('La mail deve essere lunga max 255 caratteri'),        
     body("username")
         .trim()
         .notEmpty().withMessage('Il campo non può essere vuoto')
@@ -31,7 +30,7 @@ export const signUpValidator = [
         .isLength({ min: 8 }).withMessage('La password deve essere minimo 8 caratteri')
         .matches(/[A-Z]/).withMessage('La password deve contenere almeno una lettera maiuscola')
         .matches(/[0-9]/).withMessage('La password deve contenere almeno un numero')
-        .matches(/[$!%&=[\]#\-.\(\)]/).withMessage('La password deve contenere almeno un carattere speciale tra !$%&=[]#-.( )'),
+        .matches(/[$!%=[\]#\-.\(\)]/).withMessage('La password deve contenere almeno un carattere speciale tra !$%=[]#-.( )'),
     body("confirmPassword")
         .trim()
         .notEmpty().withMessage('Il campo non può essere vuoto')
@@ -57,7 +56,7 @@ export const signInValidator = [
         .isLength({ min: 8 }).withMessage('La password deve essere minimo 8 caratteri')
         .matches(/[A-Z]/).withMessage('La password deve contenere almeno una lettera maiuscola')
         .matches(/[0-9]/).withMessage('La password deve contenere almeno un numero')
-        .matches(/[$!%&=[\]#\-.\(\)]/).withMessage('La password deve contenere almeno un carattere speciale tra !$%&=[]#-.( )'),
+        .matches(/[$!%=[\]#\-.\(\)]/).withMessage('La password deve contenere almeno un carattere speciale tra !$%=[]#-.( )'),
      body("role")
         .isString()
         .trim()

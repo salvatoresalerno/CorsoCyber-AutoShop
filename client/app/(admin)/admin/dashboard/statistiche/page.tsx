@@ -4,6 +4,7 @@ import { ChartMarchi } from "@/components/chartMarchi";
 import { ChartVeicoli } from "@/components/chartVeicoli";
 import { PieChartVeicoli } from "@/components/pieChartVeicoli";
 import { Stato, TipoVeicolo, Veicolo } from "@/lib/types";
+import { decodeEscapedHtml } from "@/lib/utils";
 //import { Stato, TipoVeicolo, Veicolo } from "@/database/DB";
 
 
@@ -21,7 +22,21 @@ export default async function StatistichePage() {
 
   //const veicoli:Veicolo = [] //await getCachedVeicoli(); 
 
-  const { data } = await getVeicoliStato(Stato.TUTTI);
+  const { data: veicoli } = await getVeicoliStato(Stato.TUTTI);
+
+  const data: Veicolo[] | null = veicoli ? 
+    veicoli.map((item) => ({
+      id: item.id,  
+      brand: decodeEscapedHtml(item.brand),
+      modello: decodeEscapedHtml(item.modello),
+      tipo: item.tipo,
+      anno: item.anno,
+      kilometri: item.kilometri,
+      alimentazione: item.alimentazione,
+      prezzo: item.prezzo,
+      stato: item.stato,  
+      image: decodeEscapedHtml(item.image ? item.image : '')  
+    })) : null;
 
   const autoVendutePrezzoMax = data ? data
       .filter(veicolo => veicolo.tipo === TipoVeicolo.AUTO)

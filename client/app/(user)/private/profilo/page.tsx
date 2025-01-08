@@ -1,9 +1,10 @@
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { User } from "@/lib/types";
+ 
+ 
+import { Profilo, User } from "@/lib/types";
 import { headers } from "next/headers";
 import { getProfilo } from "../../action";
 import { ProfileComponent } from "@/components/profileComponent";
+import { decodeEscapedHtml } from "@/lib/utils";
  
 
 
@@ -16,13 +17,30 @@ export default async function ProfiloPage() {
 //creare action per recuperare dati del profilo da username di current user.
 
 const {data, error} = await getProfilo(currentUser?.username);
+//let profiloDataEscaped: Profilo | null = null;
+
+const profiloDataEscaped: Profilo | null = data ? 
+  {
+    id: data.id,
+    email: data.email,
+    username: data.username,
+    nome: decodeEscapedHtml(data.nome),
+    cognome: decodeEscapedHtml(data.cognome),
+    via: decodeEscapedHtml(data.via),
+    citta: decodeEscapedHtml(data.citta),
+    cap: decodeEscapedHtml(data.cap),
+    provincia: decodeEscapedHtml(data.provincia),
+    telefono: decodeEscapedHtml(data.telefono),
+    cellulare: decodeEscapedHtml(data.cellulare),  
+    avatar: data.avatar  
+} : null;
 
 console.log('profilo, error: ', data, error)
  
     return (
         <div className="container  mx-auto  select-none font-openSans">
-            {data && <ProfileComponent 
-                profiloData={data}
+            {profiloDataEscaped && <ProfileComponent 
+                profiloData={profiloDataEscaped}
             />}
             {/* <div className="w-1/3 bg-white p-4 rounded-xl">
                 <h2 className="font-light mb-2">Il mio profilo</h2>

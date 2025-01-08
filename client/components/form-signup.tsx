@@ -16,10 +16,12 @@ const signupSchema = z.object({   //schema validazione campi form
     username: z
         .string()
         .trim()
-        .min(1, { message: "Il campo non può essere vuoto" })
+        //.min(1, { message: "Il campo non può essere vuoto" })
+        .regex(/^[a-zA-Z0-9]+$/, { message: "L'username può contenere solo lettere e numeri" })
         .min(3, { message: "Username deve essere da 3 a 30 caratteri" })
-        .max(30, { message: "Username deve essere da 3 a 30 caratteri" })
-        .refine((val) => !val.includes("'"), {message: "carattere ' non permesso"}),
+        .max(30, { message: "Username deve essere da 3 a 30 caratteri" }),
+        
+        //.refine((val) => !val.includes("'"), {message: "carattere ' non permesso"}),
 
     email: z
         .string()
@@ -32,7 +34,7 @@ const signupSchema = z.object({   //schema validazione campi form
       .min(8, "La password deve essere minimo 8 caratteri")
       .regex(/[A-Z]/, "La password deve contenere almeno una lettera maiuscola")
       .regex(/\d/, "La password deve contenere almeno un numero")
-      .regex(/[$!%&=[\]#\-.\(\)]/, "La password deve contenere almeno un carattere speciale tra !$%&=[]#-.( )"),
+      .regex(/[$!%=[\]#\-.\(\)]/, "La password deve contenere almeno un carattere speciale tra !$%=[]#-.( )"),
     confirmPassword: z
         .string()
         .trim(),
