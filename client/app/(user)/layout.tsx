@@ -18,7 +18,7 @@ export default async function PublicLayout({
   const currentUserHeader = currentHeaders.get('X-Current-User');
   const currentUser = currentUserHeader ? JSON.parse(currentUserHeader) : null;
 
-   
+
 
   return (
     <main className="min-h-screen flex flex-col bg-[#f5f7f8]">  

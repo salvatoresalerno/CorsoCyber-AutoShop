@@ -13,7 +13,6 @@ import { CiEdit } from "react-icons/ci";
 import { useRef } from "react";
 import { ErrorValidationComponent } from "./ErrorValidationComponent";
 import { setProfilo } from "@/app/(user)/action";
-import { decodeEscapedHtml } from "@/lib/utils";
 
 type ProfileComponentProps = {
   profiloData: Profilo;
@@ -328,12 +327,13 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
             <Button type="submit" className={`px-3 bg-orange-400 hover:bg-orange-400/80  ${Object.keys(errors).length > 0 ? 'cursor-not-allowed' : ''}`}>
               Salva            
             </Button>
-            <Button type="button" variant="outline" className={'px-3 text-orange-400 border-orange-400 hover:bg-orange-400/80 hover:text-white'} onClick={()=>setEditProfile(false)}>
-              Annulla            
-            </Button>
             {loading && <Spinner />}   
             {errorMessage && <span className="text-red-500">{errorMessage}</span>} 
             {successMessage && <span className="text-green-500 text-balance mt-2 ">{successMessage}</span>}
+            <Button type="button" variant="outline" className={'px-3 text-orange-400 border-orange-400 hover:bg-orange-400/80 hover:text-white'} onClick={()=>setEditProfile(false)}>
+              Annulla            
+            </Button>
+            
           </div>    
         </form>      
       </div>}  

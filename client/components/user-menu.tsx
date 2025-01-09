@@ -52,6 +52,7 @@ const UserMenu = ({user}: UserMenuProps) => {
     const handleClose = () => {
       setIsOpen(false);
     };
+       
  
     return (<div className="flex items-center gap-4">
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
