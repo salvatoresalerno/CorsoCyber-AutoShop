@@ -7,14 +7,15 @@ import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
 import { User } from "@/lib/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type UserMenuProps = {
     user: User;
+    avatar: string | null;
 }
 
 
-const UserMenu = ({user}: UserMenuProps) => {
+const UserMenu = ({user, avatar}: UserMenuProps) => {
   /*
   da usare se non si usa il comp. Avatar. si chiama l'api route 'get-avatar' che recupera il blob dell'immagine 
   e lo passa al FileReader che lo rende disponibile come file immagine 
@@ -40,8 +41,16 @@ const UserMenu = ({user}: UserMenuProps) => {
   },[]) */
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [avatarImage, setAvatarImage] = useState<string | undefined>(undefined);
 
     const router = useRouter();
+
+    useEffect(()=>{
+
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';  
+      setAvatarImage(`${baseUrl}/uploads/${avatar}`);
+
+    },[avatar]);
 
     const logout = async () => {
       await logoutUserAction(user.id);  //non gestisco i messaggi di logout
@@ -67,8 +76,11 @@ const UserMenu = ({user}: UserMenuProps) => {
                     />
                 )} */}
                 <Avatar className="hover:ring-4 hover:ring-blueShop  ">
-                  <AvatarImage src="https://thispersondoesnotexist.com" />
-                  <AvatarFallback>A</AvatarFallback>
+                  <AvatarImage 
+                    //src="https://thispersondoesnotexist.com" 
+                    src={avatarImage}
+                  />
+                  <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
                 </Avatar>
 
             </DropdownMenuTrigger>

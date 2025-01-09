@@ -19,8 +19,8 @@ router.post('/getFilteredVeicoli', filteredVeicoliValidator, validateReq, getFil
 router.get('/brand', authenticate, getBrand);
 router.get('/brand_model', authenticate, getBrandAndModel);
 
-router.post('/addVeicolo', authenticate, parseFormData, addVeicoloValidator,   validateReq,  addVeicolo);
-router.put('/updVeicolo', authenticate, parseFormData, addVeicoloValidator,   validateReq,  addVeicolo);
+router.post('/addVeicolo', authenticate, parseFormData('veicoli'), addVeicoloValidator,   validateReq,  addVeicolo);
+router.put('/updVeicolo', authenticate, parseFormData('veicoli'), addVeicoloValidator,   validateReq,  addVeicolo);
 
 router.get('/getVeicolo/:id', authenticate, getVeicoloValidator,   validateReq,  getVeicoloByID);
 

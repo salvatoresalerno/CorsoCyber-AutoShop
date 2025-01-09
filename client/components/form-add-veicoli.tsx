@@ -115,7 +115,7 @@ export const AddVeicoliForm = ({ data }: AddFormProps) => {
       let imageUrl;
       if (data.image) { 
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';  
-        imageUrl = `${baseUrl}${data.image}`;
+        imageUrl = `${baseUrl}/uploads/${data.image}`;
       } else {
         imageUrl = undefined;
       }

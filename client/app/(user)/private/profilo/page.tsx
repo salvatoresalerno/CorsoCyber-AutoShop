@@ -22,15 +22,15 @@ export default async function ProfiloPage() {
         id: data.id,
         email: data.email,
         username: data.username,
-        nome: decodeEscapedHtml(data.nome),
-        cognome: decodeEscapedHtml(data.cognome),
-        via: decodeEscapedHtml(data.via),
-        citta: decodeEscapedHtml(data.citta),
-        cap: decodeEscapedHtml(data.cap),
-        provincia: decodeEscapedHtml(data.provincia),
-        telefono: decodeEscapedHtml(data.telefono),
-        cellulare: decodeEscapedHtml(data.cellulare),  
-        avatar: data.avatar  
+        nome: decodeEscapedHtml(data.nome ?? ''),
+        cognome: decodeEscapedHtml(data.cognome  ?? ''),
+        via: decodeEscapedHtml(data.via  ?? ''),
+        citta: decodeEscapedHtml(data.citta  ?? ''),
+        cap: decodeEscapedHtml(data.cap  ?? ''),
+        provincia: decodeEscapedHtml(data.provincia  ?? ''),
+        telefono: decodeEscapedHtml(data.telefono  ?? ''),
+        cellulare: decodeEscapedHtml(data.cellulare  ?? ''),  
+        image: data.image  
     } : null;
 
     if (error) {

@@ -26,6 +26,8 @@ export default async function RisultatiPage({ params }: { params: { slug: string
  
     const {data: veicoli, suggerito, error} = await getFilteredVeicoli(filtri);
 
+
+
     const data: Veicolo[] | null = veicoli ? 
         veicoli.map((item) => ({
           id: item.id,  
@@ -39,6 +41,8 @@ export default async function RisultatiPage({ params }: { params: { slug: string
           stato: item.stato,  
           image: decodeEscapedHtml(item.image ? item.image : '')  
         })) : null;
+
+        console.log('veicoli filtrati: ', data)
 
     if (suggerito) {
         titolo = 'La tua ricerca non ha prodotto risultati, ecco dei suggerimenti per te...';

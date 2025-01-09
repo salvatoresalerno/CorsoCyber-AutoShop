@@ -89,7 +89,7 @@ export type Profilo = {
     username: string;
     nome: string;
     cognome: string;
-    avatar: string;
+    image: string;
     cellulare: string;
     telefono: string;
     citta: string;

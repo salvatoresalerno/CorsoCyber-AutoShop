@@ -99,7 +99,7 @@ export async function uploadImageWithData(formData: FormData, id?: string) {
         },
       });
     } else {
-      response = await fetch('http://localhost:5000/api/veicoli/addVeicolo', {
+      response = await fetch('http://localhost:5000/api/veicoli/updVeicolo', {
         method: 'PUT',
         body: formData,
         headers: {       

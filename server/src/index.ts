@@ -13,7 +13,8 @@ import path from 'path';
 
  
 //export const UPLOAD_DIR = path.join(__dirname, 'uploads');  //dir per upload immagini veicoli 
-export const UPLOAD_DIR = path.join(__dirname, '../uploads');  //dir per upload immagini veicoli 
+export const UPLOAD_DIR_VEICOLI = path.join(__dirname, '../uploads/veicoli');  //dir per upload immagini veicoli 
+export const UPLOAD_DIR_AVATAR = path.join(__dirname, '../uploads/avatar');  //dir per upload avatar 
 
 
  
@@ -28,7 +29,8 @@ app.use(cookieParser());
 app.use(express.json());
 
 (async () => {  //crea se non esise la directory per upload
-  await fs.mkdir(UPLOAD_DIR, { recursive: true });
+  await fs.mkdir(UPLOAD_DIR_VEICOLI, { recursive: true });
+  await fs.mkdir(UPLOAD_DIR_AVATAR, { recursive: true });
 })();
 
  
@@ -37,6 +39,7 @@ app.use(
   cors({
       origin: 'http://localhost:3000', 
       credentials: true, 
+      //allowedHeaders: ['Content-Type']
   })
 );
 

@@ -3,7 +3,7 @@
 import { body, CustomValidator, param  } from "express-validator";
 import { Alimentazione, Stato, TipoVeicolo } from "../types/types";
 import formidable from 'formidable';
-import { UPLOAD_DIR } from "..";
+//import { UPLOAD_DIR } from "..";
 
 
 

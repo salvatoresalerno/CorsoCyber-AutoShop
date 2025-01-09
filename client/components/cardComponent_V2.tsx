@@ -24,6 +24,8 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
     const [src, setSrc] = useState<string>(veicolo.image);
     const [acquistato, setAcquistato] = useState<boolean>(false);
 
+   
+
     const handlerInviaMail = async () => {
         setLoading(true);
 
@@ -86,13 +88,16 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
                 <div className="relative w-[200px] h-[150px] mx-auto lg:mx-0 overflow-hidden border rounded-lg">
                     {/*L'img viene caricata cosi perchè non sono presenti le img per ogni veicolo, quindi quando non trovata carico il placheholder random in base al tipo di veicolo */}
                     <Image 
-                        src={'/veicoli/' + src}
+                        //src={`http://localhost:5000/uploads/veicoli/59d7cbc0d1f817da4d28b4700.jpg`}
+                        src={`http://localhost:5000/uploads/${src}`}
+                        //src={'http://localhost:5000' + src}
+                        //src={'/veicoli/' + src}
                         //src={'/veicoli/' + veicolo.urlImg}
                         alt={`${veicolo.brand} ${veicolo.modello} ${veicolo.anno}`}
                         fill
                         sizes="33vw"
                         priority
-                        onError={() => veicolo.tipo === TipoVeicolo.AUTO ? setSrc("auto" +  randomNumber() + ".jpg") : setSrc("moto" +  randomNumber() + ".jpg")}                        
+                        onError={() => veicolo.tipo === TipoVeicolo.AUTO ? setSrc("veicoli/auto" +  randomNumber() + ".jpg") : setSrc("veicoli/moto" +  randomNumber() + ".jpg")}                        
                     />
                 </div>
                 <div className="flex-1">

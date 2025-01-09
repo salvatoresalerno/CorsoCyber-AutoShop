@@ -20,6 +20,7 @@ const nextConfig = {
             hostname: 'localhost',  //dominio backend per preview image in upload form
             port: '5000',  
             pathname: '/uploads/**', // Consenti solo i percorsi relativi specifici
+            search: '',
           },
         ],
       },

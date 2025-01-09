@@ -12,10 +12,11 @@ import { User } from "@/lib/types";
 
 type NavBarProps = {
   user: User | null;
+  avatar: string | null;
 }
 
 
-export default function NavBarResponsive({user}:NavBarProps) {
+export default function NavBarResponsive({user, avatar}:NavBarProps) {
   return (
     <div className="w-full bg-white shadow shadow-gray-300  px-6 ">
       <div className=" container mx-auto flex items-center justify-between">
@@ -28,7 +29,7 @@ export default function NavBarResponsive({user}:NavBarProps) {
               <li className="text-blueShop font-semibold uppercase"><Link href="\#about">Chi siamo</Link></li>
               <li className="text-blueShop font-semibold uppercase"><Link href="\#vetrina">vetrina</Link></li>
               <li className="text-blueShop font-semibold uppercase"><Link href="\#contatti">Contatti</Link></li>                        
-              <li>{user ? (<UserMenu user={user}/>) :
+              <li>{user ? (<UserMenu user={user} avatar={avatar}/>) :
                   (
                   <Button variant="outline" className="border-blueShop  text-blueShop hover:bg-blueShop/80 hover:text-white " asChild>
                       <Link href="/login"> <FaRegUser className="w-5 h-5 text-inherit" /> Accedi</Link>
@@ -55,7 +56,7 @@ export default function NavBarResponsive({user}:NavBarProps) {
               <Link href="\#contatti" className="text-lg text-blueShop font-semibold uppercase hover:underline underline-offset-4">
                 Contatti
               </Link>
-              <div className="mt-5">{user ? (<UserMenu user={user}/>) :
+              <div className="mt-5">{user ? (<UserMenu user={user} avatar={avatar}/>) :
                   (
                   <Button variant="outline" className="border-blueShop  text-blueShop hover:bg-blueShop/80 hover:text-white " asChild>
                       <Link href="/login"> <FaRegUser className="w-5 h-5 text-inherit" /> Accedi</Link>                      

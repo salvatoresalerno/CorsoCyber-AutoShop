@@ -419,6 +419,75 @@ export async function setProfilo(formData: ProfileFormInputs): Promise<ResponseR
 }
 
 
+export async function uploadProfilo(formData: FormData) {
+
+  const token = cookies().get("token")?.value;
+  if(!token) {  
+    redirect('/admin');      
+  }
+
+  try {
+   
+      const response = await fetch('http://localhost:5000/api/user/updProfilo', {
+        method: 'PUT',
+        body: formData,
+        headers: {       
+          Cookie: `token=${token}; `
+        },
+      });
+     
+
+    const  result:ResponseResult = await response.json();
+
+    return result;
+
+     
+
+  } catch (error) {
+    console.error('Error in server action:', error);
+    return { 
+      message: "", 
+      error: error instanceof Error ? error.message : 'Errore sconosciuto' 
+    };
+  }
+}
+
+export async function geAvatar(username: string | undefined)/* : Promise<UserDataResult> */ {
+
+  const token = cookies().get("token")?.value;
+  if(!token || !username) {  
+    redirect('/login');      
+  }
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/user/getProfileImage/${username}`, {
+      method: 'GET',
+      headers: {       
+        Cookie: `token=${token}; `
+      },
+    });
+
+    const resultData = await res.json();
+
+    console.log('Avatar da get: ', resultData)
+
+     return {
+      data: resultData.data[0] as { image: string },
+      error: resultData.error  as string 
+    }  
+
+  
+  } catch (error) {
+    console.log('errore profilo: ', error)
+    return {
+      data: null,
+      error: 'errore recupero profilo'
+    }
+  }
+}
+
+
+
 
 
 

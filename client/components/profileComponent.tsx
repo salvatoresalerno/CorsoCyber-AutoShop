@@ -3,7 +3,7 @@
 
 import { Button } from "./ui/button";
 import { Spinner } from "./spinner";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -12,7 +12,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { CiEdit } from "react-icons/ci";
 import { useRef } from "react";
 import { ErrorValidationComponent } from "./ErrorValidationComponent";
-import { setProfilo } from "@/app/(user)/action";
+import { uploadProfilo } from "@/app/(user)/action";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 type ProfileComponentProps = {
   profiloData: Profilo;
@@ -61,6 +63,15 @@ const profileSchema = z.object({   //schema validazione campi form
     .string()
     .trim()
     .max(3, { message: "Provincia deve essere max 3 caratteri" }),
+  image: z
+    .instanceof(File, { message: 'Il file deve essere un\'immagine' })  
+    .refine((file) => file.type.startsWith('image/'), {
+      message: 'Il file deve essere un\'immagine',
+    })
+    .refine((file) => file.size <= 5 * 1024 * 1024, { // 5MB
+      message: 'Il file deve essere più piccolo di 5MB',
+    })
+    .optional(),
 });
 
 export type ProfileFormInputs = z.infer<typeof profileSchema>; 
@@ -73,8 +84,9 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
   const [editProfile, setEditProfile] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [avatarImage, setAvatarImage] = useState<string | undefined>(undefined);
 
-  const {register, handleSubmit, reset, setValue, formState: { errors } } = useForm<ProfileFormInputs>({
+  const {register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ProfileFormInputs>({
     resolver: zodResolver(profileSchema),
     mode: "onChange",
     defaultValues: {
@@ -87,14 +99,26 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
       provincia: "",
       telefono: "",
       cellulare: "",
+      image: undefined
     }
   });
 
+  const router = useRouter();
    
+  const fileInputRef = useRef<HTMLInputElement | null>(null) as React.MutableRefObject<HTMLInputElement | null>;
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  //const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(()=>{
+    let avatarUrl;
+    if (profiloData.image) { 
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';  
+      avatarUrl = `${baseUrl}/uploads/${profiloData.image}`;
+      console.log('avatar URL: ', avatarUrl)
+    } else {
+      avatarUrl = undefined;
+    }
+    setAvatarImage(avatarUrl);
     if(editProfile) {
       setValue("id", profiloData.id);
       setValue("nome", profiloData.nome);
@@ -107,18 +131,49 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
       setValue("cellulare", profiloData.cellulare);
       setUsername(profiloData.username);
       setEmail(profiloData.email);
+      //setAvatarImage(avatarUrl);
     } else {
       reset();
       setUsername('');
       setEmail('');
     }
-  }, [editProfile]);
+  }, [editProfile, profiloData, setValue, reset]);
+
+  
 
   const onSubmit = async (formData: ProfileFormInputs) => {
     setLoading(true);        
     setErrorMessage("");
 
-    const {message, error} = await setProfilo(formData);
+    console.log('dati form: ', formData)
+
+    const data = new FormData();
+    data.append('id', formData.id);
+    data.append('cognome', formData.cognome);
+    data.append('nome', formData.nome);
+    data.append('cellulare', formData.cellulare);
+    data.append('telefono', formData.telefono);
+    data.append('citta', formData.citta);
+    data.append('via', formData.via);
+    data.append('cap', formData.cap);
+    data.append('provincia', formData.provincia);
+
+    if (formData.image){  //immagine selezionata
+      data.append('image', formData.image);  
+    } else if (!formData.image && avatarImage) {  //avatar non selezionato, già presente 
+      data.append('image', profiloData?.image ?? '');
+    } else {  //nessun file selezionato, nessun avatar trovato e da salvare
+      data.append('image', '');
+    }
+
+
+
+
+
+   
+
+    //const {message, error} = await setProfilo(formData);
+    const {message, error} = await uploadProfilo(data);
 
     if (message) {
       setSuccessMessage(message);
@@ -126,6 +181,8 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
       setErrorMessage(error);
     }
 
+    //ricaricare pagina per visualizzare nuova img di profilo
+    router.refresh();
       
     setLoading(false);
 
@@ -138,17 +195,34 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
     
   }
 
+  console.log('avatar image: ', avatarImage)
+
   const handleAvatarClick = () => {
-    fileInputRef.current?.click();  
+    //fileInputRef.current?.click();  
+    if (editProfile) {
+      fileInputRef.current?.click();
+    }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePreview = (file: File | undefined) => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setAvatarImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setAvatarImage(undefined);
+    }
+  };
+
+ /*  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       console.log("File selezionato:", file);
       // Puoi aggiungere qui il codice per gestire il caricamento del file
     }
-  };
+  }; */
 
   
 
@@ -337,32 +411,56 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
           </div>    
         </form>      
       </div>}  
-      <div className="w-1/3 flex justify-center">                
-        <div className="relative flex flex-col justify-between bg-white rounded-xl pt-24 p-4">
+      <div className="w-1/3 flex justify-center ">                
+        <div className="relative flex flex-col justify-between bg-white rounded-xl pt-24 p-4 min-w-80">
           <div>
-            <div className="absolute flex justify-center rounded-full -top-[72px] left-1/2 transform -translate-x-1/2 hover:cursor-pointer  group">
+            <div className={cn(`absolute flex justify-center rounded-full -top-[72px] left-1/2 transform -translate-x-1/2 `, editProfile && "hover:cursor-pointer  group")}>
                 <Avatar className="w-36 h-36 ring-8 ring-[#f5f7f8]" onClick={handleAvatarClick}>
-                    <AvatarImage src="https://thispersondoesnotexist.com" />
-                    <AvatarFallback>A</AvatarFallback>                    
+                    <AvatarImage 
+                      //src="https://thispersondoesnotexist.com" 
+                      src={avatarImage} 
+                    />
+                    <AvatarFallback className="border">{profiloData.username[0].toUpperCase()}</AvatarFallback>                    
                 </Avatar>
-                <CiEdit className="absolute h-4 w-4 xl:h-5 xl:w-5  bottom-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <input
+                {editProfile && <CiEdit className="absolute h-4 w-4 xl:h-5 xl:w-5  bottom-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />}
+                <Controller
+                  name="image"
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      type="file"
+                      ref={(e) => {
+                        fileInputRef.current = e; // Permette di usare il ref anche per il click
+                        field.ref(e);
+                      }}
+                      onChange={(e) => {
+                        field.onChange(e.target.files?.[0]); // Imposta il file su React Hook Form
+                        handlePreview(e.target.files?.[0]);
+                        //setAvatarImage(e.target.files?.[0].)
+                        //setValue("avatar", e.target.files?.[0]); // Aggiorna lo stato manualmente
+                      }}
+                      accept=".jpeg,.jpg,.png,.webp"
+                      className="hidden"
+                    />
+                  )}
+                />
+                {/* <input
                   type="file"
                   ref={fileInputRef}
                   onChange={handleFileChange}
                   accept=".jpeg,.jpg,.png,.webp"
                   className="hidden"  
-                />
+                /> */}
             </div>
             <h2 className="text-3xl font-bold text-center">{profiloData.username}</h2>
             <p className="text-xl font-medium  text-center">{`${profiloData.nome} ${profiloData.cognome}`}</p>                
-            <p className="mt-10 text-xl font-normal text-center">{`${profiloData.via} - ${profiloData.cap} - (${profiloData.provincia})`}</p> 
-            <p className="mt-10 text-xl font-normal text-center">{`${profiloData.telefono} - ${profiloData.cellulare}`}</p>
+            <p className="mt-10 text-xl font-normal text-center">{`${profiloData.via}   ${profiloData.cap ? ' - ' + profiloData.cap : ''} ${profiloData.provincia ? '- (' + profiloData.provincia + ')' : ''}`}</p> 
+            <p className="mt-10 text-xl font-normal text-center">{`${profiloData.telefono} ${!profiloData.telefono || !profiloData.cellulare ? '' : ' - '} ${profiloData.cellulare}`}</p>
           </div>
           <div className="text-end mt-5">
-            <Button className="space-x-2 bg-orange-400 hover:bg-orange-400/80" onClick={()=>setEditProfile(true)}>
+            {!editProfile && <Button className="space-x-2 bg-orange-400 hover:bg-orange-400/80" onClick={()=>setEditProfile(true)}>
                 <span>Edit Profile</span>
-            </Button>   
+            </Button>}   
           </div>                 
         </div>                     
       </div>

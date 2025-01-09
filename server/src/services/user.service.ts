@@ -30,7 +30,8 @@ export const findUserById = async (id:string): Promise<User | null> => {
         const query = `SELECT u.id, u.username, u.email, r.role 
                        FROM users u 
                        JOIN user_roles r ON u.id = r.user_id
-                       WHERE u.id=?`        
+                       WHERE u.id=?`     
+              
         const values = [id]
         const [result] = await poolConnection.execute(query, values);
         
