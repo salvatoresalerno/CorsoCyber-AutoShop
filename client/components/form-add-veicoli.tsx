@@ -190,13 +190,13 @@ export const AddVeicoliForm = ({ data }: AddFormProps) => {
       setErrorMessage(error);
     }
 
-    reset()
+    reset();
+    setPreview(undefined);
     setLoading(false);
 
     setTimeout(() => {  //--> dopo 5 sec. resetto error e succ e preview (aternativa al banner di notifica che scompare!)
       setErrorMessage("");   
-      setSuccessMessage("")    
-      setPreview(undefined);   
+      setSuccessMessage("");
     }, 5000); 
   }
 

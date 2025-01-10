@@ -35,7 +35,8 @@ export default async function InVendita() {
       <div className="h-auto">
         <h1 className="text-3xl font-bold uppercase text-center my-4">Veicoli in vendita</h1>
         <FiltriProvider> 
-            <AdminSearchBar veicoli={data ? data : []}/>
+            <AdminSearchBar veicoli={veicoliDataEscaped ? veicoliDataEscaped : []}/>
+            {/*  <AdminSearchBar veicoli={data ? data : []}/>*/}
             <hr className="my-5"/>
             <VeicoliTable 
                 className="px-10 pb-10"
