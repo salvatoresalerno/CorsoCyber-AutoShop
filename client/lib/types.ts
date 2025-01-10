@@ -42,6 +42,12 @@ export type User = {
     role: string;
 }
 
+export type ExtendedUser = User & {
+    created_at: Date;
+    last_sign_in_at: Date;
+    banned: boolean;
+}
+
 export type UserResult = {
     user: User | null;
     error: string | null;

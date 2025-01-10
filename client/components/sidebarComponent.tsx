@@ -11,7 +11,7 @@ import {
     SidebarMenuItem,
     SidebarSeparator,
   } from "@/components/ui/sidebar"
-import { AddCar, SalesCar, SoldCar, Statistiche } from "./icone_mie"
+import { AddCar, SalesCar, SoldCar, Statistiche, Utenti } from "./icone_mie"
 import SidebarLogoutButton from "./logoutButton"
 
 
@@ -35,6 +35,11 @@ import SidebarLogoutButton from "./logoutButton"
       title: "Statistiche",
       url: "/admin/dashboard/statistiche",
       icon: Statistiche,
+    },
+    {
+      title: "Utenti",
+      url: "/admin/dashboard/utenti",
+      icon: Utenti,
     },
     
   ]

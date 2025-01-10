@@ -3,7 +3,7 @@
 
 
  
-import { ResponseResult, Veicolo } from "@/lib/types";
+import { ExtendedUser, ResponseResult, Veicolo } from "@/lib/types";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -201,6 +201,38 @@ export async function deleteVeicoloByID(id: string): Promise<ResponseResult> {
         error: 'errore cancellazione veicolo'
       }
     }
+}
+
+export async function loadUserList() {
+  const token = cookies().get("token")?.value;
+  if(!token) {  
+    redirect('/admin');      
+  }
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/admin/getUsers`, {
+      method: 'GET',
+      headers: {       
+        Cookie: `token=${token}; `
+      },
+    });
+
+    const resultData = await res.json()
+//console.log('resultData: ', resultData)
+
+    return {
+      data: resultData.data as ExtendedUser[],
+      error: resultData.error as string
+    }
+
+  
+  } catch (error) {
+    console.log('errore status: ', error)
+    return {
+      data: null,
+      error: 'errore recupero lista Utenti'
+    }
+  }
 }
 
 /*

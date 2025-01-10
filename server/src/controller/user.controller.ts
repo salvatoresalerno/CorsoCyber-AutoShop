@@ -1,5 +1,5 @@
 
-import { Request, Response, NextFunction } from  'express';
+import { Request, Response } from  'express';
 import { poolConnection } from '../index';
 import { Profilo } from '../types/types';
 

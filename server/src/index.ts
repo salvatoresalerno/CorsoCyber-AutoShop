@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routers/auth.routes';
 import veicoliRoutes from './routers/veicoli.routes';
 import userRoutes from './routers/user.routes';
+import adminRoutes from './routers/admin.routes';
 import cors from 'cors'; 
 import fs from 'fs/promises';
 import path from 'path'; 
@@ -61,7 +62,8 @@ export const poolConnection: Pool = mysql.createPool(poolConfig);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/veicoli", veicoliRoutes);
-app.use("/api/user", userRoutes)
+app.use("/api/user", userRoutes);
+app.use("/api/admin", adminRoutes);
 
  
 
