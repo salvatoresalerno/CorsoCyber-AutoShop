@@ -146,6 +146,7 @@ export const getVeicoloValidator = [
       .isUUID()
       .withMessage('Formato parametro non valido.')
 ];
+
 export const getVeicoloValidatorBody = [
   body("id")      
       .trim()

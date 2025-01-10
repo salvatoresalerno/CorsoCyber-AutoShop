@@ -2,7 +2,7 @@
 import { Request, Response } from  'express';
 import { poolConnection } from '../index';
 import bcrypt from 'bcrypt';
-import { findUserById, findUserForLogin } from '../services/user.service';
+import { findUserById, findUserForLogin, SetLoginDate } from '../services/user.service';
 import { addRefreshToken, generateRefreshToken, generateToken, getRefreshToken } from '../services/jwt.service';
 import { Ruolo } from '../types/types';
 import dotenv from "dotenv"; 
@@ -68,6 +68,7 @@ export const signInUser = async (req: Request, res: Response) => {
         });          
         return;         
     }
+
     if (user && user.length === 0) {        
         res.status(200).json({ 
             errors:  'Credenziali Errate',
@@ -84,6 +85,8 @@ export const signInUser = async (req: Request, res: Response) => {
         }); 
         return   
     }
+
+     
     
     const isValid = await verifyPassword(password, user[0].password);
 
@@ -94,6 +97,16 @@ export const signInUser = async (req: Request, res: Response) => {
         });
         return;         
     }
+
+    if (user[0].banned) {
+        res.status(200).json({ 
+            errors:  'Utente Bannato',
+            message: null
+        });         
+        return;
+    }
+     
+    await SetLoginDate(email);  //imposta data/ora di login
     
     const refreshToken = generateRefreshToken();
     const refreshTokenExpired = new Date(Date.now() + REFRESH_TOKEN_EXPIRY);    

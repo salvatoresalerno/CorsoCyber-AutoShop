@@ -235,6 +235,46 @@ export async function loadUserList() {
   }
 }
 
+export async function setBanned(id: string, banned:number): Promise<ResponseResult> {
+  
+  const token = cookies().get("token")?.value;
+  if(!token) {  
+    redirect('/login');      
+  }
+  try {
+      const res = await fetch(`http://localhost:5000/api/admin/setBanned`, {
+        method: 'PUT',
+        headers: {    
+          'Content-Type': 'application/json',   
+          Cookie: `token=${token}; `
+        },
+        body: JSON.stringify({ id, banned }),
+      });
+
+     
+
+      if (!res.ok) {
+        return {
+          message: '',
+          error: 'errore aggiornamento stato Ban'
+        }
+      }
+
+      return await res.json();
+    
+    } catch (error) {
+      console.log('errore status: ', error)
+      return {
+        message: '',
+        error: 'errore aggiornamento veicolo'
+      }
+    }
+}
+
+ 
+
+
+
 /*
 export async function updateNewsClick(id: string): Promise<void> {
    

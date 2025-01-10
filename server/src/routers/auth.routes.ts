@@ -15,7 +15,9 @@ router.post('/getCurrentUser', authenticate, getCurrentUser);
 
 router.post('/refresh', refresh); //vedere se autenticare route
 
-router.post('/getAuth', authenticate, getAuth)
+router.post('/getAuth', authenticate, getAuth);
+
+
 
 
 router.post('/logout', logOutValidator, validateReq, logout);

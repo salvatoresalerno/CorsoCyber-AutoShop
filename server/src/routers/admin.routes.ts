@@ -2,8 +2,8 @@
 import { Router } from "express";
 import { validateReq } from "../middleware/validateRequest";
 import { authenticate } from "../middleware/authenticate";
-import { usernameValidator } from "../validators/user.schema";
-import { getUsers } from "../controller/admin.controller";
+import { bannedValidatorBody } from "../validators/user.schema";
+import { getUsers, setBanned } from "../controller/admin.controller";
 
 
 const router: Router = Router();
@@ -11,6 +11,8 @@ const router: Router = Router();
 
 
 router.get('/getUsers', authenticate,  getUsers);
+
+router.put('/setBanned', authenticate, bannedValidatorBody, validateReq, setBanned);
 
 
 

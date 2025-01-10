@@ -32,10 +32,10 @@ type FormatDateProps = {
   onlyDate?: boolean;
   format?: Format;
   withDay?: boolean;
+  dateTimeSeparator?: string;
 }
 //formattazione data
-export const formatDate = (date: Date, onlyDate: boolean = false, format:string = Format.SHORT, withDay:boolean = false): string => {
-
+export const formatDate = ({date, onlyDate = false, format = Format.SHORT, withDay=false, dateTimeSeparator = ' '}:FormatDateProps): string => {
   let dateFormatter;
 
   if (format === Format.LONG) {
@@ -53,28 +53,6 @@ export const formatDate = (date: Date, onlyDate: boolean = false, format:string 
       year: 'numeric',
     });
   }
-/* export const formatDate = ({date, onlyDate = false, format = Format.SHORT, withDay=false}:FormatDateProps): string => {
-
-  let dateFormatter;
-
-  if (format === Format.LONG) {
-    dateFormatter = new Intl.DateTimeFormat('it-IT', {
-      weekday: withDay ? 'long' : undefined,
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric',
-    });
-  } else {
-    dateFormatter = new Intl.DateTimeFormat('it-IT', {
-      weekday: withDay ? 'short' : undefined,
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-  } */
-  
-    
- 
   
   const timeFormatter = new Intl.DateTimeFormat('it-IT', {
       hour: '2-digit',
@@ -90,7 +68,7 @@ export const formatDate = (date: Date, onlyDate: boolean = false, format:string 
       return formattedDate;
   }
   
-  return `${formattedDate} ${formattedTime}`;
+  return `${formattedDate} ${dateTimeSeparator} ${formattedTime}`;
 };
 
 export function escapeHtml(unsafe: string): string {

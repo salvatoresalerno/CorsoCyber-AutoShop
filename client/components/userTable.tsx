@@ -1,19 +1,21 @@
 'use client'
 
 
-import { useFiltriContext } from "./context/filtriContext";
+ 
 import { useEffect, useState } from "react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell,  } from "./ui/table";
 import { cn, formatDate,  } from "@/lib/utils";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "./ui/select";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "./ui/pagination";
-import { ExtendedUser, Ruolo, Stato, Veicolo } from "@/lib/types";
+import { ExtendedUser, Ruolo } from "@/lib/types";
 import { Button } from "./ui/button";
 import { CiEdit } from "react-icons/ci";
 import { PiTrash } from "react-icons/pi";
 import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch"
-import { deleteVeicoloByID } from "@/app/(admin)/admin/action";
+import { setBanned } from "@/app/(admin)/admin/action";
+import { z } from "zod";
+import AddAdminDialog from "./addAdminDialog";
 
 type UserTableProps = {
     utenti: ExtendedUser[] | null,
@@ -41,6 +43,8 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo}: UserTableP
 
     const [errore, setErrore] = useState<string>('');
     const [success, setSuccess] = useState<string>('');
+
+    const [isOpen, setIsOpen] = useState<boolean>(false); //per dialog addAdmin
 
      
 
@@ -162,11 +166,15 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo}: UserTableP
         return pageNumbers;
     };
 
+    //const openDialog = () => setIsOpen(true);
+
     const handleButtonClick = (utente: ExtendedUser, action: 'update' | 'delete') => async (event: React.MouseEvent) => {
         event.preventDefault();
         event.stopPropagation();
 
         console.log('utente cliccato: ', utente)
+
+        setIsOpen(true); //apre dialog
         
         /* if (action === 'update') {
            console.log('update del veicolo: ', veicolo)
@@ -198,12 +206,50 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo}: UserTableP
         }*/
     };
 
-    //formatDate(utente.created_at)
+    const closeDialog = () => setIsOpen(false);
+
+    const handleChangeBanned = async (id: string, checked: boolean) => {
+        console.log('utente ban: ', id,  checked)
+        //chiamo action per setBanned, prima valido:
+        const paramsValidator = z.object({
+            id: z
+                .string()
+                .uuid(),
+            checked: z
+                .boolean()
+                .transform((val) => (val ? 1 : 0)),
+        });
+
+        const data = {
+            id,
+            checked
+        }
+        try {
+            const isValid = paramsValidator.parse(data);
+            console.log('IsValid: ', isValid)
+            if (isValid) {
+                //chiamare action
+                const { message, error } = await setBanned(isValid.id, isValid.checked)
+                setErrore(error);
+                setSuccess(message);
+                setTimeout(() => {
+                    setErrore('');
+                    setSuccess('');
+                }, 5000);
+            }
+        } catch (error) {
+            setErrore(error instanceof z.ZodError ? 'Errore Ban Utente, riprovare più tardi.' : 'Errore Imprevisto.')
+        }         
+   }
     
     return (
-        <div className={cn(className)}>
-            
+        <div className={cn(className)}>            
             <div className="overflow-x-auto relative">  
+                <AddAdminDialog 
+                    isOpen={isOpen} 
+                    onClose={closeDialog}
+                     
+                />  
                 {errore && <span className="absolute text-red-500 ">{errore}</span>}
                 {success && <span className="absolute text-lime-500 ">{success}</span>}
                 <Table>        
@@ -247,12 +293,12 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo}: UserTableP
                             <TableRow key={index}>
                                 <TableCell className="text-center">{utente.username}</TableCell>
                                 <TableCell className="text-center">{utente.email}</TableCell>
-                                <TableCell className="text-center">{formatDate(new Date(utente.created_at), true )}</TableCell>
-                                <TableCell className="hidden sm:table-cell text-center">{formatDate(new Date(utente.last_sign_in_at), true)}</TableCell>
+                                <TableCell className="text-center">{formatDate({date: new Date(utente.created_at), dateTimeSeparator: '-'} )}</TableCell>
+                                <TableCell className="hidden sm:table-cell text-center">{utente.last_sign_in_at ? formatDate({date: new Date(utente.last_sign_in_at), dateTimeSeparator: '-'}) : '-'}</TableCell>
                                 <TableCell className="hidden sm:table-cell text-center">
                                     <Switch
+                                        onCheckedChange={(checked: boolean) => handleChangeBanned(utente.id, checked)}                                         
                                         checked={utente.banned}
-                                        //onCheckedChange={field.onChange}
                                     />    
                                 </TableCell>
                                 {ruolo === Ruolo.ADMIN && <TableCell>

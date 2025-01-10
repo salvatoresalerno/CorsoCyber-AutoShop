@@ -10,6 +10,16 @@ export const usernameValidator = [
         .escape(),    
 ];
 
+export const bannedValidatorBody = [
+    body("id")      
+        .trim()
+        .isUUID()
+        .withMessage('Formato parametro non valido.'),
+    body("banned")
+        .isIn([0, 1])
+        .withMessage('Il campo Banned deve essere 0 (false) o 1 (true).'),
+];
+
 
 
 export const profiloValidator = [   
