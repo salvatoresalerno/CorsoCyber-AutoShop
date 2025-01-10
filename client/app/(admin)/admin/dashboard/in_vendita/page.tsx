@@ -2,6 +2,7 @@
 import { getVeicoliStato } from "@/app/action";
 import AdminSearchBar from "@/components/admin-SearchBar";
 import { FiltriProvider } from "@/components/context/filtriContext";
+import ErrorComponent from "@/components/errorComponent";
 import VeicoliTable from "@/components/veicoliTable";
 import { Stato, Veicolo } from "@/lib/types";
 import { decodeEscapedHtml } from "@/lib/utils";
@@ -13,7 +14,7 @@ import { decodeEscapedHtml } from "@/lib/utils";
 export default async function InVendita() {
 
  
-  const { data } = await getVeicoliStato(Stato.VENDESI);   
+  const { data, error } = await getVeicoliStato(Stato.VENDESI);   
 
   const veicoliDataEscaped: Veicolo[] | null = data ? 
   data.map((item) => ({
@@ -28,6 +29,10 @@ export default async function InVendita() {
       stato: item.stato,  
       image: decodeEscapedHtml(item.image ? item.image : '')  
     })) : null;
+
+    if (error) {
+      return (<ErrorComponent/>);
+    }
    
 
    

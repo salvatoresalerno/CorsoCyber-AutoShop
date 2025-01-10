@@ -34,7 +34,7 @@ type FormatDateProps = {
   withDay?: boolean;
 }
 //formattazione data
-export const formatDate = ({date, onlyDate = false, format = Format.SHORT, withDay=false}:FormatDateProps): string => {
+export const formatDate = (date: Date, onlyDate: boolean = false, format:string = Format.SHORT, withDay:boolean = false): string => {
 
   let dateFormatter;
 
@@ -53,7 +53,27 @@ export const formatDate = ({date, onlyDate = false, format = Format.SHORT, withD
       year: 'numeric',
     });
   }
+/* export const formatDate = ({date, onlyDate = false, format = Format.SHORT, withDay=false}:FormatDateProps): string => {
+
+  let dateFormatter;
+
+  if (format === Format.LONG) {
+    dateFormatter = new Intl.DateTimeFormat('it-IT', {
+      weekday: withDay ? 'long' : undefined,
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    });
+  } else {
+    dateFormatter = new Intl.DateTimeFormat('it-IT', {
+      weekday: withDay ? 'short' : undefined,
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  } */
   
+    
  
   
   const timeFormatter = new Intl.DateTimeFormat('it-IT', {
