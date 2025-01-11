@@ -40,6 +40,11 @@ export const signUpValidator = [
             }
             return true;
         }),
+    body("ruolo")
+        .isString()
+        .trim()
+        .notEmpty().withMessage('Il campo non può essere vuoto')
+        .isIn(Object.values(Ruolo)), 
   ];
 
 
@@ -71,4 +76,16 @@ export const signInValidator = [
       .exists().withMessage('refresh token è richiesto')
       .isString().withMessage('refresh token deve essere una stringa')
       .notEmpty().withMessage('refresh token non puo essere vuoto'),
+  ];
+
+  export const changeRoleValidator = [
+    /* body("id")      
+        .trim()
+        .isUUID()
+        .withMessage('Formato parametro non valido.'), */
+    body("username")      
+        .trim()
+        .notEmpty().withMessage('Il campo non può essere vuoto')
+        .isLength({ min: 3, max: 30 }).withMessage("Username deve essere da 3 a 30 caratteri")
+        .escape(),
   ];

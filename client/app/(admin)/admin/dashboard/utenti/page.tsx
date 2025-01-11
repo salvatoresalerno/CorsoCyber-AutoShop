@@ -1,13 +1,19 @@
 import ErrorComponent from "@/components/errorComponent";
 import { loadUserList } from "../../action";
 import UserTable from "@/components/userTable";
-import { Ruolo } from "@/lib/types";
+import { Ruolo, User } from "@/lib/types";
+import { headers } from "next/headers";
 
 
 
 
 
 export default async function GestioneUtenti() {
+
+    //recupero User esistente in headers
+    const currentHeaders = headers();
+    const currentAdminHeader = currentHeaders.get('X-Current-User');
+    const currentAdmin: User = currentAdminHeader ? JSON.parse(currentAdminHeader) : null;
 
     const { data, error } = await loadUserList();
 
@@ -30,6 +36,7 @@ export default async function GestioneUtenti() {
                     className="px-10 pb-10"
                     utenti={data}
                     ruolo={Ruolo.ADMIN}
+                    currentAdminRole={currentAdmin.role}  //ruolo dell'utente connesso (ADMIN o SUPERADMIN)
                 />
             </div>
             <hr className="my-5"/>
@@ -38,7 +45,8 @@ export default async function GestioneUtenti() {
                 <UserTable
                     className="px-10 pb-10"
                     utenti={data}
-                    ruolo={Ruolo.USER}
+                    ruolo={Ruolo.USER}    
+                    currentAdminRole={currentAdmin.role}  //ruolo dell'utente connesso (ADMIN o SUPERADMIN)                
                 />
             </div>
         </div>

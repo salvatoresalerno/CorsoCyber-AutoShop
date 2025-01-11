@@ -156,7 +156,7 @@ const VeicoliTable = ({ veicoli, className, stato }: VeicoliTableProps) => {
                       prevItems.splice(index, 1);
                     }
                     return [...prevItems];
-                  });                
+                });                
             }
             if (error) {
                 setErrore(error);

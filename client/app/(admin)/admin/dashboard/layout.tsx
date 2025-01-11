@@ -21,9 +21,9 @@ export default function PublicLayout({
 
 
     //recupero User eventualmente esistente in headers
-      const currentHeaders = headers();
-      const currentAdminHeader = currentHeaders.get('X-Current-User');
-      const currentAdmin = currentAdminHeader ? JSON.parse(currentAdminHeader) : null;
+    const currentHeaders = headers();
+    const currentAdminHeader = currentHeaders.get('X-Current-User');
+    const currentAdmin = currentAdminHeader ? JSON.parse(currentAdminHeader) : null;
     
     
     

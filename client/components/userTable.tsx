@@ -16,10 +16,12 @@ import { Switch } from "@/components/ui/switch"
 import { setBanned } from "@/app/(admin)/admin/action";
 import { z } from "zod";
 import AddAdminDialog from "./addAdminDialog";
+import { IoMdAddCircleOutline } from "react-icons/io";
 
 type UserTableProps = {
     utenti: ExtendedUser[] | null,
     ruolo: string;
+    currentAdminRole: string;
     className?: string;
 }
 
@@ -30,7 +32,7 @@ const sortedIcon = (
     </svg>
 );
 
-const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo}: UserTableProps) => {
+const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo, currentAdminRole}: UserTableProps) => {
 
     const router = useRouter();
 
@@ -44,6 +46,7 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo}: UserTableP
     const [errore, setErrore] = useState<string>('');
     const [success, setSuccess] = useState<string>('');
 
+    const [selectedAdmin, setSelectedAdmin] = useState<ExtendedUser | null>(null); //per dialog addAdmin
     const [isOpen, setIsOpen] = useState<boolean>(false); //per dialog addAdmin
 
      
@@ -51,7 +54,12 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo}: UserTableP
     //ricevuti i filtri, filtro i veicoli in base ai filtri ricevuti
     useEffect(() => {
         if (utenti && ruolo) {
-            let viewUsers = utenti.filter(user => user.role === ruolo);
+            let viewUsers: ExtendedUser[] = []; 
+            if (ruolo === Ruolo.USER) {
+                viewUsers = utenti.filter(user => user.role === ruolo);
+            } else if (ruolo === Ruolo.ADMIN) {
+                viewUsers = utenti.filter(user => user.role === ruolo || user.role === Ruolo.SUPERADMIN);
+            }
 
             if (sortConfig !== null) {  //ordinamento di default --> modello
                 if (viewUsers) {
@@ -120,9 +128,7 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo}: UserTableP
           direction = 'descending';
         }
         setSortConfig({ key, direction });
-    };
-
-    console.log('calcolo ')
+    };     
 
     const totalUsers = utentiFiltrati ? utentiFiltrati.length : 0;
     const totalPages = Math.ceil(totalUsers / itemsPerPage);
@@ -172,9 +178,18 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo}: UserTableP
         event.preventDefault();
         event.stopPropagation();
 
-        console.log('utente cliccato: ', utente)
+        //console.log('utente cliccato: ', utente)
 
-        setIsOpen(true); //apre dialog
+        if (action === 'update') {
+            /* setSelectedUser(utente);
+            setIsOpen(true); //apre dialog */
+            openDialog(utente)
+        } else if (action === 'delete') {
+            console.log('utente cliccato da cancellare: ', utente)
+        }
+
+
+        
         
         /* if (action === 'update') {
            console.log('update del veicolo: ', veicolo)
@@ -206,7 +221,15 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo}: UserTableP
         }*/
     };
 
-    const closeDialog = () => setIsOpen(false);
+    const openDialog = (user: ExtendedUser | null) => {
+        setSelectedAdmin(user);  
+        setIsOpen(true); // Apre la dialog
+    };
+    
+    const closeDialog = () => {
+    setIsOpen(false); // Chiude la dialog
+    setSelectedAdmin(null);  
+    };
 
     const handleChangeBanned = async (id: string, checked: boolean) => {
         console.log('utente ban: ', id,  checked)
@@ -229,7 +252,19 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo}: UserTableP
             console.log('IsValid: ', isValid)
             if (isValid) {
                 //chiamare action
-                const { message, error } = await setBanned(isValid.id, isValid.checked)
+                const { message, error } = await setBanned(isValid.id, isValid.checked);
+                if (message){ //modifica slvata correttamente
+                    //cambio nell'array utente lo stato banned senza ricaricare i dati
+                    setUtentiFiltrati(prevItems => {
+                        if (!prevItems) return [];
+                        const index = prevItems.findIndex(utente => utente.id === isValid.id); //trovo index dell'utente da modificare
+                        if (index !== -1) {
+                          //prevItems.splice(index, 1);
+                          prevItems[index] = { ...prevItems[index], banned: isValid.checked };
+                        }
+                        return [...prevItems];
+                    });                     
+                }
                 setErrore(error);
                 setSuccess(message);
                 setTimeout(() => {
@@ -240,15 +275,27 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo}: UserTableP
         } catch (error) {
             setErrore(error instanceof z.ZodError ? 'Errore Ban Utente, riprovare più tardi.' : 'Errore Imprevisto.')
         }         
-   }
+    }
+
+    const handleAddButton = () => {
+        openDialog(null)
+    }
     
     return (
         <div className={cn(className)}>            
-            <div className="overflow-x-auto relative">  
+            <div className="overflow-x-auto relative ">  
+                {currentAdminRole === Ruolo.SUPERADMIN && ruolo === Ruolo.ADMIN && <Button
+                    variant="outline" 
+                    className="absolute right-1 top-0 flex items-center justify-center p-1 w-9 h-9  rounded-full z-10 border-blueShop  text-blueShop hover:bg-blueShop/80 hover:text-white"
+                    title="Aggiungi ADMIN"
+                    onClick={handleAddButton}
+                >
+                   <IoMdAddCircleOutline />
+                </Button>}
                 <AddAdminDialog 
                     isOpen={isOpen} 
                     onClose={closeDialog}
-                     
+                    admin={selectedAdmin}
                 />  
                 {errore && <span className="absolute text-red-500 ">{errore}</span>}
                 {success && <span className="absolute text-lime-500 ">{success}</span>}
@@ -267,58 +314,58 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo}: UserTableP
                                     <span className="w-[18px] cursor-pointer" onClick={() => requestSort('email')}>{sortedIcon}</span>
                                 </div>
                             </TableHead>
-                            <TableHead className="whitespace-nowrap font-bold">
+                            <TableHead className="whitespace-nowrap font-bold hidden sm:table-cell">
                                 <div className="flex items-center justify-center gap-2">
                                     <span>Data Creazione</span>
                                     <span className="w-[18px] cursor-pointer" onClick={() => requestSort('created_at')}>{sortedIcon}</span>
                                 </div>
                             </TableHead>
-                            <TableHead className="whitespace-nowrap font-bold hidden sm:table-cell">
+                            <TableHead className="whitespace-nowrap font-bold">
                                 <div className="flex items-center justify-center gap-2">
                                     <span>Ultimo Login</span>
                                     <span className="w-[18px] cursor-pointer" onClick={() => requestSort('last_sign_in_at')}>{sortedIcon}</span>
                                 </div>
                             </TableHead>
-                            <TableHead className="whitespace-nowrap font-bold hidden sm:table-cell">
+                            {currentAdminRole === Ruolo.SUPERADMIN && <TableHead className="whitespace-nowrap font-bold">
                                 <div className="flex items-center justify-center gap-2">
                                  <span>{ruolo === Ruolo.USER ? 'Banned' : 'Sospeso'}</span>                                    
                                 </div>
-                            </TableHead>                          
-                           
-                            {ruolo === Ruolo.ADMIN && <TableHead ></TableHead>}
+                            </TableHead>}      
+                            {currentAdminRole === Ruolo.SUPERADMIN && <TableHead ></TableHead>}
                         </TableRow>
                     </TableHeader> 
                     <TableBody>
                         {paginatedUsers && paginatedUsers.map((utente, index) => (
-                            <TableRow key={index}>
+                            <TableRow key={index} className={cn(utente.role === Ruolo.SUPERADMIN && "font-bold")}>
                                 <TableCell className="text-center">{utente.username}</TableCell>
                                 <TableCell className="text-center">{utente.email}</TableCell>
-                                <TableCell className="text-center">{formatDate({date: new Date(utente.created_at), dateTimeSeparator: '-'} )}</TableCell>
-                                <TableCell className="hidden sm:table-cell text-center">{utente.last_sign_in_at ? formatDate({date: new Date(utente.last_sign_in_at), dateTimeSeparator: '-'}) : '-'}</TableCell>
-                                <TableCell className="hidden sm:table-cell text-center">
-                                    <Switch
+                                <TableCell className="hidden sm:table-cell text-center">{formatDate({date: new Date(utente.created_at), dateTimeSeparator: '-'} )}</TableCell>
+                                <TableCell className="text-center">{utente.last_sign_in_at ? formatDate({date: new Date(utente.last_sign_in_at), dateTimeSeparator: '-'}) : '-'}</TableCell>
+                                {currentAdminRole === Ruolo.SUPERADMIN && <TableCell className="text-center">
+                                    {utente.role !== Ruolo.SUPERADMIN && <Switch
                                         onCheckedChange={(checked: boolean) => handleChangeBanned(utente.id, checked)}                                         
-                                        checked={utente.banned}
-                                    />    
-                                </TableCell>
-                                {ruolo === Ruolo.ADMIN && <TableCell>
+                                        checked={utente.banned === 1 ? true : false}
+                                        className="data-[state=checked]:bg-red-500"
+                                    />}    
+                                </TableCell>}
+                                {currentAdminRole === Ruolo.SUPERADMIN && utente.role !== Ruolo.USER && <TableCell>
                                     <div className="flex gap-3 justify-center">
                                         <Button 
-                                            title='Modifica Veicolo'
+                                            title='Modifica Admin'
                                             size='sm' 
                                             className="bg-transparent text-blueShop hover:bg-blueShop/80 hover:text-white p-1  xl:flex xl:items-center xl:justify-center xl:p-2"
                                             onClick={handleButtonClick(utente, 'update')}                                            
                                         >
                                             <CiEdit className="h-4 w-4 xl:h-5 xl:w-5"/>
                                         </Button>
-                                        <Button 
-                                            title='Cancella Veicolo'
+                                        {utente.role !== Ruolo.SUPERADMIN && <Button 
+                                            title='Cancella Admin'
                                             size='sm' 
                                             className="bg-transparent text-red-400 hover:bg-red-400 hover:text-white p-1 xl:flex xl:items-center xl:justify-center xl:p-2"
                                             onClick={handleButtonClick(utente, 'delete')}
                                         >
                                             <PiTrash className="h-4 w-4 xl:h-5 xl:w-5"/>
-                                        </Button>                                        
+                                        </Button>}                                        
                                     </div>
                                 </TableCell>}                                                         
                             </TableRow> 

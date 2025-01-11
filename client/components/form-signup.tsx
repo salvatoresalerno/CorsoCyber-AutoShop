@@ -10,6 +10,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ErrorValidationComponent } from "./ErrorValidationComponent";
 import Link from "next/link";
+import { Ruolo } from "@/lib/types";
+import { useRouter } from 'next/navigation';
+//import { changeRole } from "@/app/(admin)/admin/action";
 
 
 const signupSchema = z.object({   //schema validazione campi form
@@ -45,8 +48,12 @@ const signupSchema = z.object({   //schema validazione campi form
 
 export type SignupFormInputs = z.infer<typeof signupSchema>; 
 
+type SignUpFormProps = {
+    ruolo: string;
+  }
 
-export const SignUpForm = () => {   
+
+export const SignUpForm = ({ruolo}: SignUpFormProps) => {   
 
     const [loading, setLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
@@ -57,12 +64,36 @@ export const SignUpForm = () => {
         mode: "onChange",
     });
 
+    const router = useRouter();
+
     const onSubmit = async (data: SignupFormInputs) => {
         setLoading(true);
         setMessage("");
         setErrorMessage("");
+
+        let message: string = '';
+        let error: string = '';
+
+        //const {message, error} = await SignUpAction(data);
+        if (ruolo === Ruolo.USER) {
+            const res = await SignUpAction(data);
+            message = res.message;
+            error = res.error;
+        } else if (ruolo === Ruolo.ADMIN) {
+            console.log('salvo come ADMIN')
+            const res = await SignUpAction(data, Ruolo.ADMIN);             
+            error = res.error;
+            message = res.message;
+            router.refresh();
+            /* if (res.message) { //se utente creato con successo (USER), cambio il ruolo --> ADMIN
+                console.log('Cambio ruolo')
+                //chiamo action passando username --> l'endpoint ricercherà username per recuperare id e cambiare ruolo
+                const res = await changeRole(data.username);
+                message = res.message;
+                error = res.error;
+            } */
+        }
         
-        const {message, error} = await SignUpAction(data);
 
         if (error) {
             setErrorMessage(error);    
@@ -155,7 +186,7 @@ export const SignUpForm = () => {
                 {message && 
                     <div className="flex flex-col leading-none">
                         <span className="text-lime-500">{message}</span>
-                        <Link href={'\login'} className="text-gray-500 hover:text-gray-700">Vai al login</Link>
+                        {ruolo === Ruolo.USER && <Link href={'\login'} className="text-gray-500 hover:text-gray-700">Vai al login</Link>}
                     </div>
                 }
                 {errorMessage && <span className="text-red-500">{errorMessage}</span>}

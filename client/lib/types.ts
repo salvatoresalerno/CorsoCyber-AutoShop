@@ -32,7 +32,8 @@ export type ResponseResult = {
 
 export enum Ruolo {
     USER = "USER",
-    ADMIN = "ADMIN"
+    ADMIN = "ADMIN",
+    SUPERADMIN = "SUPERADMIN"
 }
 
 export type User = {
@@ -45,7 +46,7 @@ export type User = {
 export type ExtendedUser = User & {
     created_at: Date;
     last_sign_in_at: Date;
-    banned: boolean;
+    banned: number;
 }
 
 export type UserResult = {

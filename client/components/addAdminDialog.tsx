@@ -2,35 +2,40 @@
 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog"
 import { Button } from "./ui/button";
+import { ExtendedUser, Ruolo } from "@/lib/types";
+import { SignUpForm } from "./form-signup";
 
 interface AddAdminDialogProps {
     isOpen: boolean;
     onClose: () => void;
-
+    admin: ExtendedUser | null;
   }
 
-const AddAdminDialog = ({ isOpen, onClose }:AddAdminDialogProps) => {
+const AddAdminDialog = ({ isOpen, onClose, admin }:AddAdminDialogProps) => {
      
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogTrigger asChild>
+            {/* <DialogTrigger asChild>
                 <Button variant="outline">Edit Profile</Button>
-            </DialogTrigger>
+            </DialogTrigger> */}
             <DialogContent className="sm:max-w-[425px]" onEscapeKeyDown={(e) => e.preventDefault()} onPointerDownOutside={(e) => e.preventDefault()} >
                 <DialogHeader>
-                    <DialogTitle>Edit profile</DialogTitle>
+                    <DialogTitle>{!admin ? 'Creazione Nuovo Admin' : 'Modifica Admin'}</DialogTitle> 
                     <DialogDescription>
-                        Make changes to your profile here. Click save when you're done.
-                    </DialogDescription>
+                        {!admin ? 'Creazione nuovo Amministratore con ruolo ADMIN.' : 'Modifica Amministratore con ruolo ADMIN.'}
+                    </DialogDescription>                   
                 </DialogHeader>
-                    <div>AWEEE</div>
-                <DialogFooter>
-                    <Button type="submit">Save changes</Button>
-                </DialogFooter>
+
+                <SignUpForm ruolo={Ruolo.ADMIN}/>
+                
             </DialogContent>
         </Dialog>
     )
 }
 
 export default AddAdminDialog;
+
+
+
+

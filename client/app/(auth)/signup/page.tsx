@@ -3,6 +3,7 @@ import logoImage from '@/public/logo.png'
 import Link from "next/link";
 
 import { SignUpForm } from "@/components/form-signup";
+import { Ruolo } from "@/lib/types";
 
 export default async function LoginPage() {
     
@@ -18,7 +19,7 @@ export default async function LoginPage() {
                     <h1 className="text-2xl font-bold text-center mb-4 pb-4">
                         registrati ad Auto-Shop.it
                     </h1>
-                    <SignUpForm/>
+                    <SignUpForm ruolo={Ruolo.USER}/>
                 </div>
             </div>
         </div>

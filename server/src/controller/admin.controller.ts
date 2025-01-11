@@ -1,7 +1,8 @@
 import { Request, Response } from  'express';
 
 import { poolConnection } from '../index';
-import { User } from '../types/types';
+import { Ruolo, User } from '../types/types';
+import { findUserForChangeRole } from '../services/user.service';
 
 type ExtendedUser = User & {
     created_at: Date;
@@ -60,3 +61,43 @@ export const setBanned = async (req: Request, res: Response): Promise<void>  => 
         });     
     } 
 }
+
+
+/* export const changeRole = async (req: Request, res: Response): Promise<void>  => {
+
+    const { username } = req.body;
+
+    try {
+
+        const id = await findUserForChangeRole(username);
+
+        console.log('ID per admin: ', id)
+
+        if (id === null) {         
+            res.status(200).json({ 
+                errors:  'Errore Imprevisto, riprovare più tardi',
+                message: null
+            });          
+            return;         
+        }
+
+        const query = "UPDATE user_roles SET role = ? WHERE user_id = ?;";
+            
+        const values = [Ruolo.ADMIN, id];
+        const [rows] = await poolConnection.execute(query, values);
+        console.log('Connected to database: ', rows);
+        res.status(200).json({
+            message: "Ruolo aggiornato con successo",
+            error: null
+        }); 
+
+        //console.log('res dopo update role: ', res)
+
+    } catch (error) {
+        console.log('errori: ', error);
+        res.status(500).json({
+            message: null,
+            error: 'Errore durante aggiornamento Ruolo.'
+        });     
+    } 
+} */

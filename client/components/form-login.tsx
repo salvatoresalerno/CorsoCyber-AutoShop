@@ -67,7 +67,7 @@ export const LoginForm = ({ruolo}: FormLoginProps) => {
       if (message && ruolo === Ruolo.USER) { //refresh componenti server per aggiornare layout dopo login (alternativa stato globale!)
         router.push('/');
         router.refresh();
-      } else if (message && ruolo === Ruolo.ADMIN) {
+      } else if (message && (ruolo === Ruolo.ADMIN || ruolo === Ruolo.SUPERADMIN)) {
         router.push('/admin/dashboard/in_vendita');
         router.refresh();
       }        

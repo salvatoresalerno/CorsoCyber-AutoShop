@@ -14,7 +14,8 @@ export type UserRefresh = {
 
 export enum Ruolo {
     USER = "USER",
-    ADMIN = "ADMIN"
+    ADMIN = "ADMIN",
+    SUPERADMIN = "SUPERADMIN"
 }
 
 //export type GetUser = Omit<User, "password">

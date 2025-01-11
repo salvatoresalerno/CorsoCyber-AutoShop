@@ -10,8 +10,8 @@ import { logoutAdminAction } from '@/app/(admin)/admin/action';
 export default function SidebarLogoutButton() {
   
     const handleLogout = async () => {
-    await logoutAdminAction();
-  };  
+      await logoutAdminAction();
+    };  
 
   return (
     <SidebarMenuButton asChild >

@@ -113,7 +113,7 @@ export async function logoutUserAction(id: string) {
 
 
 
-export const SignUpAction = async (formData: SignupFormInputs): Promise<ResponseResult> => {
+export const SignUpAction = async (formData: SignupFormInputs, ruolo: string | null = null): Promise<ResponseResult> => {
 
   const username = formData.username;
   const email = formData.email;
@@ -126,7 +126,7 @@ export const SignUpAction = async (formData: SignupFormInputs): Promise<Response
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, email, password, confirmPassword }),
+      body: JSON.stringify({ username, email, password, confirmPassword, ruolo }),
     });
 
     const  result:ResponseResult = await response.json();

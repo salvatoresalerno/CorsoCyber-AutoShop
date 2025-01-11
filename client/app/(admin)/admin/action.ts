@@ -271,6 +271,43 @@ export async function setBanned(id: string, banned:number): Promise<ResponseResu
     }
 }
 
+
+/* export async function changeRole(username: string): Promise<ResponseResult> {
+  
+  const token = cookies().get("token")?.value;
+  if(!token) {  
+    redirect('/login');      
+  }
+  try {
+      const res = await fetch(`http://localhost:5000/api/admin/changeRole`, {
+        method: 'PUT',
+        headers: {    
+          'Content-Type': 'application/json',   
+          Cookie: `token=${token}; `
+        },
+        body: JSON.stringify({ username }),
+      });
+
+     
+
+      if (!res.ok) {
+        return {
+          message: '',
+          error: 'errore aggiornamento ruolo'
+        }
+      }
+
+      return await res.json();
+    
+    } catch (error) {
+      console.log('errore status: ', error)
+      return {
+        message: '',
+        error: 'errore aggiornamento ruolo'
+      }
+    }
+}
+ */
  
 
 

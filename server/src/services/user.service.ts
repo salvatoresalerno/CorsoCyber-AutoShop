@@ -59,3 +59,19 @@ export const findUserById = async (id:string): Promise<User | null> => {
         return null
     }  
 }
+
+
+export const findUserForChangeRole = async (username:string): Promise<{id: string} | null> => {  
+     
+    try {
+        const query = 'SELECT id FROM users WHERE username = ?;'     
+              
+        const values = [username]
+        const [result] = await poolConnection.execute(query, values);
+        
+        return (result as {id:string}[])[0] ?? null;
+    } catch (error) {
+        console.log('errori: ', error)
+        return null
+    }  
+}

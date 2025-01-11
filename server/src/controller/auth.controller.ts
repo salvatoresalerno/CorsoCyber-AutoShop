@@ -28,7 +28,11 @@ const verifyPassword = async (password: string, storedHash: string): Promise<boo
 export const signUp = async (req: Request, res: Response): Promise<void> => {
     
     try {
-        const { email, password, username } = req.body;
+        const { email, password, username, ruolo } = req.body;
+
+        await poolConnection.execute("SET @default_role = ?", [ruolo]);
+
+
         const query = `INSERT INTO users (email, password, username) VALUES (?, ?, ?);`;
         
         const hashedPassword = await hashPassword(password); 
@@ -37,7 +41,7 @@ export const signUp = async (req: Request, res: Response): Promise<void> => {
         await poolConnection.execute(query, values);
  
         res.status(201).json({
-            message: 'Utente resistrato correttamente!',
+            message: ruolo ? 'ADMIN resistrato correttamente!' : 'Utente resistrato correttamente!',
             error: ""
         }); 
     } catch (error) {
@@ -78,7 +82,7 @@ export const signInUser = async (req: Request, res: Response) => {
     }
 
     //blocco se accedo con ruolo errato (es. admin che accede nella sezione user o viceversa)
-    if (((user[0].role === Ruolo.USER) && role === Ruolo.ADMIN) || ((user[0].role === Ruolo.ADMIN) && role === Ruolo.USER)){
+    if (((user[0].role === Ruolo.USER) && role === Ruolo.ADMIN) || (((user[0].role === Ruolo.ADMIN) || (user[0].role === Ruolo.SUPERADMIN)) && role === Ruolo.USER)){
         res.status(200).json({ 
             errors:  'Credenziali Errate',
             message: null
@@ -86,6 +90,7 @@ export const signInUser = async (req: Request, res: Response) => {
         return   
     }
 
+    
      
     
     const isValid = await verifyPassword(password, user[0].password);
