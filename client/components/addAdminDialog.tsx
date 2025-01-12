@@ -1,7 +1,6 @@
 'use client'
 
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog"
-import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ExtendedUser, Ruolo } from "@/lib/types";
 import { SignUpForm } from "./form-signup";
 
@@ -27,7 +26,10 @@ const AddAdminDialog = ({ isOpen, onClose, admin }:AddAdminDialogProps) => {
                     </DialogDescription>                   
                 </DialogHeader>
 
-                <SignUpForm ruolo={Ruolo.ADMIN}/>
+                <SignUpForm 
+                    ruolo={Ruolo.ADMIN}
+                    admin={admin}
+                />
                 
             </DialogContent>
         </Dialog>

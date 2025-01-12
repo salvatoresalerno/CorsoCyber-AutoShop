@@ -113,21 +113,36 @@ export async function logoutUserAction(id: string) {
 
 
 
-export const SignUpAction = async (formData: SignupFormInputs, ruolo: string | null = null): Promise<ResponseResult> => {
+export const SignUpAction = async (formData: SignupFormInputs, ruolo: string | null = null, update?: boolean): Promise<ResponseResult> => {
 
+  const id = formData.id;  // ? formData.id : null;
   const username = formData.username;
   const email = formData.email;
   const password = formData.password;
   const confirmPassword = formData.confirmPassword;
   
   try {
-    const response = await fetch('http://localhost:5000/api/auth/signup', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, email, password, confirmPassword, ruolo }),
-    });
+    let response;
+    if (!update) {
+      response = await fetch('http://localhost:5000/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, email, password, confirmPassword, ruolo }),
+      }); 
+    } else {
+      const token = cookies().get("token")?.value;
+      response = await fetch('http://localhost:5000/api/auth/updAdmin', {
+        method: 'PUT',
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token}; `
+        },    
+        body: JSON.stringify({id, username, email, password, confirmPassword}),
+      }); 
+    }
+    
 
     const  result:ResponseResult = await response.json();
 
@@ -188,8 +203,6 @@ console.log('blob: ', imageBlob)
 
  
 export async function getCurrentUser() {
-
-  console.log('hai chiamato getCurrentUser')
    
   const token = cookies().get("token")?.value;
 

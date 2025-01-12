@@ -6,6 +6,7 @@ import Image from "next/image";
 import React from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { SidebarComponent } from "@/components/sidebarComponent";
+import { User } from "@/lib/types";
 
 
 export default function PublicLayout({
@@ -23,7 +24,7 @@ export default function PublicLayout({
     //recupero User eventualmente esistente in headers
     const currentHeaders = headers();
     const currentAdminHeader = currentHeaders.get('X-Current-User');
-    const currentAdmin = currentAdminHeader ? JSON.parse(currentAdminHeader) : null;
+    const currentAdmin: User = currentAdminHeader ? JSON.parse(currentAdminHeader) : null;
     
     
     
@@ -46,9 +47,13 @@ export default function PublicLayout({
                       Dashboard Auto-Shop.it
                   </h1>
                 </div>
-                {currentAdmin && <h2 className="text-2xl font-medium">
+                {/* {currentAdmin && <h2 className="text-2xl font-medium">
                   Benvenuto, <span className="font-bold">{currentAdmin.username}</span>
-                </h2>}
+                </h2>} */}
+                {currentAdmin && <div className="text-center">
+                  <h2 className="text-2xl font-medium">Benvenuto, <span className="font-bold">{currentAdmin.username}</span></h2>
+                  <p>Ruolo: <span>{currentAdmin.role}</span></p>
+                </div>}
               </div>
             </nav> 
             {children} 

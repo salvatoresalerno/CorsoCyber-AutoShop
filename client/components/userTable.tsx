@@ -13,7 +13,7 @@ import { CiEdit } from "react-icons/ci";
 import { PiTrash } from "react-icons/pi";
 import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch"
-import { setBanned } from "@/app/(admin)/admin/action";
+import { deleteAdminByID, setBanned } from "@/app/(admin)/admin/action";
 import { z } from "zod";
 import AddAdminDialog from "./addAdminDialog";
 import { IoMdAddCircleOutline } from "react-icons/io";
@@ -186,6 +186,25 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo, currentAdmi
             openDialog(utente)
         } else if (action === 'delete') {
             console.log('utente cliccato da cancellare: ', utente)
+            const { message, error } = await deleteAdminByID(utente.id);
+            if (message){ //se tutto ok
+                setSuccess(message);
+                setUtentiFiltrati(prevItems => {
+                    if (!prevItems) return [];
+                    const index = prevItems.findIndex(item => item.id === utente.id); //rimuovo dai dati già caricati per evitare chiamata a BE
+                    if (index !== -1) {
+                      prevItems.splice(index, 1);
+                    }
+                    return [...prevItems];
+                  });               
+            }
+            if (error) {
+                setErrore(error);
+            }
+            setTimeout(() => {
+                setErrore('');
+                setSuccess('');
+            }, 5000);
         }
 
 
@@ -336,7 +355,7 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo, currentAdmi
                     </TableHeader> 
                     <TableBody>
                         {paginatedUsers && paginatedUsers.map((utente, index) => (
-                            <TableRow key={index} className={cn(utente.role === Ruolo.SUPERADMIN && "font-bold")}>
+                            <TableRow key={index} {...(utente.role === "SUPERADMIN" ? { title: "E' IL SUPERADMIN" } : {})} className={cn(utente.role === Ruolo.SUPERADMIN && "font-bold")}>
                                 <TableCell className="text-center">{utente.username}</TableCell>
                                 <TableCell className="text-center">{utente.email}</TableCell>
                                 <TableCell className="hidden sm:table-cell text-center">{formatDate({date: new Date(utente.created_at), dateTimeSeparator: '-'} )}</TableCell>

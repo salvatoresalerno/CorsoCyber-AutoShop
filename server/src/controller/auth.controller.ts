@@ -6,6 +6,7 @@ import { findUserById, findUserForLogin, SetLoginDate } from '../services/user.s
 import { addRefreshToken, generateRefreshToken, generateToken, getRefreshToken } from '../services/jwt.service';
 import { Ruolo } from '../types/types';
 import dotenv from "dotenv"; 
+import { error } from 'console';
 
 dotenv.config({ path: '../.env' });
 
@@ -46,10 +47,44 @@ export const signUp = async (req: Request, res: Response): Promise<void> => {
         }); 
     } catch (error) {
         console.error('Errore durante la registrazione:', error);
+        if (error instanceof Error){
+            if (error.message.startsWith('Duplicate entry')) {
+                res.status(500).json({
+                    message: "",
+                    error: 'Username / Email già in uso.'
+                });
+                return;
+            }
+        }
          
         res.status(500).json({
             message: "",
             error: 'Errore durante la registrazione!'
+        });
+    }    
+}
+export const updAdmin = async (req: Request, res: Response): Promise<void> => {
+    
+    try {
+        const {id, email, password, username } = req.body;
+
+        const query = `UPDATE users SET email = ?, password = ?, username = ? WHERE id = ?;`;
+        
+        const hashedPassword = await hashPassword(password); 
+        const values = [email, hashedPassword, username, id];           
+
+        await poolConnection.execute(query, values);
+ 
+        res.status(201).json({
+            message: 'ADMIN modificato correttamente!',
+            error: ""
+        }); 
+    } catch (error) {
+        console.error('Errore durante la modifica ADMIN:', error);
+         
+        res.status(500).json({
+            message: "",
+            error: 'Errore durante la modifica ADMIN!'
         });
     }    
 }

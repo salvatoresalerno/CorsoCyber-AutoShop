@@ -1,7 +1,7 @@
 
 import { Router } from "express";
-import { logOutValidator, signInValidator, signUpValidator } from "../validators/auth.schema";
-import { getAuth, getCurrentUser, logout, refresh, signInUser, signUp } from "../controller/auth.controller";
+import { logOutValidator, signInValidator, signUpValidator, updAdminValidator } from "../validators/auth.schema";
+import { getAuth, getCurrentUser, logout, refresh, signInUser, signUp, updAdmin } from "../controller/auth.controller";
 import { validateReq } from "../middleware/validateRequest";
 import { authenticate } from "../middleware/authenticate";
 
@@ -9,6 +9,9 @@ import { authenticate } from "../middleware/authenticate";
 const router: Router = Router();
 
 router.post('/signup', signUpValidator, validateReq, signUp );
+router.put('/updAdmin', authenticate, updAdminValidator, validateReq, updAdmin );
+
+
 router.post('/signin', signInValidator, validateReq, signInUser);
 
 router.post('/getCurrentUser', authenticate, getCurrentUser);

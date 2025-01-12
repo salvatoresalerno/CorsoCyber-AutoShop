@@ -166,12 +166,6 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
       data.append('image', '');
     }
 
-
-
-
-
-   
-
     //const {message, error} = await setProfilo(formData);
     const {message, error} = await uploadProfilo(data);
 

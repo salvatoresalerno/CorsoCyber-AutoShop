@@ -3,19 +3,24 @@
  
 import { Button } from "./ui/button";
 import { Spinner } from "./spinner"; 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SignUpAction } from "@/app/(user)/action";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ErrorValidationComponent } from "./ErrorValidationComponent";
 import Link from "next/link";
-import { Ruolo } from "@/lib/types";
+import { ExtendedUser, Ruolo } from "@/lib/types";
 import { useRouter } from 'next/navigation';
+import { cn } from "@/lib/utils";
 //import { changeRole } from "@/app/(admin)/admin/action";
 
 
 const signupSchema = z.object({   //schema validazione campi form
+    id: z    
+        .string()
+        .uuid()
+        .optional(),        
     username: z
         .string()
         .trim()
@@ -41,30 +46,50 @@ const signupSchema = z.object({   //schema validazione campi form
     confirmPassword: z
         .string()
         .trim(),
-  }).refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Le password non corrispondono",
+    }).refine((data) => data.password === data.confirmPassword, {
+        path: ["confirmPassword"],
+        message: "Le password non corrispondono",
 });
 
 export type SignupFormInputs = z.infer<typeof signupSchema>; 
 
 type SignUpFormProps = {
     ruolo: string;
-  }
+    admin?: ExtendedUser | null;
+}
 
 
-export const SignUpForm = ({ruolo}: SignUpFormProps) => {   
+export const SignUpForm = ({ruolo, admin}: SignUpFormProps) => {   
 
     const [loading, setLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
 
-    const {register, handleSubmit, reset, formState: { errors } } = useForm<SignupFormInputs>({
+    const {register, handleSubmit, reset, setValue, formState: { errors } } = useForm<SignupFormInputs>({
         resolver: zodResolver(signupSchema),
         mode: "onChange",
+        defaultValues: {
+            id: undefined,
+            username: "",
+            email: "",
+            password: "",
+            confirmPassword: "",             
+          }
     });
 
     const router = useRouter();
+
+    useEffect(() => {
+        if (admin) {
+            setValue('id', admin.id);
+            setValue("username", admin.username);
+            setValue("email", admin.email);
+        }
+
+    }, [admin, setValue]);    
+
+
+
 
     const onSubmit = async (data: SignupFormInputs) => {
         setLoading(true);
@@ -81,7 +106,13 @@ export const SignUpForm = ({ruolo}: SignUpFormProps) => {
             error = res.error;
         } else if (ruolo === Ruolo.ADMIN) {
             console.log('salvo come ADMIN')
-            const res = await SignUpAction(data, Ruolo.ADMIN);             
+            let res;
+            if (admin) {  //sono in update                
+                res = await SignUpAction(data, Ruolo.ADMIN, true);
+            } else { //salvataggio normale
+                res = await SignUpAction(data, Ruolo.ADMIN);
+            }
+            //const res = await SignUpAction(data, Ruolo.ADMIN);             
             error = res.error;
             message = res.message;
             router.refresh();
@@ -116,14 +147,15 @@ export const SignUpForm = ({ruolo}: SignUpFormProps) => {
                     className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                 >
                     Username
-                </label>
+                </label>   
                 <input
                     type="text"
                     id="username"
                     {...register("username")}
-                    className={`shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500
-                        ${errors.username ? "border-red-500" : "border-gray-300"}`}
+                    className={cn(`shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500
+                        `, errors.username && 'border-red-500', admin && 'text-gray-500')}
                     placeholder="username"
+                    {...(admin ? { disabled: true } : {})}
                 />
                 <ErrorValidationComponent error={errors.username?.message} />    
             </div>
@@ -137,10 +169,11 @@ export const SignUpForm = ({ruolo}: SignUpFormProps) => {
                 <input
                     type="text"
                     id="email"
-                    className={`shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 
-                                ${errors.email ? "border-red-500" : "border-gray-300"} `}
+                    className={cn(`shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 
+                               `, errors.email && 'border-red-500', admin && 'text-gray-500')}                    
                     placeholder="email"
-                    {...register("email")}          
+                    {...register("email")}  
+                    {...(admin ? { disabled: true } : {})}        
                 />
                 <ErrorValidationComponent error={errors.email?.message} />             
             </div>
@@ -180,7 +213,7 @@ export const SignUpForm = ({ruolo}: SignUpFormProps) => {
             </div>
             <div className="flex items-center py-2 gap-2">
                 <Button type="submit" className={`px-3 bg-orange-400 hover:bg-orange-400/80  ${Object.keys(errors).length > 0 ? 'cursor-not-allowed' : ''}`}>
-                    Registrati            
+                    {admin ? 'Modifica' : 'Registrati'}            
                 </Button>
                 {loading && <Spinner />}
                 {message && 

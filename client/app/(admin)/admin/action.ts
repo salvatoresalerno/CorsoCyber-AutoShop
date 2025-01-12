@@ -235,7 +235,7 @@ export async function loadUserList() {
   }
 }
 
-export async function setBanned(id: string, banned:number): Promise<ResponseResult> {
+export async function setBanned(id: string, banned: number): Promise<ResponseResult> {
   
   const token = cookies().get("token")?.value;
   if(!token) {  
@@ -267,6 +267,47 @@ export async function setBanned(id: string, banned:number): Promise<ResponseResu
       return {
         message: '',
         error: 'errore aggiornamento veicolo'
+      }
+    }
+}
+
+export async function deleteAdminByID(id: string): Promise<ResponseResult> {
+  if (!id) {
+    return {
+      message: '',
+      error: 'errore cancellazione Admin'
+    }
+  }
+  const token = cookies().get("token")?.value;
+  if(!token) {  
+    redirect('/login');      
+  }
+  try {
+      const res = await fetch(`http://localhost:5000/api/admin/delAdmin`, {
+        method: 'DELETE',
+        headers: {    
+          'Content-Type': 'application/json',   
+          Cookie: `token=${token}; `
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      console.log('risposta: ', res)
+
+      if (!res.ok) {
+        return {
+          message: '',
+          error: 'errore cancellazione Admin'
+        }
+      }
+
+      return await res.json();
+    
+    } catch (error) {
+      console.log('errore cancellazione: ', error)
+      return {
+        message: '',
+        error: 'errore cancellazione Admin'
       }
     }
 }

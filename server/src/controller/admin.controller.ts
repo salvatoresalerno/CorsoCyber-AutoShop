@@ -62,6 +62,30 @@ export const setBanned = async (req: Request, res: Response): Promise<void>  => 
     } 
 }
 
+export const deleteAdmin = async (req: Request, res: Response): Promise<void>  => {
+
+    const id = req.body.id;
+
+    try {
+        const query = `DELETE FROM users WHERE id = ?`;
+            
+        const values = [id];
+        await poolConnection.execute(query, values);
+        
+        res.status(200).json({
+            message: "Admin cancellato con successo",
+            error: null
+        }); 
+
+    } catch (error) {
+        //console.log('errori: ', error);
+        res.status(500).json({
+            message: null,
+            error: 'Errore durante cancellazione Admin.'
+        });     
+    }  
+}
+
 
 /* export const changeRole = async (req: Request, res: Response): Promise<void>  => {
 
