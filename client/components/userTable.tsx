@@ -11,7 +11,6 @@ import { ExtendedUser, Ruolo } from "@/lib/types";
 import { Button } from "./ui/button";
 import { CiEdit } from "react-icons/ci";
 import { PiTrash } from "react-icons/pi";
-import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch"
 import { deleteAdminByID, setBanned } from "@/app/(admin)/admin/action";
 import { z } from "zod";
@@ -34,9 +33,6 @@ const sortedIcon = (
 
 const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo, currentAdminRole}: UserTableProps) => {
 
-    const router = useRouter();
-
-    //const [veicoliFiltrati, setVeicoliFiltrati] = useState<ExtendedUser[] | null>(null);
     const [utentiFiltrati, setUtentiFiltrati] = useState<ExtendedUser[] | null>(null);
     const [sortConfig, setSortConfig] = useState<{ key: keyof ExtendedUser; direction: 'ascending' | 'descending' } >({key: 'username', direction: 'ascending'});
 

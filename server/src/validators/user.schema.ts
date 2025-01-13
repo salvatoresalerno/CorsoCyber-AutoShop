@@ -88,8 +88,8 @@ export const profiloValidator = [
         .escape(), 
 ]
 export const profiloValidator2 = [   
-    body("id")  
-        .isArray({ min: 1 })
+    body("id")  //da verificare------------------------
+        .isArray({ max: 1 })
         .withMessage('Il campo non può essere vuoto')
         .bail()     
         .trim()
@@ -303,6 +303,24 @@ export const profiloValidator2 = [
                 }
             }
             return true;  
+        })
+        .escape(),
+    body('avatar')   
+        .optional()
+        .isArray({ max: 1 })  
+        .withMessage('massimo 1 elemento')
+        .customSanitizer((value:string[]) => value.map((item: string) => item.trim()))
+        .custom((value:string[]) => {
+          if (value.length > 0) {
+              const model = value[0]; 
+              if (typeof model !== "string") {
+                  throw new Error("Il campo deve essere una stringa");
+              }
+              if (model.length === 0) {
+                  throw new Error("avatar non può essere vuoto");
+              }
+          }
+          return true;  
         })
         .escape(),
 ]

@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { ErrorValidationComponent } from "./ErrorValidationComponent";
 import { uploadImageWithData } from "@/app/(admin)/admin/action";
 import Image from "next/image";
+import { useRouter } from 'next/navigation';
 
 
 type AddFormProps = {
@@ -89,7 +90,7 @@ export const AddVeicoliForm = ({ data }: AddFormProps) => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [preview, setPreview] = useState<string | undefined>(undefined);
-
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
   
    
   const {register, control,  handleSubmit, reset, formState: { errors }, watch, setValue } = useForm<AddFormInputs>({
@@ -107,7 +108,7 @@ export const AddVeicoliForm = ({ data }: AddFormProps) => {
     }
   });  
 
- 
+  const router = useRouter();
 
   useEffect(() => {
      
@@ -189,7 +190,7 @@ export const AddVeicoliForm = ({ data }: AddFormProps) => {
     } else {
       setErrorMessage(error);
     }
-
+    setIsDisabled(true);
     reset();
     setPreview(undefined);
     setLoading(false);
@@ -197,6 +198,10 @@ export const AddVeicoliForm = ({ data }: AddFormProps) => {
     setTimeout(() => {  //--> dopo 5 sec. resetto error e succ e preview (aternativa al banner di notifica che scompare!)
       setErrorMessage("");   
       setSuccessMessage("");
+      if (data?.id) { //se spno in upload, ritorno alla pagina chiamante
+        router.push('/admin/dashboard/in_vendita');
+      }
+      setIsDisabled(false);
     }, 5000); 
   }
 
@@ -216,7 +221,7 @@ export const AddVeicoliForm = ({ data }: AddFormProps) => {
 
   return (<div className="flex flex-col sm:flex-row sm:justify-around"> 
     <form className="space-y-3 w-full h-full sm:w-1/2 lg:w-1/3 select-none" onSubmit={handleSubmit(onSubmit)}>
-
+      <fieldset disabled={isDisabled}>
         <div className="relative w-full mb-4  ">
           <Controller
             name="tipo"
@@ -403,7 +408,8 @@ export const AddVeicoliForm = ({ data }: AddFormProps) => {
           {loading && <Spinner />}   
           {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
           {successMessage && <span className="text-green-500 text-balance mt-2 ">{successMessage}</span>}
-        </div>    
+        </div>
+      </fieldset>     
     </form> 
 
     <div className="w-full sm:w-1/3  flex flex-col">
