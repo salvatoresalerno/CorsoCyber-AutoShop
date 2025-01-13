@@ -2,7 +2,9 @@
 'use server'
 
 
-import { DataResult, Stato, User } from "@/lib/types";
+import { MailData } from "@/components/cardComponent_V2";
+import { ContattiFormInputs } from "@/components/form-contatti";
+import { DataResult, ResponseResult, Stato, User } from "@/lib/types";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -147,4 +149,89 @@ export async function getAuthenticate() {
       refreshToken: null
     });
   }
+}
+
+
+export async function sendOrderMail(mailData: MailData): Promise<ResponseResult> {
+
+  try {
+    const response = await fetch('http://localhost:3000/api/sendMail', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({                    
+          text: `<p>Il sig. <strong>${mailData.username}</strong> ha effettuato un nuovo ordine.</p>
+                <p>Veicolo ordinato: ${mailData.brand} ${mailData.modello}</p>
+                <p>immatricolazione: ${mailData.anno}</p>
+                <p>Alimentazione: ${mailData.alimentazione}</p>`
+      }),
+    });
+
+
+    if (response.ok) {
+      return {
+        message: 'Ordine ricevuto con successo!',
+        error: ''
+      }
+    } else {
+      return {
+        message: '',
+        error: "Errore durante l'elaborazione dell'ordine."
+      }
+    } 
+  } catch (error) {
+    console.log('errore invio ordine: ', error)
+      return {
+        message: '',
+        error: 'errore invio ordine'
+      }
+  }
+
+  
+}
+export async function sendContattiMail(mailData: ContattiFormInputs): Promise<ResponseResult> {
+
+  try {
+    const response = await fetch('http://localhost:3000/api/sendInfo', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({                    
+          text: `<p>Il sig. <strong>${mailData.nome}</strong> ha richiesto informazioni.</p>
+                  <br />
+                  <p ><strong>Contatti:</strong></p>
+                  <ul>
+                  <li><strong>Email:</strong> <a href="mailto:${mailData.email}">${mailData.email}</a></li>
+                  <li><strong>Telefono:</strong> ${mailData.telefono}</li>
+                  </ul> 
+                  <br />
+                  <p><strong>Messaggio</strong></p>
+                  <p>${mailData.messaggio}</p>`
+      }),
+    });
+
+     
+
+    if (response.ok) {
+      return {
+        message: 'Rischiesta INFO ricevuta con successo!',
+        error: ''
+      }
+    } else {
+      return {
+        message: '',
+        error: "Errore durante richiesta INFO."
+      }
+    } 
+  } catch (error) {
+    console.log('errore richiesta INFO: ', error)
+      return {
+        message: '',
+        error: 'errore richiesta INFO'
+      }
+  }
+
+  
 }

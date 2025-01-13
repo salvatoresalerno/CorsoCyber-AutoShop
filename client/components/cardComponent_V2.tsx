@@ -2,18 +2,53 @@
 'use client'
 
 
-import { Stato, TipoVeicolo, User, Veicolo } from "@/lib/types";
+import { Alimentazione, Stato, TipoVeicolo, User, Veicolo } from "@/lib/types";
 import { formatEuro } from "@/lib/utils";
 import Image from "next/image";
 import { useState } from "react";
 import { Spinner } from "./spinner";
 import { setVeicoloVenduto } from "@/app/(user)/action";
+import { z } from 'zod';
+import { sendOrderMail } from "@/app/action";
 
 type CardProps = {
     veicolo: Veicolo;
     user: User | null;
 }
 
+const mailDataSchema = z.object({  
+    username: z
+        .string()
+        .trim()
+        .regex(/^[a-zA-Z0-9]+$/, { message: "L'username può contenere solo lettere e numeri" })
+        .min(3, { message: "Username deve essere da 3 a 30 caratteri" })
+        .max(30, { message: "Username deve essere da 3 a 30 caratteri" }),  
+    brand: z
+        .string()
+        .trim()
+        .nonempty("Il campo Brand è obbligatorio.")
+        .max(20, { message: "Brand deve essere max 20 caratteri" }),
+    modello: z
+        .string()
+        .trim()
+        .nonempty("Il campo Modello è obbligatorio")
+        .max(20, { message: "Modello deve essere max 20 caratteri" }),
+    alimentazione: z    
+        .nativeEnum(Alimentazione)
+        .optional()    
+        .refine((val) => val !== undefined, {
+        message: "Il campo Alimentazione è obbligatorio",
+        }),    
+    anno: z
+        .string()
+        .nonempty("Il campo Anno è obbligatorio")
+        .refine((val) => {
+        const year = parseInt(val);
+        return year >= 1900 && year <= new Date().getFullYear();
+        }, { message: `L'Anno deve essere compreso tra 1900 e ${new Date().getFullYear()}` }),      
+});
+
+export type MailData = z.infer<typeof mailDataSchema>;
 
 
 const CardComponent_V2 = ({veicolo, user}: CardProps) => {
@@ -28,15 +63,103 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
 
     const handlerInviaMail = async () => {
         setLoading(true);
-
-        
-
         try {
+            const mailData = {
+                username: user ? user.username : '',
+                brand: veicolo.brand,
+                modello: veicolo.modello,
+                anno: veicolo.anno.toString(),
+                alimentazione: veicolo.alimentazione
+            }
+
+            mailDataSchema.parse(mailData);
+
+          
+
+            const { message, error } = await sendOrderMail(mailData);
+
+
+            //contrassegna il veicolo come acquistato
+            /* const  { error: errorVenduto } = await setVeicoloVenduto(veicolo.id ?? '');
+            if (error) {
+                throw new Error(error || 'Errore durante l\'aggiornamento stato');
+            } */
+
+
+
+           /*  const response = await fetch('/api/sendMail', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({                    
+                    text: `<p>Il sig. <strong>${mailData.username}</strong> ha effettuato un nuovo ordine.</p>
+                           <p>Veicolo ordinato: ${mailData.brand} ${mailData.modello}</p>
+                           <p>immatricolazione: ${mailData.anno}</p>
+                           <p>Alimentazione: ${mailData.alimentazione}</p>`
+                }),
+            })
+            if (response.ok) {
+                setSuccess('Ordine ricevuto con successo!');
+                setAcquistato(true);  //appare barra acquistato
+            } else {
+                setError("Errore durante l'elaborazione dell'ordine.");
+            }*/
+
+            if (message) {
+                const  { error } = await setVeicoloVenduto(veicolo.id ?? '');
+                if (error) {
+                    throw new Error(error || 'Errore durante l\'aggiornamento stato');
+                }
+                setSuccess(message);
+                setAcquistato(true);  //appare barra acquistato
+            } else {
+                setError(error);
+            }
+
+            
+ 
+            setTimeout(() => {  //--> dopo 5 sec. resetto error e succ (aternativa al banner di notifica che scompare!)
+                setSuccess(null);   
+                setError(null)    
+                //setAcquistato(true);  //appare barra acquistato
+            }, 5000);
+            
+        } catch (error) {
+            console.log(error)
+            if (error instanceof z.ZodError) {
+                setError('Dati non validi: ');
+                return;
+            }
+            if (error instanceof Error) {
+                setError(error.message || 'Errore sconisciuto.');
+                return;
+            }
+            setError('Errore sconisciuto.');
+        } finally {
+            setLoading(false)
+        }
+    }  
+    /* const handlerInviaMail = async () => {
+        setLoading(true);
+        try {
+            const mailData = {
+                username: user?.username,
+                brand: veicolo.brand,
+                modello: veicolo.modello,
+                anno: veicolo.anno.toString(),
+                alimentazione: veicolo.alimentazione
+            }
+
+            mailDataSchema.parse(mailData);
+
             //contrassegna il veicolo come acquistato
             const {error} = await setVeicoloVenduto(veicolo.id ?? '');
             if (error) {
                 throw new Error(error || 'Errore durante l\'aggiornamento stato');
             }
+
+
 
             const response = await fetch('/api/sendMail', {
                 method: 'POST',
@@ -44,10 +167,10 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({                    
-                    text: `<p>Il sig. <strong>${user && user.username}</strong> ha effettuato un nuovo ordine.</p>
-                           <p>Veicolo ordinato: ${veicolo.brand} ${veicolo.modello}</p>
-                           <p>immatricolazione: ${veicolo.anno}</p>
-                           <p>Alimentazione: ${veicolo.alimentazione}</p>`
+                    text: `<p>Il sig. <strong>${mailData.username}</strong> ha effettuato un nuovo ordine.</p>
+                           <p>Veicolo ordinato: ${mailData.brand} ${mailData.modello}</p>
+                           <p>immatricolazione: ${mailData.anno}</p>
+                           <p>Alimentazione: ${mailData.alimentazione}</p>`
                 }),
             })
             if (response.ok) {
@@ -65,12 +188,16 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
             
         } catch (error) {
             console.log(error)
+            if (error instanceof z.ZodError) {
+                setError('Dati non validi: ');
+                return;
+            }
             setError('Errore sconisciuto.');
         } finally {
             setLoading(false)
         }
     }  
-
+ */
     const randomNumber = () => Math.floor(Math.random() * 3) + 1;
   
     return (

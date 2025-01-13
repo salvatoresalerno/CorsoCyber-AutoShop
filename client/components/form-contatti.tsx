@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ErrorValidationComponent } from "./ErrorValidationComponent";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { sendContattiMail } from "@/app/action";
 
 
 
@@ -46,7 +47,7 @@ export default function ContattiForm() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    const {register, handleSubmit, reset, setValue, formState: { errors } } = useForm<ContattiFormInputs>({
+    const {register, handleSubmit, reset, formState: { errors } } = useForm<ContattiFormInputs>({
             resolver: zodResolver(contattiSchema),
             mode: "onChange",
             defaultValues: {
@@ -76,9 +77,22 @@ export default function ContattiForm() {
     } */
 
     const onSubmit = async (data: ContattiFormInputs) => {
-        handlerInviaMail(data);
+        //handlerInviaMail(data);
+        setLoading(true);
 
+        const { message, error } = await sendContattiMail(data);
+
+        if (message) {
+            setSuccess(message);
+        } 
+
+        if (error) {
+            setError(error);
+        }
+
+        setLoading(false);
         reset();
+        
         setTimeout(() => {  //--> dopo 10 sec. resetto error e succ (aternativa al banner di notifica che scompare!)
             setSuccess(null);  //messo 10 sec. perchè il timeout parte appena invio il form, cosi includo anche il tempo 
             setError(null)   //di invio mail e il messaggio rimane visibile per un tempo ragionevole
