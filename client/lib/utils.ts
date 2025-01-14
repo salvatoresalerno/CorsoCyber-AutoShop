@@ -9,7 +9,10 @@ export function cn(...inputs: ClassValue[]) {
 //formatta numeri con punti decimali
 export const formatNumber = (number: number) => {
 
-  return new Intl.NumberFormat('it-IT').format(number);    
+  return new Intl.NumberFormat('it-IT',{    
+    minimumFractionDigits: 0,  
+    maximumFractionDigits: 0   
+  }).format(number);    
 }
 
 //formatta numeri euro
@@ -19,7 +22,8 @@ export const formatEuro = (number: number) => {
     minimumFractionDigits: 2,  
     maximumFractionDigits: 2   
   }).format(number);    
-}
+} 
+   
 
 
 export enum Format {

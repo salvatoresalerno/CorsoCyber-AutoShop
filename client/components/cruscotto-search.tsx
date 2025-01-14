@@ -24,7 +24,7 @@ const CruscottoSearch = ({veicoli}: CruscottoProps) => {
     const [selectedTipo, setSelectedTipo] = useState<string>("");
     const [anni, setAnni] = useState<number[]>([]);
     const [selectedAnno, setSelectedAnno] = useState<number | null>(null);
-    const [prezzo, setPrezzo] = useState<Range>({valueA: 5, valueB: 20});
+    const [prezzo, setPrezzo] = useState<Range>({valueA: 10, valueB: 20});
     const [km, setKm] = useState<Range>({valueA: 40, valueB: 100});
     const [isValidSearch, setIsValidSearch] = useState<boolean>(false);
 

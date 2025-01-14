@@ -5,7 +5,7 @@
 import { Alimentazione, Stato, TipoVeicolo, User, Veicolo } from "@/lib/types";
 import { formatEuro } from "@/lib/utils";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Spinner } from "./spinner";
 import { setVeicoloVenduto } from "@/app/(user)/action";
 import { z } from 'zod';
@@ -57,9 +57,12 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const [src, setSrc] = useState<string>(veicolo.image);
+    //const [prezzo, setPrezzo] = useState<string>('');
     const [acquistato, setAcquistato] = useState<boolean>(false);
 
-   
+    /* useEffect(() => {    --> per bug Mozilla     
+        setPrezzo(formatEuro(veicolo.prezzo));
+    }, [veicolo.prezzo]); */
 
     const handlerInviaMail = async () => {
         setLoading(true);
@@ -199,6 +202,8 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
     }  
  */
     const randomNumber = () => Math.floor(Math.random() * 3) + 1;
+
+     
   
     return (
         <div className="relative flex flex-col justify-between bg-white pt-2 pl-2 w-full sm:pt-3 sm:pl-3 lg:pt-4 lg:pl-4 rounded-xl overflow-hidden select-none">
@@ -228,7 +233,8 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
                     />
                 </div>
                 <div className="flex-1">
-                    <h2 className="flex items-baseline lg:items-end justify-center font-semibold text-2xl text-orange-400 h-[40%] ">{`€ ${formatEuro(veicolo.prezzo)}`}</h2>
+                   {/*  <h2 className="flex items-baseline lg:items-end justify-center font-semibold text-2xl text-orange-400 h-[40%] ">{`€ ${prezzo}`}</h2>*/}
+                    <h2 className="flex items-baseline lg:items-end justify-center font-semibold text-2xl text-orange-400 h-[40%] ">{`€ ${formatEuro(veicolo.prezzo)}`}</h2> 
                     <div className="flex items-end h-[60%]">
                         {loading ? <Spinner /> : '' } 
                         {error && <p className="text-red-500 mt-2">{error}</p>}

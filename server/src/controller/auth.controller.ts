@@ -7,23 +7,24 @@ import { addRefreshToken, generateRefreshToken, generateToken, getRefreshToken }
 import { Ruolo } from '../types/types';
 import dotenv from "dotenv"; 
 import { error } from 'console';
+import { hashPassword, verifyPassword } from '../utils';
 
 dotenv.config({ path: '../.env' });
 
 const REFRESH_TOKEN_EXPIRY =  Number(process.env.REFRESH_TOKEN_EXPIRY) || 7 * 24 * 60 * 60 * 1000;  // 7 giorni
 
 
-const hashPassword = async (password: string): Promise<string> => {      
+/* const hashPassword = async (password: string): Promise<string> => {      
     const salt = await bcrypt.genSalt(10); // Genera un salt
     // Genera l'hash della password con il salt
     const hashedPassword = await bcrypt.hash(password, salt);
     return hashedPassword;
 };
 
-const verifyPassword = async (password: string, storedHash: string): Promise<boolean> => {     
+export const verifyPassword = async (password: string, storedHash: string): Promise<boolean> => {     
     const isMatch = await bcrypt.compare(password, storedHash);
     return isMatch;
-};
+}; */
 
  
 export const signUp = async (req: Request, res: Response): Promise<void> => {

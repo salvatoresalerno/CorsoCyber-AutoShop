@@ -85,7 +85,7 @@ const REFRESH_TOKEN_EXPIRY =  Number(process.env.REFRESH_TOKEN_EXPIRY) || 7 * 24
     response.headers.set('X-Current-User', requestHeaders.get('X-Current-User') || '');
     response.headers.set('Cache-Control', 'no-store');
 
-    if(request.nextUrl.pathname==='/' || request.nextUrl.pathname.startsWith('/risultati')) {  //sperimentale
+    if(request.nextUrl.pathname==='/' || request.nextUrl.pathname.startsWith('/risultati')) {   
       return response       
     }
 

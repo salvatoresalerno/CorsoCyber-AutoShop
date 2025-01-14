@@ -11,6 +11,7 @@ import adminRoutes from './routers/admin.routes';
 import cors from 'cors'; 
 import fs from 'fs/promises';
 import path from 'path'; 
+import { InitializingDB } from "./db/init";
 
  
 //export const UPLOAD_DIR = path.join(__dirname, 'uploads');  //dir per upload immagini veicoli 
@@ -29,7 +30,7 @@ const port = process.env.PORT || 5000;
 app.use(cookieParser()); 
 app.use(express.json());
 
-(async () => {  //crea se non esise la directory per upload
+(async () => {  //crea se non esise la directory per upload veicoli e avatar
   await fs.mkdir(UPLOAD_DIR_VEICOLI, { recursive: true });
   await fs.mkdir(UPLOAD_DIR_AVATAR, { recursive: true });
 })();
@@ -46,6 +47,23 @@ app.use(
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads'))); //midd per percorso immagini
 
+
+
+//inizializzazione DB: creazione db, utente, privilegi user, tabelle, trigger, foreign key
+(async () => {
+  try {
+       
+      await InitializingDB();
+
+      console.log("Database inizializzato correttamente");
+  } catch (error) {
+      console.error("Errore durante l'inizializzazione del database:", error);
+      process.exit(1); // Arresta il server in caso di errore
+  }
+})(); 
+
+
+
 const poolConfig: PoolOptions = {
   waitForConnections: true,
   connectionLimit: 10,     
@@ -57,6 +75,18 @@ const poolConfig: PoolOptions = {
   //multipleStatements: true
 };
 export const poolConnection: Pool = mysql.createPool(poolConfig);
+
+// Inizializza il database
+/* (async () => {
+  try {
+      await initializeDatabase(poolConnection);
+      console.log("Database inizializzato correttamente");
+  } catch (error) {
+      console.error("Errore durante l'inizializzazione del database:", error);
+      process.exit(1); // Arresta il server in caso di errore
+  }
+})(); */
+
 
 
 

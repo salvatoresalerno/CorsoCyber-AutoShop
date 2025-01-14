@@ -27,7 +27,7 @@ import { decodeEscapedHtml } from "@/lib/utils";
 
 
 const MainUser = async () => {    
-
+ 
   //recupero User eventualmente esistente in headers
   const currentHeaders = headers();
   const currentUserHeader = currentHeaders.get('X-Current-User');
@@ -36,7 +36,6 @@ const MainUser = async () => {
    
 
   const { data: veicoli  } = await getVeicoliStato(Stato.VENDESI);  //veicoli usari (in Vendita) per vetrina random e per estrarre brand, modello, ecc nel cruscotto
-  
   const data: Veicolo[] | null = veicoli ? 
   veicoli.map((item) => ({
     id: item.id,  
@@ -49,9 +48,8 @@ const MainUser = async () => {
     prezzo: item.prezzo,
     stato: item.stato,  
     image: decodeEscapedHtml(item.image ? item.image : '')  
-  })) : null;
-  
-  //console.log('veicoli data: ', data)
+  })) : [];
+     
   
   function creaVetrina(length: number, count:number): number[] {  //ritorna un array di count elementi che sono gli indici per i veicoli della vetrina random
     const indici = new Set<number>();
@@ -64,7 +62,7 @@ const MainUser = async () => {
 
   return ( 
       <div>
-        <section className="relative  w-full lg:h-[650px]">  {/* Hero section */}
+        <section className="relative  w-full lg:h-[650px] ">  {/* Hero section */}
           <Image 
             src={heroImage} 
             alt="heroImage" 
@@ -73,25 +71,25 @@ const MainUser = async () => {
           <Image 
             src={heroImage} 
             alt="heroImage" 
-            className="hidden lg:block p-5" 
+            className="hidden lg:block" 
             fill    
-            style={{
+             style={{
               objectFit: "cover",
               objectPosition: "50% 15%", 
-            }}  
+            }} 
           />  
           <span className="absolute top-2 right-3 md:top-3 md:right-5 lg:top-10 lg:right-10 text-white font-semibold text-2xl md:text-3xl  lg:text-5xl">Solo Usato Garantito</span>           
         </section>
 
         <section className="flex justify-center h-[300px] w-full mt-0 sm:-mt-10 md:-mt-20 lg:-mt-24  bg-transparent">
             {data && <CruscottoSearch veicoli={data} />}  
-        </section>
+        </section>  
 
         <section id="vetrina" className="bg-[#FFEFE5]"  > {/*Vetrina occasioni */}
           <div className="container mx-auto p-5">
             <h2 className="text-3xl font-semibold text-center my-2 sm:my-8">Occasioni in vetrina</h2>
             <div className="grid grid-cols-1 justify-items-center sm:grid-cols-2 xl:grid-cols-3 gap-4 p-2 sm:p-4 ">
-              {data && creaVetrina(data.length, 6).map((value, index) => {
+              {data.length > 0 && creaVetrina(data.length, 6).map((value, index) => {
                 return <CardComponent_V2
                       key={index} 
                       veicolo={data[value]}

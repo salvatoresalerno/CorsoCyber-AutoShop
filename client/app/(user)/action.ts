@@ -217,7 +217,7 @@ export async function getCurrentUser() {
   
   const res = await fetch('http://localhost:5000/api/auth/getCurrentUser', { 
     method: 'POST',
-    credentials: 'include', 
+    //credentials: 'include', 
     headers: {
       Cookie: `token=${token}; `, // Passa il cookie manualmente
     }, 
