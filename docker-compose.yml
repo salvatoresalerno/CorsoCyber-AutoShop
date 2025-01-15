@@ -1,0 +1,81 @@
+
+
+#version: '3.8'
+
+services:
+  # Servizio per il client (Next.js)
+  client:
+    build:
+      context: .   
+      dockerfile: Dockerfile  # Usa il Dockerfile per Next.js
+    container_name: client-container
+    ports:
+      - "3000:3000"
+    networks:
+      - myapp-network
+    depends_on:
+      - server
+      - mysql
+
+  # Servizio per Nginx
+  nginx:
+    image: nginx:latest
+    container_name: nginx-container
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf      
+    networks:
+      - corso-network
+    restart: always
+    depends_on:
+      - client   
+      - server
+
+  # Servizio per il server (Node.js/Express)
+  server:
+    build:
+      context: .   
+      dockerfile: Dockerfile.server  # Usa il Dockerfile del server
+    container_name: server-container
+    ports:
+      - "5000:5000"
+    restart: always
+    #environment:
+    #  - DB_HOST=${DB_HOST:-mysql}
+    #  - DB_USER=${DB_USER:-myuser} 
+    #  - DB_USER_PASSWORD=${DB_PASSWORD:-changeme} 
+    #  - DB_NAME=${DB_NAME:-myappdb} 
+    env_file:
+      - .env
+    networks:
+      - corso-network
+    depends_on:
+      - mysql
+
+  # Servizio per MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-changeme} 
+      - MYSQL_DATABASE=${DB_NAME:-myappdb}     
+    ports:
+      - "3306:3306"
+    networks:
+      - corso-network
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: always
+
+networks:
+  corso-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+
+  
+       
+
+
