@@ -96,7 +96,7 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
             }, 5000);
             
         } catch (error) {
-            console.log(error)
+            console.error(error)
             if (error instanceof z.ZodError) {
                 setError('Dati non validi: ');
                 return;

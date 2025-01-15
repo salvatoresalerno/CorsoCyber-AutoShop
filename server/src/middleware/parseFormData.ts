@@ -6,7 +6,6 @@ import path from 'path';
 export const parseFormData = (PUBLIC_UPLOAD_PATH: string) => {
 
   const PUBLIC_UPLOAD_DIR = path.join(__dirname, `../../uploads/${PUBLIC_UPLOAD_PATH}`);
-  console.log('UP DIR: ', PUBLIC_UPLOAD_DIR )
 
   return (req: Request, res: Response, next: NextFunction) => {
     const form = formidable({
@@ -26,7 +25,6 @@ export const parseFormData = (PUBLIC_UPLOAD_PATH: string) => {
     });
 
     form.parse(req, (err, fields, files) => {
-      console.log('errore pars: ', err)
       if (err) {
         return res.status(400).json({ error: 'Errore nel parsing.' });
       }
@@ -80,20 +78,15 @@ export const parseFormData2 = (req: Request, res: Response, next: NextFunction) 
 
   form.parse(req, (err, fields, files) => {
 
-    console.log('fields: ', fields)
-    console.log('files: ', files)
-
-
     if (err) {
       return res.status(400).json({ error: 'Errore nel parsing.' });
     }     
 
-    console.log('upload DIR: ', UPLOAD_DIR_AVATAR)
     if (files.image) {
       const imageFile = Array.isArray(files.image) ? files.image[0] : files.image;
 
-        const relativePath = path.join(PUBLIC_UPLOAD_PATH, path.basename(imageFile.filepath)).replace(/\\/g, '/');
-      console.log('relative: ', relativePath)
+      const relativePath = path.join(PUBLIC_UPLOAD_PATH, path.basename(imageFile.filepath)).replace(/\\/g, '/');
+      
       req.files = {
         ...files,
         image: {

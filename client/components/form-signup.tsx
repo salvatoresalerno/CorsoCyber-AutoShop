@@ -99,7 +99,6 @@ export const SignUpForm = ({ruolo, admin}: SignUpFormProps) => {
             message = res.message;
             error = res.error;
         } else if (ruolo === Ruolo.ADMIN) {
-            console.log('salvo come ADMIN')
             let res;
             if (admin) {  //sono in update                
                 res = await SignUpAction(data, Ruolo.ADMIN, true);

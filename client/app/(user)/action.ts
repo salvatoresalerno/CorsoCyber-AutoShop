@@ -72,7 +72,7 @@ export async function logoutUserAction(id: string) {
 
 export const SignUpAction = async (formData: SignupFormInputs, ruolo: string | null = null, update?: boolean): Promise<ResponseResult> => {
 
-  const id = formData.id;  // ? formData.id : null;
+  const id = formData.id;  
   const username = formData.username;
   const email = formData.email;
   const password = formData.password;

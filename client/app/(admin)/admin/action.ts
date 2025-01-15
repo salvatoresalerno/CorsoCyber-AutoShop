@@ -26,7 +26,7 @@ export async function getBrandAndModel() {
       error: null
     }
   } catch (error) {
-    console.log('errore status: ', error)
+    console.error('errore status: ', error)
     return {
       data: null,
       error: 'errore recupero veicoli'
@@ -40,11 +40,9 @@ export async function getBrandAndModel() {
 
 
 export async function getBrand() {
-  console.log('ciao sono Pluto')
   const token = cookies().get("token")?.value;   
 
   if(!token) {  //se qui manca token è perchè il middleware lo ha rimosso per manomissione, altrimenti qui ho un cookie valido
-    console.log('Qui manca il token!!!');
     redirect('/admin');  
     
   }
@@ -64,7 +62,7 @@ export async function getBrand() {
     }
 
   } catch (error) {
-    console.log('errore status: ', error)
+    console.error('errore status: ', error)
     return {
       data: null,
       error: 'errore recupero veicoli'

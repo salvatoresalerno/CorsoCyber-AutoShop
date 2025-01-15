@@ -15,6 +15,7 @@ export default async function GestioneUtenti() {
     const currentAdminHeader = currentHeaders.get('X-Current-User');
     const currentAdmin: User = currentAdminHeader ? JSON.parse(currentAdminHeader) : null;
 
+    
     const { data, error } = await loadUserList();
 
     if (error) {
@@ -31,7 +32,7 @@ export default async function GestioneUtenti() {
                     className="px-10 pb-10"
                     utenti={data}
                     ruolo={Ruolo.ADMIN}
-                    currentAdminRole={currentAdmin.role}  //ruolo dell'utente connesso (ADMIN o SUPERADMIN)
+                    currentAdminRole={currentAdmin?.role}  //ruolo dell'utente connesso (ADMIN o SUPERADMIN)
                 />
             </div>
             <hr className="my-5"/>
@@ -41,7 +42,7 @@ export default async function GestioneUtenti() {
                     className="px-10 pb-10"
                     utenti={data}
                     ruolo={Ruolo.USER}    
-                    currentAdminRole={currentAdmin.role}  //ruolo dell'utente connesso (ADMIN o SUPERADMIN)                
+                    currentAdminRole={currentAdmin?.role}  //ruolo dell'utente connesso (ADMIN o SUPERADMIN)                
                 />
             </div>
         </div>

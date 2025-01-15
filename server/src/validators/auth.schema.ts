@@ -41,11 +41,13 @@ export const signUpValidator = [
             return true;
         }),
     body("ruolo")
+        .optional({ nullable: true })
         .isString()
         .trim()
         .notEmpty().withMessage('Il campo non può essere vuoto')
         .isIn(Object.values(Ruolo)), 
-  ];
+];
+
 export const updAdminValidator = [
     body("id")      
         .trim()
@@ -78,7 +80,7 @@ export const updAdminValidator = [
             }
             return true;
         }),
-  ];
+];
 
 
 export const signInValidator = [
@@ -99,22 +101,21 @@ export const signInValidator = [
         .isString()
         .trim()
         .notEmpty().withMessage('Il campo non può essere vuoto')
-        .isIn(Object.values(Ruolo)), 
-    
-  ];
+        .isIn(Object.values(Ruolo)),     
+];
 
 
-  export const refreshTokenValidator = [
+export const refreshTokenValidator = [
     body('refreshToken')
-      .exists().withMessage('refresh token è richiesto')
-      .isString().withMessage('refresh token deve essere una stringa')
-      .notEmpty().withMessage('refresh token non puo essere vuoto'),
-  ];
+        .exists().withMessage('refresh token è richiesto')
+        .isString().withMessage('refresh token deve essere una stringa')
+        .notEmpty().withMessage('refresh token non puo essere vuoto'),
+];
 
-  export const changeRoleValidator = [    
+export const changeRoleValidator = [    
     body("username")      
         .trim()
         .notEmpty().withMessage('Il campo non può essere vuoto')
         .isLength({ min: 3, max: 30 }).withMessage("Username deve essere da 3 a 30 caratteri")
         .escape(),
-  ];
+];

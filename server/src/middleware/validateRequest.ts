@@ -1,7 +1,7 @@
 
 
 import { Request, Response, NextFunction } from  'express';
-import {  validationResult, ValidationError } from 'express-validator';
+import {  validationResult } from 'express-validator';
 
 
 export const validateReq  = (req: Request, res: Response, next: NextFunction): void => {  //valida senza notificare dettagli errori

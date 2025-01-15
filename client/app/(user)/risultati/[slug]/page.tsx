@@ -38,8 +38,7 @@ export default async function RisultatiPage({ params }: { params: { slug: string
           image: decodeEscapedHtml(item.image ? item.image : '')  
         })) : null;
 
-        console.log('veicoli filtrati: ', data)
-
+         
     if (suggerito) {
         titolo = 'La tua ricerca non ha prodotto risultati, ecco dei suggerimenti per te...';
     } else {

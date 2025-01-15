@@ -16,7 +16,6 @@ export async function GET() {
 
 
         if (res.status === 401) {
-                console.log('sono scaduto')
                 return Response.json({
                     brand: null,
                     error: 'Token Scaduto!',
