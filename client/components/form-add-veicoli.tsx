@@ -152,7 +152,6 @@ export const AddVeicoliForm = ({ data }: AddFormProps) => {
     VeicoloData.append('anno', formData.anno);
     VeicoloData.append('km', formData.km);
     VeicoloData.append('prezzo', formData.prezzo);
-    //VeicoloData.append('image', formData.image ? formData.image : '');  
 
     if (formData.image){  //immagine selezionata
       VeicoloData.append('image', formData.image);  
@@ -162,26 +161,10 @@ export const AddVeicoliForm = ({ data }: AddFormProps) => {
       VeicoloData.append('image', '');
     }
 
-
-
-
-    /* let message; 
-    let error; */
-
-    /* if (data) {  //se esiste data sono in upload
-      const result = await uploadImageWithData(VeicoloData, data.id);
-      message = result.message;
-      error = result.error;
-    } else {  //salvataggio normale
-      const result = await uploadImageWithData(VeicoloData);
-      message = result.message;
-      error = result.error;
-    } */
    
     if (data?.id) {  //se esiste id sono in upload
       VeicoloData.append('id', data.id);
     } 
-
 
     const { message, error} = await uploadImageWithData(VeicoloData);        
       

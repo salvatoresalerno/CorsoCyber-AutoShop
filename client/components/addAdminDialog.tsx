@@ -10,14 +10,10 @@ interface AddAdminDialogProps {
     admin: ExtendedUser | null;
   }
 
-const AddAdminDialog = ({ isOpen, onClose, admin }:AddAdminDialogProps) => {
-     
+const AddAdminDialog = ({ isOpen, onClose, admin }:AddAdminDialogProps) => {     
 
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-            {/* <DialogTrigger asChild>
-                <Button variant="outline">Edit Profile</Button>
-            </DialogTrigger> */}
+        <Dialog open={isOpen} onOpenChange={onClose}>            
             <DialogContent className="sm:max-w-[425px]" onEscapeKeyDown={(e) => e.preventDefault()} onPointerDownOutside={(e) => e.preventDefault()} >
                 <DialogHeader>
                     <DialogTitle>{!admin ? 'Creazione Nuovo Admin' : 'Modifica Admin'}</DialogTitle> 

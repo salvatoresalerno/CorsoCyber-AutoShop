@@ -1,12 +1,11 @@
-//import { getCachedVeicoli } from "@/app/(user)/action";
+ 
 import { getVeicoliStato } from "@/app/action";
 import { ChartMarchi } from "@/components/chartMarchi";
 import { ChartVeicoli } from "@/components/chartVeicoli";
+import ErrorComponent from "@/components/errorComponent";
 import { PieChartVeicoli } from "@/components/pieChartVeicoli";
 import { Stato, TipoVeicolo, Veicolo } from "@/lib/types";
-import { decodeEscapedHtml } from "@/lib/utils";
-//import { Stato, TipoVeicolo, Veicolo } from "@/database/DB";
-
+import { decodeEscapedHtml } from "@/lib/utils"; 
 
 type ConteggioMarchio = {
   marchio: string;
@@ -15,14 +14,11 @@ type ConteggioMarchio = {
 
 export default async function StatistichePage() {
 
-  //auto venduta a prezzo maggiore  ok
-  //auto venduta a prezzo minore  ok
-  //prezzo medio vendite  ok 
-  //marchio più venduto ok
+  const { data: veicoli, error } = await getVeicoliStato(Stato.TUTTI);
 
-  //const veicoli:Veicolo = [] //await getCachedVeicoli(); 
-
-  const { data: veicoli } = await getVeicoliStato(Stato.TUTTI);
+  if (error) {
+    return (<ErrorComponent/>);
+  }
 
   const data: Veicolo[] | null = veicoli ? 
     veicoli.map((item) => ({
@@ -64,8 +60,6 @@ export default async function StatistichePage() {
 
   const prezzoMedioAutoVendute = data ? calcolaPrezzoMedio(data, TipoVeicolo.AUTO) : 0;
   const prezzoMedioMotoVendute = data ? calcolaPrezzoMedio(data, TipoVeicolo.MOTO) : 0;
-
-  //console.log('prezzi medi: ', prezzoMedioAutoVendute, prezzoMedioMotoVendute)
 
   const dataPieChart = [
     {veicolo: 'Auto', prezzo:  prezzoMedioAutoVendute, fill: 'red'},

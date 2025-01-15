@@ -111,11 +111,7 @@ export const signInValidator = [
       .notEmpty().withMessage('refresh token non puo essere vuoto'),
   ];
 
-  export const changeRoleValidator = [
-    /* body("id")      
-        .trim()
-        .isUUID()
-        .withMessage('Formato parametro non valido.'), */
+  export const changeRoleValidator = [    
     body("username")      
         .trim()
         .notEmpty().withMessage('Il campo non può essere vuoto')

@@ -19,7 +19,7 @@ export const getProfilo = async (req: Request, res: Response): Promise<void>  =>
         }); 
 
     } catch (error) {
-        console.log('errori: ', error);
+        console.error('errori: ', error);
         res.status(500).json({
             data: null,
             error: 'Errore durante il recupero del profilo.'
@@ -66,21 +66,15 @@ export const setProfilo2 = async (req: Request, res: Response) => {
         const avatar = req.body.image?.[0];  //parametro esistente solo quando salvo profilo con avatar esistente
 
         const imageFile = req.files?.image;
-
-        console.log('imageFile: ', imageFile)
+         
         const imagePath = imageFile?.relativePath || '';
-        const img = imagePath ? imagePath : avatar ? avatar : null;
-
-
-        //const {id, nome, cognome, cellulare, telefono, citta, via, cap, provincia  } = req.body;
+        const img = imagePath ? imagePath : avatar ? avatar : null; 
   
         const query = `UPDATE profiles SET 
                 nome = ?, cognome = ?, cellulare = ?, telefono = ?, citta = ?, via = ?, cap = ?, provincia = ?, image = ?
                 WHERE id = ?`;
                  
         const values = [nome, cognome, cellulare, telefono, citta, via, cap, provincia, img, id];
-
-        console.log('parametri: ', values)
 
         await poolConnection.execute(query, values);       
         
@@ -99,7 +93,8 @@ export const setProfilo2 = async (req: Request, res: Response) => {
 
 export const getProfiloImage = async (req: Request, res: Response): Promise<void>  => {
 
-    const username = req.params.username
+    const username = req.params.username;
+
     try {
         const query = "SELECT image FROM profiles WHERE username = ?";
             
@@ -112,7 +107,7 @@ export const getProfiloImage = async (req: Request, res: Response): Promise<void
         }); 
 
     } catch (error) {
-        console.log('errori: ', error);
+        console.error('errori: ', error);
         res.status(500).json({
             data: null,
             error: "Errore durante il recupero dell'avatar."

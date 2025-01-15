@@ -1,13 +1,12 @@
 
-import { Request, Response, NextFunction } from  'express';
+import { Request, Response } from  'express';
 import { poolConnection } from '../index';
 import { Stato, Veicolo, VeicoloParams } from '../types/types';
 
 
 export const getVeicoliStato = async (req: Request, res: Response): Promise<void>  => {
 
-
-    const stato = req.params.stato
+    const stato = req.params.stato;
     try {
         let query = "";
 
@@ -16,8 +15,7 @@ export const getVeicoliStato = async (req: Request, res: Response): Promise<void
         } else {
             query = 'SELECT * FROM veicoli WHERE stato=?';  
         }
-
-        //const query = 'SELECT * FROM veicoli WHERE stato=?';    
+          
         const values = [stato];
         const [result] = await poolConnection.execute(query, values);
         
@@ -27,7 +25,7 @@ export const getVeicoliStato = async (req: Request, res: Response): Promise<void
         }); 
 
     } catch (error) {
-        //console.log('errori: ', error);
+        console.error('errori: ', error);
         res.status(500).json({
             data: "",
             error: 'Errore durante il recupero dei veicoli.'
@@ -101,10 +99,9 @@ export const getBrand = async (req: Request, res: Response): Promise<void>  => {
     try {
         const query = 'SELECT DISTINCT brand FROM veicoli;';
         const [result] = await poolConnection.execute(query);
-
-        //const brands = (result as RowDataPacket[]).map(row => row.brand);
+         
         res.status(201).json({
-            data: result,  //brands,             
+            data: result,              
             error: ""
         });  
         return;
@@ -125,8 +122,7 @@ export const getBrandAndModel = async (req: Request, res: Response): Promise<voi
             FROM veicoli GROUP BY brand ORDER BY brand;`;
 
         const [result] = await poolConnection.execute(query);
-
-        //const brands = (result as RowDataPacket[]).map(row => row.brand);
+         
         res.status(201).json({
             data: result,             
             error: ""
@@ -144,8 +140,6 @@ export const getBrandAndModel = async (req: Request, res: Response): Promise<voi
 export const addVeicolo = async (req: Request, res: Response) => {
     // I campi sono array in formidable (inseriti in req dopo il parse con il campo image)
     try {
-  
-      //console.log('valori in req: ', req.body, req.files)
    
         const brand = req.body.brand?.[0];  
         const modello = req.body.model?.[0];
@@ -156,8 +150,6 @@ export const addVeicolo = async (req: Request, res: Response) => {
         const prezzo = req.body.prezzo?.[0];
         const stato = Stato.VENDESI;
         const image = req.body.image?.[0];
-  
-      //const uploadedFile = req.files?.image?.[0].filepath;
 
         const imageFile = req.files?.image;
         const imagePath = imageFile?.relativePath || '';
@@ -166,7 +158,6 @@ export const addVeicolo = async (req: Request, res: Response) => {
 
         const img = imagePath ? imagePath : image ? image : null;
 
-        //console.log('campo img: ', img)
   
         if(!id) {
             //salvo nel db tutti i dati:       
@@ -180,9 +171,8 @@ export const addVeicolo = async (req: Request, res: Response) => {
         } else { //sono in upd
             const query = `UPDATE veicoli SET 
                 brand = ?, modello = ?, tipo = ?, anno = ?, alimentazione = ?, kilometri = ?, prezzo = ?, stato = ?, image = ?
-                WHERE id = ?`;
-
-                //const values = [brand, modello, tipo, anno, alimentazione, km, prezzo, stato, imagePath ? imagePath : null, id];
+                WHERE id = ?;`;
+                
                 const values = [brand, modello, tipo, anno, alimentazione, km, prezzo, stato, img, id];
 
                 await poolConnection.execute(query, values);
@@ -206,7 +196,7 @@ export const getVeicoloByID = async (req: Request, res: Response): Promise<void>
 
     const id = req.params.id
     try {
-        const query = "SELECT * FROM veicoli WHERE id=?";
+        const query = "SELECT * FROM veicoli WHERE id=?;";
             
         const values = [id];
         const [result] = await poolConnection.execute(query, values);
@@ -217,7 +207,7 @@ export const getVeicoloByID = async (req: Request, res: Response): Promise<void>
         }); 
 
     } catch (error) {
-        //console.log('errori: ', error);
+        console.error('errori: ', error);
         res.status(500).json({
             data: null,
             error: 'Errore durante il recupero dei veicoli.'
@@ -230,7 +220,7 @@ export const setVenduto = async (req: Request, res: Response): Promise<void>  =>
     const id = req.body.id;
 
     try {
-        const query = `UPDATE veicoli SET stato = ? WHERE id = ?`;
+        const query = `UPDATE veicoli SET stato = ? WHERE id = ?;`;
             
         const values = [Stato.VENDUTO, id];
         await poolConnection.execute(query, values);
@@ -241,7 +231,7 @@ export const setVenduto = async (req: Request, res: Response): Promise<void>  =>
         }); 
 
     } catch (error) {
-        console.log('errori: ', error);
+        console.error('errori: ', error);
         res.status(500).json({
             message: null,
             error: 'Errore durante aggiornamento stato veicolo.'
@@ -255,7 +245,7 @@ export const deleteVeicoloByID = async (req: Request, res: Response): Promise<vo
     const id = req.body.id;
 
     try {
-        const query = `DELETE FROM veicoli WHERE id = ?`;
+        const query = `DELETE FROM veicoli WHERE id = ?;`;
             
         const values = [id];
         await poolConnection.execute(query, values);
@@ -266,7 +256,7 @@ export const deleteVeicoloByID = async (req: Request, res: Response): Promise<vo
         }); 
 
     } catch (error) {
-        //console.log('errori: ', error);
+        console.error('errori: ', error);
         res.status(500).json({
             message: null,
             error: 'Errore durante cancellazione veicolo.'

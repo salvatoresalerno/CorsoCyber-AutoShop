@@ -1,7 +1,5 @@
 
 'use server'
-
-
  
 import { ExtendedUser, ResponseResult, Veicolo } from "@/lib/types";
 import { cookies } from "next/headers";
@@ -65,9 +63,6 @@ export async function getBrand() {
       error: null
     }
 
-    //console.log('dati in risposta da refresh: ', data)
-
-    //return data;
   } catch (error) {
     console.log('errore status: ', error)
     return {
@@ -77,9 +72,7 @@ export async function getBrand() {
   }
 }
 
-//solo brand: SELECT DISTINCT brand FROM veicoli;
-//modelliassociati ai brand: SELECT DISTINCT modello FROM veicoli WHERE brand = 'NomeDelBrand';
-
+ 
 
 export async function uploadImageWithData(formData: FormData, id?: string) {
 
@@ -111,14 +104,7 @@ export async function uploadImageWithData(formData: FormData, id?: string) {
     const  result:ResponseResult = await response.json();
 
     return result;
-
-    /* if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Error uploading image');
-    }
-
-    const data = await response.json();
-    return { success: true, data }; */
+     
 
   } catch (error) {
     //console.error('Error in server action:', error);
@@ -145,7 +131,6 @@ export async function loadVeicoloById(id: string) {
     });
 
     const resultData = await res.json()
-//console.log('resultData: ', resultData)
 
     return {
       data: resultData.data as Veicolo,
@@ -154,7 +139,7 @@ export async function loadVeicoloById(id: string) {
 
   
   } catch (error) {
-    console.log('errore status: ', error)
+    console.error('errore status: ', error)
     return {
       data: null,
       error: 'errore recupero veicolo'
@@ -181,9 +166,7 @@ export async function deleteVeicoloByID(id: string): Promise<ResponseResult> {
           Cookie: `token=${token}; `
         },
         body: JSON.stringify({ id }),
-      });
-
-      console.log('risposta: ', res)
+      }); 
 
       if (!res.ok) {
         return {
@@ -195,7 +178,7 @@ export async function deleteVeicoloByID(id: string): Promise<ResponseResult> {
       return await res.json();
     
     } catch (error) {
-      console.log('errore cancellazione: ', error)
+      console.error('errore cancellazione: ', error)
       return {
         message: '',
         error: 'errore cancellazione veicolo'
@@ -217,8 +200,7 @@ export async function loadUserList() {
       },
     });
 
-    const resultData = await res.json()
-//console.log('resultData: ', resultData)
+    const resultData = await res.json();
 
     return {
       data: resultData.data as ExtendedUser[],
@@ -227,7 +209,7 @@ export async function loadUserList() {
 
   
   } catch (error) {
-    console.log('errore status: ', error)
+    console.error('errore status: ', error)
     return {
       data: null,
       error: 'errore recupero lista Utenti'
@@ -249,9 +231,7 @@ export async function setBanned(id: string, banned: number): Promise<ResponseRes
           Cookie: `token=${token}; `
         },
         body: JSON.stringify({ id, banned }),
-      });
-
-     
+      });     
 
       if (!res.ok) {
         return {
@@ -263,7 +243,7 @@ export async function setBanned(id: string, banned: number): Promise<ResponseRes
       return await res.json();
     
     } catch (error) {
-      console.log('errore status: ', error)
+      console.error('errore status: ', error)
       return {
         message: '',
         error: 'errore aggiornamento veicolo'
@@ -290,9 +270,7 @@ export async function deleteAdminByID(id: string): Promise<ResponseResult> {
           Cookie: `token=${token}; `
         },
         body: JSON.stringify({ id }),
-      });
-
-      console.log('risposta: ', res)
+      }); 
 
       if (!res.ok) {
         return {
@@ -304,7 +282,7 @@ export async function deleteAdminByID(id: string): Promise<ResponseResult> {
       return await res.json();
     
     } catch (error) {
-      console.log('errore cancellazione: ', error)
+      console.error('errore cancellazione: ', error)
       return {
         message: '',
         error: 'errore cancellazione Admin'
@@ -312,166 +290,24 @@ export async function deleteAdminByID(id: string): Promise<ResponseResult> {
     }
 }
 
-
-/* export async function changeRole(username: string): Promise<ResponseResult> {
   
-  const token = cookies().get("token")?.value;
-  if(!token) {  
-    redirect('/login');      
-  }
-  try {
-      const res = await fetch(`http://localhost:5000/api/admin/changeRole`, {
-        method: 'PUT',
-        headers: {    
-          'Content-Type': 'application/json',   
-          Cookie: `token=${token}; `
-        },
-        body: JSON.stringify({ username }),
-      });
+export async function logoutAdminAction() {
+  // Rimuove il cookie di sessione
+  cookies().set({
+    name: 'token',
+    value: '',
+    path: '/',
+    maxAge: -1, // imposto scadenza immediata
+  });
+  cookies().set({
+    name: 'refreshToken',
+    value: '',
+    path: '/',
+    maxAge: -1, // imposto scadenza immediata
+  });
 
-     
-
-      if (!res.ok) {
-        return {
-          message: '',
-          error: 'errore aggiornamento ruolo'
-        }
-      }
-
-      return await res.json();
-    
-    } catch (error) {
-      console.log('errore status: ', error)
-      return {
-        message: '',
-        error: 'errore aggiornamento ruolo'
-      }
-    }
-}
- */
- 
-
-
-
-/*
-export async function updateNewsClick(id: string): Promise<void> {
-   
-  if (!validateGuid(id)) {
-    //se l'id non è un guid valido, non segnala errori e non apre la pagina
-    return;
-  } 
-
-    redirect(`/admin/dashboard/news/page-editor/${id}`)
-}
-
-export async function deleteNews(id: string): Promise<DbResponse> {
-    if (!validateGuid(id)) {
-      //se l'id non è un guid valido, genera errore
-      throw new Error('Errore durante la cancellazione dei dati - code: V400');
-    }
-    const supabaseClient =  createClient();
-    try {
-      const { error } = await supabaseClient
-        .from('news')
-        .delete()
-        .eq('id', id)
-      if (error) {  
-        throw new Error(`Errore durante la cancellazione dei dati - code: ${error.code}`);
-      } else {
-        return {
-          message: 'News cancellata correttamente',
-          error: null,
-        }
-      }
-    } catch (err) {  
-      const errorDB: ErrorDB = err instanceof Error ? {message: err.message} : {message: 'Unknown error occurred', code: 999}
-  
-      return {
-          message: null,
-          error: errorDB,
-      };
-    }
-
-}    
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* export const loginAdminActionCookie = async (formData: SigninFormInputs) => {
-     
-    const username = formData.email;
-    const password = formData.password;
-  
-      const admin = DB.utenti.find(     //ricerca dei dati nella tab. utente --> simulata 
-      (utente) => utente.username === username && utente.password === password && utente.ruolo === Ruolo.ADMIN
-    ); rimosso per evitare errori, rivedere !!!  
-     
-  
-    if (!admin) {
-      return {
-        message: 'Username o password non corretti',
-        success: false
-      } 
-    }
-  
-    cookies().set({
-      name: 'adminSession',
-      value: JSON.stringify({ username: admin.email, ruolo: admin.ruolo }),
-      httpOnly: true,
-      path: '/admin',
-      maxAge: 60 * 60 * 24, // 1 giorno
-    });
-    
-    return { 
-      message: 'Login eseguito con successo',
-      success: true
-    };
-  }*/
-  
-  export async function logoutAdminAction() {
-    // Rimuove il cookie di sessione
-    cookies().set({
-      name: 'token',
-      value: '',
-      path: '/',
-      maxAge: -1, // imposto scadenza immediata
-    });
-    cookies().set({
-      name: 'refreshToken',
-      value: '',
-      path: '/',
-      maxAge: -1, // imposto scadenza immediata
-    });
-
-    redirect('/admin')
-    
-    //return { success: true, message: 'Logout eseguito con successo' };
-  }  
+  redirect('/admin'); 
+}  
 
 
 

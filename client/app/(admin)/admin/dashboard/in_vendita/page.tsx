@@ -7,12 +7,8 @@ import VeicoliTable from "@/components/veicoliTable";
 import { Stato, Veicolo } from "@/lib/types";
 import { decodeEscapedHtml } from "@/lib/utils";
 
- 
-
-
 
 export default async function InVendita() {
-
  
   const { data, error } = await getVeicoliStato(Stato.VENDESI);   
 
@@ -34,21 +30,17 @@ export default async function InVendita() {
       return (<ErrorComponent/>);
     }
    
-
-   
     return (
       <div className="h-auto">
         <h1 className="text-3xl font-bold uppercase text-center my-4">Veicoli in vendita</h1>
         <FiltriProvider> 
             <AdminSearchBar veicoli={veicoliDataEscaped ? veicoliDataEscaped : []}/>
-            {/*  <AdminSearchBar veicoli={data ? data : []}/>*/}
             <hr className="my-5"/>
             <VeicoliTable 
                 className="px-10 pb-10"
                 veicoli={veicoliDataEscaped}
                 stato={Stato.VENDESI}
             />
-
         </FiltriProvider>  
       </div>
     );

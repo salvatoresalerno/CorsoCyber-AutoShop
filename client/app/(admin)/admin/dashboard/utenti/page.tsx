@@ -17,11 +17,6 @@ export default async function GestioneUtenti() {
 
     const { data, error } = await loadUserList();
 
-    console.log('Lista Utenti: ', data)
-
-
-
-
     if (error) {
         return (<ErrorComponent/>);
     }
@@ -55,8 +50,3 @@ export default async function GestioneUtenti() {
 }
 
 
-/*
-<button onClick={handleAddIntervento} className='flex items-center justify-center self-end w-8 h-8 p-2 rounded-full bg-[--ss--principal] hover:bg-[#00a1ff80]'>
-                <span><LiaPlusSolid className='w-5 h-5'/></span>                  
-              </button>
-*/

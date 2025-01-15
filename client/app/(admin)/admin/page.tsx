@@ -19,13 +19,11 @@ export default function LoginAdmin() {
                   <h1 className="text-2xl font-bold text-center mb-4 pb-4">
                       Auto-Shop.it
                   </h1>
-
                   <LoginForm ruolo={Ruolo.ADMIN} />
               </div>
           </div>
       </div>
-    );
-     
+    );     
 }
 
 

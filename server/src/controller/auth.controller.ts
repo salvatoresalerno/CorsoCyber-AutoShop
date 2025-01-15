@@ -1,30 +1,15 @@
 
 import { Request, Response } from  'express';
 import { poolConnection } from '../index';
-import bcrypt from 'bcrypt';
 import { findUserById, findUserForLogin, SetLoginDate } from '../services/user.service';
 import { addRefreshToken, generateRefreshToken, generateToken, getRefreshToken } from '../services/jwt.service';
 import { Ruolo } from '../types/types';
 import dotenv from "dotenv"; 
-import { error } from 'console';
 import { hashPassword, verifyPassword } from '../utils';
 
 dotenv.config({ path: '../.env' });
 
 const REFRESH_TOKEN_EXPIRY =  Number(process.env.REFRESH_TOKEN_EXPIRY) || 7 * 24 * 60 * 60 * 1000;  // 7 giorni
-
-
-/* const hashPassword = async (password: string): Promise<string> => {      
-    const salt = await bcrypt.genSalt(10); // Genera un salt
-    // Genera l'hash della password con il salt
-    const hashedPassword = await bcrypt.hash(password, salt);
-    return hashedPassword;
-};
-
-export const verifyPassword = async (password: string, storedHash: string): Promise<boolean> => {     
-    const isMatch = await bcrypt.compare(password, storedHash);
-    return isMatch;
-}; */
 
  
 export const signUp = async (req: Request, res: Response): Promise<void> => {
@@ -81,8 +66,7 @@ export const updAdmin = async (req: Request, res: Response): Promise<void> => {
             error: ""
         }); 
     } catch (error) {
-        console.error('Errore durante la modifica ADMIN:', error);
-         
+        console.error('Errore durante la modifica ADMIN:', error);         
         res.status(500).json({
             message: "",
             error: 'Errore durante la modifica ADMIN!'
@@ -125,9 +109,6 @@ export const signInUser = async (req: Request, res: Response) => {
         }); 
         return   
     }
-
-    
-     
     
     const isValid = await verifyPassword(password, user[0].password);
 
@@ -175,11 +156,6 @@ export const signInUser = async (req: Request, res: Response) => {
         error: null,
         message: 'Login Ok'
     });
-}
-
-
-export const signInAdmin = async (req: Request, res: Response) => {
-
 }
 
 

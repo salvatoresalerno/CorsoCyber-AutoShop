@@ -1,6 +1,6 @@
 
 
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 import dotenv from "dotenv";
 import mysql, { Pool, PoolOptions } from "mysql2/promise";
 import cookieParser from 'cookie-parser';
@@ -14,7 +14,7 @@ import path from 'path';
 import { InitializingDB } from "./db/init";
 
  
-//export const UPLOAD_DIR = path.join(__dirname, 'uploads');  //dir per upload immagini veicoli 
+
 export const UPLOAD_DIR_VEICOLI = path.join(__dirname, '../uploads/veicoli');  //dir per upload immagini veicoli 
 export const UPLOAD_DIR_AVATAR = path.join(__dirname, '../uploads/avatar');  //dir per upload avatar 
 
@@ -49,16 +49,16 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads'))); //midd 
 
 
 
-//inizializzazione DB: creazione db, utente, privilegi user, tabelle, trigger, foreign key
+//inizializzazione DB: creazione db, utente, privilegi user, tabelle, trigger, foreign key, add veicoli
 (async () => {
   try {
        
       await InitializingDB();
 
-      console.log("Database inizializzato correttamente");
+      console.log("Database Pronto all'uso!");
   } catch (error) {
       console.error("Errore durante l'inizializzazione del database:", error);
-      process.exit(1); // Arresta il server in caso di errore
+      process.exit(1);  
   }
 })(); 
 
@@ -76,27 +76,11 @@ const poolConfig: PoolOptions = {
 };
 export const poolConnection: Pool = mysql.createPool(poolConfig);
 
-// Inizializza il database
-/* (async () => {
-  try {
-      await initializeDatabase(poolConnection);
-      console.log("Database inizializzato correttamente");
-  } catch (error) {
-      console.error("Errore durante l'inizializzazione del database:", error);
-      process.exit(1); // Arresta il server in caso di errore
-  }
-})(); */
-
-
-
 
 app.use("/api/auth", authRoutes);
 app.use("/api/veicoli", veicoliRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/admin", adminRoutes);
-
- 
-
 
 
 

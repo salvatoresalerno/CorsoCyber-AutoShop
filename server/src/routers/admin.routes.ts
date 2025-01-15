@@ -4,8 +4,7 @@ import { validateReq } from "../middleware/validateRequest";
 import { authenticate } from "../middleware/authenticate";
 import { bannedValidatorBody } from "../validators/user.schema";
 import { deleteAdmin, getUsers, setBanned } from "../controller/admin.controller";
-import { idValidatorBody } from "../validators/veicolo.schema";
-//import { changeRoleValidator } from "../validators/auth.schema";
+import { idValidatorBody } from "../validators/veicolo.schema"; 
 
 
 const router: Router = Router();
@@ -18,8 +17,7 @@ router.put('/setBanned', authenticate, bannedValidatorBody, validateReq, setBann
 
 router.delete('/delAdmin', authenticate, idValidatorBody, deleteAdmin)
 
-
-//router.put('/changeRole', authenticate, changeRoleValidator, validateReq, changeRole);
+ 
 
 
 

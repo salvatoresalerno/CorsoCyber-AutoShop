@@ -19,7 +19,7 @@ export const findUserForLogin = async (email:string) => {
 
         return result as UserWithPwd[];
     } catch (error) {
-        console.log('errori: ', error)
+        console.error('errori: ', error)
         return null       
     }  
 }
@@ -32,11 +32,9 @@ export const SetLoginDate = async (email:string) => {
         const values = [new Date(), email]
         const [result] = await poolConnection.execute(query, values);
 
-        console.log('result Date: ', result)
-
         return result;
     } catch (error) {
-        console.log('errori: ', error)
+        console.error('errori: ', error)
         return null       
     }  
 }
@@ -55,7 +53,7 @@ export const findUserById = async (id:string): Promise<User | null> => {
         
         return (result as User[])[0] ?? null;
     } catch (error) {
-        console.log('errori: ', error)
+        console.error('errori: ', error)
         return null
     }  
 }
@@ -71,7 +69,7 @@ export const findUserForChangeRole = async (username:string): Promise<{id: strin
         
         return (result as {id:string}[])[0] ?? null;
     } catch (error) {
-        console.log('errori: ', error)
+        console.error('errori: ', error)
         return null
     }  
 }

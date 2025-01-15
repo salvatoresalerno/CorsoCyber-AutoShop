@@ -12,49 +12,6 @@ import { NextResponse } from "next/server";
 
 
 
-
-/* export const filtraVeicoli = async (params: FilterParams): Promise<VeicoloWithImg[] | VeicoliSuggeriti> => {
-  const veicoli = await getCachedVeicoli();
-
-  const veicoliFiltrati =  veicoli.filter((veicolo) => {
-      const matchesTipo = params.tipo ? veicolo.tipo === params.tipo : true;
-      const matchesBrand = params.brand ? veicolo.brand === params.brand : true;
-      const matchesModel = params.model ? veicolo.modello === params.model : true;
-      const matchesAlim = params.alim ? veicolo.alimentazione === params.alim : true;
-      const matchesAnno = params.anno ? veicolo.anno === params.anno : true;
-
-      const matchesKm = params.km ? (veicolo.kilometri >= params.km.valueA && veicolo.kilometri <= params.km.valueB) : true;
-      const matchesPrezzo = params.prezzo ? (veicolo.prezzo >= params.prezzo.valueA && veicolo.prezzo <= params.prezzo.valueB) : true;
-
-      return matchesTipo && matchesBrand &&  matchesModel &&  matchesAlim &&  matchesAnno && matchesKm && matchesPrezzo;
-  });
-
-  if (veicoliFiltrati.length > 0) {  //ricerca con successo
-
-    return veicoliFiltrati;  
-
-    //return veicoliFiltrati;
-  } else {  //effettuo ricerca senza km, prezzo, anno, alimentazione  --> veicoli suggeriti
-    const veicoliSuggeriti =  veicoli.filter((veicolo) => {
-      const matchesTipo = params.tipo ? veicolo.tipo === params.tipo : true;
-      const matchesBrand = params.brand ? veicolo.brand === params.brand : true;
-      const matchesModel = params.model ? veicolo.modello === params.model : true;      
-
-      return matchesTipo && matchesBrand &&  matchesModel ;
-    }).sort((a, b) => a.anno - b.anno);  //veicoli ordinato con anno crescente
-
-    const result:VeicoliSuggeriti = {veicoli: veicoliSuggeriti, suggerito: true}
-
-
-    return result;
-  }
-}
- */
-
-
-
-
-
 export async function logoutUserAction(id: string) {
   try {
     const response = await fetch('http://localhost:5000/api/auth/logout', {
@@ -152,53 +109,9 @@ export const SignUpAction = async (formData: SignupFormInputs, ruolo: string | n
     return {
       message: "",
       error: "Errore durante la registrazione"
-      //error: err instanceof Error ? err.message : "Errore durante la registrazione"
     }
   }
 } 
-
-
-
-
-
- 
-
-/* export async function getAvatar() {
-  const avatarUrl = 'https://thispersondoesnotexist.com';
-
-  try {
-     const response = await fetch(avatarUrl, {
-      method: 'GET',
-      headers: {
-        'Cache-Control': 'no-cache', //non preleva da cache ma solo da richiesta
-      },
-    });  
-
-    
-
-    console.log('response: ', response)
-    
-
-    if (!response.ok) {
-      throw new Error('Nessuna immagine ricevuta');
-    }
-
-     
-    const imageBlob = await response.blob(); // Converti la risposta in un blob
-console.log('blob: ', imageBlob)
-
-    //const imageObjectURL = URL.createObjectURL(imageBlob); // Crea un URL oggetto dal blob
-
-    return imageBlob;
-
-  } catch (error) {
-    console.error('Impossibile recuperare immagine:', error);
-    throw new Error('Impossibile recuperare immagine');
-  }
-} */
-
-
-
 
 
  
@@ -276,11 +189,6 @@ export async function getCurrentUser() {
 }
 
 
-
-
-
-
-
 export async function getFilteredVeicoli(params: FilterParams): Promise<DataFilterResult> {
    
   try {
@@ -332,8 +240,6 @@ export async function setVeicoloVenduto(id: string): Promise<ResponseResult> {
         body: JSON.stringify({ id }),
       });
 
-      console.log('risposta: ', res)
-
       if (!res.ok) {
         return {
           message: '',
@@ -344,7 +250,7 @@ export async function setVeicoloVenduto(id: string): Promise<ResponseResult> {
       return await res.json();
     
     } catch (error) {
-      console.log('errore status: ', error)
+      console.error('errore status: ', error)
       return {
         message: '',
         error: 'errore aggiornamento veicolo'
@@ -378,7 +284,7 @@ export async function getProfilo(username: string | undefined): Promise<UserData
 
   
   } catch (error) {
-    console.log('errore profilo: ', error)
+    console.error('errore profilo: ', error)
     return {
       data: null,
       error: 'errore recupero profilo'
@@ -423,7 +329,7 @@ export async function setProfilo(formData: ProfileFormInputs): Promise<ResponseR
       return await res.json();
     
     } catch (error) {
-      console.log('errore profilo: ', error)
+      console.error('errore profilo: ', error)
       return {
         message: '',
         error: 'errore aggiornamento profilo'
@@ -441,20 +347,18 @@ export async function uploadProfilo(formData: FormData) {
 
   try {
    
-      const response = await fetch('http://localhost:5000/api/user/updProfilo', {
-        method: 'PUT',
-        body: formData,
-        headers: {       
-          Cookie: `token=${token}; `
-        },
-      });
+    const response = await fetch('http://localhost:5000/api/user/updProfilo', {
+      method: 'PUT',
+      body: formData,
+      headers: {       
+        Cookie: `token=${token}; `
+      },
+    });
      
 
     const  result:ResponseResult = await response.json();
 
-    return result;
-
-     
+    return result;     
 
   } catch (error) {
     console.error('Error in server action:', error);
@@ -465,7 +369,7 @@ export async function uploadProfilo(formData: FormData) {
   }
 }
 
-export async function geAvatar(username: string | undefined)/* : Promise<UserDataResult> */ {
+export async function geAvatar(username: string | undefined) {
 
   const token = cookies().get("token")?.value;
   if(!token || !username) {  
@@ -482,16 +386,14 @@ export async function geAvatar(username: string | undefined)/* : Promise<UserDat
 
     const resultData = await res.json();
 
-    console.log('Avatar da get: ', resultData)
-
-     return {
+    return {
       data: resultData.data[0] as { image: string },
       error: resultData.error  as string 
     }  
 
   
   } catch (error) {
-    console.log('errore profilo: ', error)
+    console.error('errore profilo: ', error)
     return {
       data: null,
       error: 'errore recupero profilo'

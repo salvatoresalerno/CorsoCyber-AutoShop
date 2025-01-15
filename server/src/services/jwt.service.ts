@@ -84,7 +84,7 @@ export const generateRefreshToken = (): string => {
 
 export const addRefreshToken = async (refreshToken: string, refreshTokenExpired: Date, user_id: string) => {
   try {
-    const query = "UPDATE session SET refresh_token=?, refresh_token_exp=? WHERE user_id=?";
+    const query = "UPDATE session SET refresh_token=?, refresh_token_exp=? WHERE user_id=?;";
     const values = [refreshToken, refreshTokenExpired, user_id];
 
     await poolConnection.execute(query, values);
@@ -96,7 +96,7 @@ export const addRefreshToken = async (refreshToken: string, refreshTokenExpired:
 export const getRefreshToken = async (user_id:string) => {  
 
   try {
-      const query = "SELECT refresh_token, refresh_token_exp FROM session WHERE user_id=?";    
+      const query = "SELECT refresh_token, refresh_token_exp FROM session WHERE user_id=?;";    
       const values = [user_id]
       
       const [result] = await poolConnection.execute(query, values);

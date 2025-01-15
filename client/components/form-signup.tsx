@@ -12,8 +12,7 @@ import { ErrorValidationComponent } from "./ErrorValidationComponent";
 import Link from "next/link";
 import { ExtendedUser, Ruolo } from "@/lib/types";
 import { useRouter } from 'next/navigation';
-import { cn } from "@/lib/utils";
-//import { changeRole } from "@/app/(admin)/admin/action";
+import { cn } from "@/lib/utils"; 
 
 
 const signupSchema = z.object({   //schema validazione campi form
@@ -24,25 +23,21 @@ const signupSchema = z.object({   //schema validazione campi form
     username: z
         .string()
         .trim()
-        //.min(1, { message: "Il campo non può essere vuoto" })
         .regex(/^[a-zA-Z0-9]+$/, { message: "L'username può contenere solo lettere e numeri" })
         .min(3, { message: "Username deve essere da 3 a 30 caratteri" })
         .max(30, { message: "Username deve essere da 3 a 30 caratteri" }),
-        
-        //.refine((val) => !val.includes("'"), {message: "carattere ' non permesso"}),
-
     email: z
         .string()
         .trim()
         .email("Formato email non valido.")
         .max(255, {message: "la mail deve essere massimo 255 caratteri"}),
     password: z
-      .string()
-      .trim()
-      .min(8, "La password deve essere minimo 8 caratteri")
-      .regex(/[A-Z]/, "La password deve contenere almeno una lettera maiuscola")
-      .regex(/\d/, "La password deve contenere almeno un numero")
-      .regex(/[$!%=[\]#\-.\(\)]/, "La password deve contenere almeno un carattere speciale tra !$%=[]#-.( )"),
+        .string()
+        .trim()
+        .min(8, "La password deve essere minimo 8 caratteri")
+        .regex(/[A-Z]/, "La password deve contenere almeno una lettera maiuscola")
+        .regex(/\d/, "La password deve contenere almeno un numero")
+        .regex(/[$!%=[\]#\-.\(\)]/, "La password deve contenere almeno un carattere speciale tra !$%=[]#-.( )"),
     confirmPassword: z
         .string()
         .trim(),
@@ -99,7 +94,6 @@ export const SignUpForm = ({ruolo, admin}: SignUpFormProps) => {
         let message: string = '';
         let error: string = '';
 
-        //const {message, error} = await SignUpAction(data);
         if (ruolo === Ruolo.USER) {
             const res = await SignUpAction(data);
             message = res.message;
@@ -111,20 +105,11 @@ export const SignUpForm = ({ruolo, admin}: SignUpFormProps) => {
                 res = await SignUpAction(data, Ruolo.ADMIN, true);
             } else { //salvataggio normale
                 res = await SignUpAction(data, Ruolo.ADMIN);
-            }
-            //const res = await SignUpAction(data, Ruolo.ADMIN);             
+            }          
             error = res.error;
             message = res.message;
-            router.refresh();
-            /* if (res.message) { //se utente creato con successo (USER), cambio il ruolo --> ADMIN
-                console.log('Cambio ruolo')
-                //chiamo action passando username --> l'endpoint ricercherà username per recuperare id e cambiare ruolo
-                const res = await changeRole(data.username);
-                message = res.message;
-                error = res.error;
-            } */
-        }
-        
+            router.refresh();            
+        }        
 
         if (error) {
             setErrorMessage(error);    

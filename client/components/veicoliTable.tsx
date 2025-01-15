@@ -91,11 +91,8 @@ const VeicoliTable = ({ veicoli, className, stato }: VeicoliTableProps) => {
         setSortConfig({ key, direction });
     };
 
-    console.log('calcolo ')
-
     const totalVeicoli = veicoliFiltrati ? veicoliFiltrati.length : 0;
     const totalPages = Math.ceil(totalVeicoli / itemsPerPage);
-    //console.log('tot pag. ', totalPages)
     const paginatedVeicoli = veicoliFiltrati ? veicoliFiltrati.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
@@ -141,12 +138,9 @@ const VeicoliTable = ({ veicoli, className, stato }: VeicoliTableProps) => {
         event.stopPropagation();
         
         if (action === 'update') {
-           console.log('update del veicolo: ', veicolo)
            router.push(`/admin/dashboard/veicolo/${veicolo.id}`);
         } else if (action === 'delete') { 
-            console.log('canc. del veicolo: ', veicolo)
             const { message, error } = await deleteVeicoloByID(veicolo.id ?? '');
-            console.log('pagin prima: ', veicoliFiltrati)
             if (message){ //se tutto ok
                 setSuccess(message);
                 setVeicoliFiltrati(prevItems => {
@@ -164,9 +158,7 @@ const VeicoliTable = ({ veicoli, className, stato }: VeicoliTableProps) => {
             setTimeout(() => {
                 setErrore('');
                 setSuccess('');
-            }, 5000);
-
-            
+            }, 5000);            
         }
       };
     

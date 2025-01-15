@@ -2,17 +2,19 @@
 import { getVeicoliStato } from "@/app/action";
 import AdminSearchBar from "@/components/admin-SearchBar";
 import { FiltriProvider } from "@/components/context/filtriContext";
+import ErrorComponent from "@/components/errorComponent";
 import VeicoliTable from "@/components/veicoliTable";
 import { Stato, Veicolo } from "@/lib/types";
 import { decodeEscapedHtml } from "@/lib/utils";
 
 
 export default async function InVendita() {
+   
+  const { data: veicoli, error } = await getVeicoliStato(Stato.VENDUTO);
 
-   
-   
-   
-  const { data: veicoli } = await getVeicoliStato(Stato.VENDUTO);
+  if (error) {
+    return (<ErrorComponent/>);
+  }
 
   const data: Veicolo[] | null = veicoli ? 
       veicoli.map((item) => ({
@@ -40,7 +42,6 @@ export default async function InVendita() {
               veicoli={data}
               stato={Stato.VENDUTO}
           />
-
       </FiltriProvider>
     </div>
   );

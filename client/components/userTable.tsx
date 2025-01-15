@@ -31,7 +31,7 @@ const sortedIcon = (
     </svg>
 );
 
-const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo, currentAdminRole}: UserTableProps) => {
+const UserTable = ({className, utenti, ruolo, currentAdminRole}: UserTableProps) => {
 
     const [utentiFiltrati, setUtentiFiltrati] = useState<ExtendedUser[] | null>(null);
     const [sortConfig, setSortConfig] = useState<{ key: keyof ExtendedUser; direction: 'ascending' | 'descending' } >({key: 'username', direction: 'ascending'});
@@ -58,20 +58,9 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo, currentAdmi
             }
 
             if (sortConfig !== null) {  //ordinamento di default --> modello
-                if (viewUsers) {
-                      /* viewUsers.sort((a, b) => {
-                        if (sortConfig.key !== 'id'  && sortConfig.key !== 'banned') {  //esclude la key e banned id dall'ordinamento
-                            if (a[sortConfig.key].toString().toLowerCase() < b[sortConfig.key].toString().toLowerCase()) {
-                                return sortConfig.direction === 'ascending' ? -1 : 1;
-                            }
-                            if (a[sortConfig.key].toString().toLowerCase() > b[sortConfig.key].toString().toLowerCase()) {
-                                return sortConfig.direction === 'ascending' ? 1 : -1;
-                            }
-                        } 
-                        return 0;
-                    });  */
+                if (viewUsers) {                     
                     viewUsers.sort((a, b) => {
-                        if (sortConfig.key !== 'id' && sortConfig.key !== 'banned') { // Esclude le key id dall'ordinamento
+                        if (sortConfig.key !== 'id' && sortConfig.key !== 'banned') { // Esclude le key id e banned dall'ordinamento
                             const valueA = a[sortConfig.key];
                             const valueB = b[sortConfig.key];
             
@@ -82,9 +71,7 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo, currentAdmi
                                 // Ordinamento per date
                                 const timeA = new Date(valueA).getTime();
                                 const timeB = new Date(valueB).getTime();
-                                console.log('Time A: ', timeA)
-                                console.log('Time B: ', timeB)
-                                //return sortConfig.direction === 'ascending' ? timeA - timeB : timeB - timeA;
+                                
                                 if (timeA < timeB) {
                                     return sortConfig.direction === 'ascending' ? -1 : 1;
                                 }
@@ -166,22 +153,15 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo, currentAdmi
         }
 
         return pageNumbers;
-    };
-
-    //const openDialog = () => setIsOpen(true);
+    };     
 
     const handleButtonClick = (utente: ExtendedUser, action: 'update' | 'delete') => async (event: React.MouseEvent) => {
         event.preventDefault();
         event.stopPropagation();
 
-        //console.log('utente cliccato: ', utente)
-
         if (action === 'update') {
-            /* setSelectedUser(utente);
-            setIsOpen(true); //apre dialog */
             openDialog(utente)
         } else if (action === 'delete') {
-            console.log('utente cliccato da cancellare: ', utente)
             const { message, error } = await deleteAdminByID(utente.id);
             if (message){ //se tutto ok
                 setSuccess(message);
@@ -201,39 +181,7 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo, currentAdmi
                 setErrore('');
                 setSuccess('');
             }, 5000);
-        }
-
-
-        
-        
-        /* if (action === 'update') {
-           console.log('update del veicolo: ', veicolo)
-           router.push(`/admin/dashboard/veicolo/${veicolo.id}`);
-        } else if (action === 'delete') { 
-            console.log('canc. del veicolo: ', veicolo)
-            const { message, error } = await deleteVeicoloByID(veicolo.id ?? '');
-            console.log('pagin prima: ', veicoliFiltrati)
-            if (message){ //se tutto ok
-                setSuccess(message);
-                setVeicoliFiltrati(prevItems => {
-                    if (!prevItems) return [];
-                    const index = prevItems.findIndex(item => item.id === veicolo.id); //rimuovo dai dati già caricati per evitare chiamata a BE
-                    if (index !== -1) {
-                      prevItems.splice(index, 1);
-                    }
-                    return [...prevItems];
-                  });                
-            }
-            if (error) {
-                setErrore(error);
-            }
-            setTimeout(() => {
-                setErrore('');
-                setSuccess('');
-            }, 5000);
-
-             
-        }*/
+        }        
     };
 
     const openDialog = (user: ExtendedUser | null) => {
@@ -242,13 +190,11 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo, currentAdmi
     };
     
     const closeDialog = () => {
-    setIsOpen(false); // Chiude la dialog
-    setSelectedAdmin(null);  
+        setIsOpen(false); // Chiude la dialog
+        setSelectedAdmin(null);  
     };
 
     const handleChangeBanned = async (id: string, checked: boolean) => {
-        console.log('utente ban: ', id,  checked)
-        //chiamo action per setBanned, prima valido:
         const paramsValidator = z.object({
             id: z
                 .string()
@@ -264,9 +210,7 @@ const UserTable = ({/*  veicoli,  stato */ className, utenti, ruolo, currentAdmi
         }
         try {
             const isValid = paramsValidator.parse(data);
-            console.log('IsValid: ', isValid)
             if (isValid) {
-                //chiamare action
                 const { message, error } = await setBanned(isValid.id, isValid.checked);
                 if (message){ //modifica slvata correttamente
                     //cambio nell'array utente lo stato banned senza ricaricare i dati

@@ -39,7 +39,6 @@ export async function getVeicoliStato(stato: Stato): Promise<DataResult> {
 export async function refreshProcess(user: User) {
 
   const refreshToken = cookies().get("refreshToken")?.value;
-  console.log('refreshToken in refreshProcess: ', refreshToken)
 
   if(!refreshToken) {
     return NextResponse.json({
@@ -125,24 +124,16 @@ export async function getAuthenticate() {
       return NextResponse.json({
         error:  resData.error,
         isAuth: false
-      });
-      /* return {
-        error: resData.error,
-        isisAuth: false
-      } */
+      });      
     }
-
     
     return NextResponse.json({
       error:  '',
       isAuth: true
     });  
 
-    
-
-
   } catch (error) {
-    console.log('errore: ', error)
+    console.error('errore: ', error);
     return NextResponse.json({
       error: 'Impossibile rinnovare',
       token: null,
@@ -181,7 +172,7 @@ export async function sendOrderMail(mailData: MailData): Promise<ResponseResult>
       }
     } 
   } catch (error) {
-    console.log('errore invio ordine: ', error)
+    console.error('errore invio ordine: ', error);
       return {
         message: '',
         error: 'errore invio ordine'
@@ -210,9 +201,7 @@ export async function sendContattiMail(mailData: ContattiFormInputs): Promise<Re
                   <p><strong>Messaggio</strong></p>
                   <p>${mailData.messaggio}</p>`
       }),
-    });
-
-     
+    });     
 
     if (response.ok) {
       return {
@@ -226,12 +215,10 @@ export async function sendContattiMail(mailData: ContattiFormInputs): Promise<Re
       }
     } 
   } catch (error) {
-    console.log('errore richiesta INFO: ', error)
+    console.error('errore richiesta INFO: ', error);
       return {
         message: '',
         error: 'errore richiesta INFO'
       }
-  }
-
-  
+  }  
 }

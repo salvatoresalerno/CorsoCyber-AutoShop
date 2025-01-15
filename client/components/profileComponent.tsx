@@ -106,15 +106,12 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
   const router = useRouter();
    
   const fileInputRef = useRef<HTMLInputElement | null>(null) as React.MutableRefObject<HTMLInputElement | null>;
-
-  //const fileInputRef = useRef<HTMLInputElement>(null);
-
+  
   useEffect(()=>{
     let avatarUrl;
     if (profiloData.image) { 
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';  
       avatarUrl = `${baseUrl}/uploads/${profiloData.image}`;
-      console.log('avatar URL: ', avatarUrl)
     } else {
       avatarUrl = undefined;
     }
@@ -131,7 +128,6 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
       setValue("cellulare", profiloData.cellulare);
       setUsername(profiloData.username);
       setEmail(profiloData.email);
-      //setAvatarImage(avatarUrl);
     } else {
       reset();
       setUsername('');
@@ -144,8 +140,6 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
   const onSubmit = async (formData: ProfileFormInputs) => {
     setLoading(true);        
     setErrorMessage("");
-
-    console.log('dati form: ', formData)
 
     const data = new FormData();
     data.append('id', formData.id);
@@ -166,7 +160,6 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
       data.append('image', '');
     }
 
-    //const {message, error} = await setProfilo(formData);
     const {message, error} = await uploadProfilo(data);
 
     if (message) {
@@ -184,15 +177,9 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
       setErrorMessage("");   
       setSuccessMessage("");   
     }, 5000);
-     
+  } 
 
-    
-  }
-
-  console.log('avatar image: ', avatarImage)
-
-  const handleAvatarClick = () => {
-    //fileInputRef.current?.click();  
+  const handleAvatarClick = () => { 
     if (editProfile) {
       fileInputRef.current?.click();
     }
@@ -209,15 +196,6 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
       setAvatarImage(undefined);
     }
   };
-
- /*  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      console.log("File selezionato:", file);
-      // Puoi aggiungere qui il codice per gestire il caricamento del file
-    }
-  }; */
-
   
 
   return (
@@ -411,7 +389,6 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
             <div className={cn(`absolute flex justify-center rounded-full -top-[72px] left-1/2 transform -translate-x-1/2 `, editProfile && "hover:cursor-pointer  group")}>
                 <Avatar className="w-36 h-36 ring-8 ring-[#f5f7f8]" onClick={handleAvatarClick}>
                     <AvatarImage 
-                      //src="https://thispersondoesnotexist.com" 
                       src={avatarImage} 
                     />
                     <AvatarFallback className="border">{profiloData.username[0].toUpperCase()}</AvatarFallback>                    
@@ -430,21 +407,12 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
                       onChange={(e) => {
                         field.onChange(e.target.files?.[0]); // Imposta il file su React Hook Form
                         handlePreview(e.target.files?.[0]);
-                        //setAvatarImage(e.target.files?.[0].)
-                        //setValue("avatar", e.target.files?.[0]); // Aggiorna lo stato manualmente
                       }}
                       accept=".jpeg,.jpg,.png,.webp"
                       className="hidden"
                     />
                   )}
-                />
-                {/* <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  accept=".jpeg,.jpg,.png,.webp"
-                  className="hidden"  
-                /> */}
+                />                
             </div>
             <h2 className="text-3xl font-bold text-center">{profiloData.username}</h2>
             <p className="text-xl font-medium  text-center">{`${profiloData.nome} ${profiloData.cognome}`}</p>                
@@ -458,7 +426,6 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
           </div>                 
         </div>                     
       </div>
-    </div>
-             
+    </div>             
   )
 }

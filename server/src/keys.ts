@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: '../.env' });
 
 
-//let secretKey = process.env.JWT_SECRET || "";
+ 
 let secretKey = process.env.SECRET_JWT || "";
 
 

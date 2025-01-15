@@ -2,8 +2,6 @@
 
 import { body, CustomValidator, param  } from "express-validator";
 import { Alimentazione, Stato, TipoVeicolo } from "../types/types";
-import formidable from 'formidable';
-//import { UPLOAD_DIR } from "..";
 
 
 
@@ -143,7 +141,6 @@ export const addVeicoloValidator = [  //valida i campi come array (formidable re
     body('anno')   
       .isArray({ max: 1 })  
       .withMessage('massimo 1 elemento')
-      //.customSanitizer((value:string[]) => value.map((item: string) => item.trim()))  
       .custom((value:string[]) => {
         if (value.length > 0) {
             const anno = Number(value[0]); 
@@ -159,7 +156,6 @@ export const addVeicoloValidator = [  //valida i campi come array (formidable re
     body('km')
       .isArray({ max: 1 })  
       .withMessage('massimo 1 elemento')
-      //.customSanitizer((value:string[]) => value.map((item: string) => item.trim()))  
       .custom((value:string[]) => {
         if (value.length > 0) {
             const km = Number(value[0]); 
@@ -174,8 +170,7 @@ export const addVeicoloValidator = [  //valida i campi come array (formidable re
     }),      
     body('prezzo')  
       .isArray({ max: 1 })  
-      .withMessage('massimo 1 elemento')
-      //.customSanitizer((value:string[]) => value.map((item: string) => item.trim()))  
+      .withMessage('massimo 1 elemento') 
       .custom((value:string[]) => {
         if (value.length > 0) {
             const prezzo = Number(value[0]); 
@@ -209,85 +204,6 @@ export const addVeicoloValidator = [  //valida i campi come array (formidable re
       
       
   ];
-/* export const addVeicoloValidator = [  //valida i campi come array (formidable restituisce cosi dopo il parse)
-    body('id')
-      .isArray({ min: 1 })  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .trim()
-      .isUUID()
-      .withMessage('Formato parametro non valido.')
-      .optional(),
-    body('tipo')
-      .isArray({ min: 1 }) 
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .custom((value) => value[0] && value[0].trim() !== '')  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .isIn(Object.values(TipoVeicolo))
-      .withMessage('Tipo non valido'),
-    body('brand')
-      .isArray({ min: 1 })  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .custom((value) => value[0] && value[0].trim() !== '')  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .isLength({ max: 20 }).withMessage("Brand deve essere max 20 caratteri")
-      .escape(),
-    body('model')
-      .isArray({ min: 1 })  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .custom((value) => value[0] && value[0].trim() !== '')  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .isLength({ max: 20 }).withMessage("Modello deve essere max 20 caratteri")
-      .escape(),
-    body('alim')
-      .isArray({ min: 1 })  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .custom((value) => value[0] && value[0].trim() !== '')  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .isIn(Object.values(Alimentazione))
-      .withMessage('Alimentazione non valida'),
-    body('anno')
-      .isArray({ min: 1 })  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .custom((value) => value[0] && value[0].trim() !== '')  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .isInt({ min: 1900, max: 2100 })
-      .withMessage('Anno non valido'),
-    body('km')
-      .isArray({ min: 1 })  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .custom((value) => value[0] && value[0].trim() !== '')  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .isInt({ min: 0, max: 400000 })
-      .withMessage('Km non valido'),
-    body('prezzo')
-      .isArray({ min: 1 })  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .custom((value) => value[0] && value[0].trim() !== '')  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      .isInt({ min: 0, max: 100000 })
-      .withMessage('Prezzo non valido'),
-    body('image')
-      .isArray({ min: 1 })  
-      .withMessage('Il campo non può essere vuoto')
-      .bail()
-      
-      .optional()
-  ]; */
 
   
 export const getVeicoloValidator = [

@@ -1,29 +1,4 @@
-/* import { AnimatePresence, motion } from 'framer-motion'
-import { MdError } from 'react-icons/md'
-
-
-export const ErrorComponent = ({error=undefined}) => {
-
-    const framer_error = {
-        initial: { opacity: 0, y: 10 },
-        animate: { opacity: 1, y: 0 },
-        exit: { opacity: 0, y: 10 },
-        transition: { duration: 0.2 },
-    }
-
-    return (
-        <AnimatePresence mode="wait" initial={false}>
-            {error && (<motion.p
-            className="flex items-center gap-1 px-2 font-semibold text-red-500 bg-red-100 rounded-md whitespace-normal break-words"
-            {...framer_error}
-            >
-            <MdError />
-                {error.message}
-            </motion.p>)}
-        </AnimatePresence>
-      )
-} */
-
+'use client'
 
 import { useState, useEffect } from "react";
 import { MdError } from "react-icons/md";

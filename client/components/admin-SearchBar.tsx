@@ -82,10 +82,8 @@ const AdminSearchBar = ({veicoli}: AdminSearchBarProps) => {
 
     useEffect(() => {         
         
-        const filtriImpostati = selectedBrand && selectedModel && selectedAlimentazione && selectedTipo && selectedAnno;    
-
-        //if((km.valueA===0 && km.valueB === 0) || (prezzo.valueA===0 && prezzo.valueB === 0)) filtriImpostati = "";  //controlla che km o prezzo siano != 0
-
+        const filtriImpostati = selectedBrand && selectedModel && selectedAlimentazione && selectedTipo && selectedAnno;  
+        
         setIsValidSearch(filtriImpostati ? true : false);  //--> fara render condizionale per il ring del cerca.
 
     }, [selectedBrand, selectedModel, selectedAlimentazione, selectedTipo, selectedAnno, km, prezzo]);
@@ -121,7 +119,6 @@ const AdminSearchBar = ({veicoli}: AdminSearchBarProps) => {
                 model: selectedModel !== 'tutti' ? selectedModel : undefined,
                 alim: selectedAlimentazione !== 'tutti' ? selectedAlimentazione : undefined,
                 anno:  (typeof selectedAnno === 'number') ? Number(selectedAnno) : undefined,
-                //anno: selectedAnno!,
                 km: checkKm ? km : undefined,
                 prezzo: checkPrezzo ? prezzo : undefined
             }
@@ -130,7 +127,6 @@ const AdminSearchBar = ({veicoli}: AdminSearchBarProps) => {
         } 
     }
    
-
     return(
         <div className="container mx-auto  w-full">
             <div className="border rounded-lg mt-10 mx-14 p-6 space-y-5"> 
@@ -144,7 +140,7 @@ const AdminSearchBar = ({veicoli}: AdminSearchBarProps) => {
                         <label htmlFor="moto">Moto</label>
                     </div>
                 </RadioGroup> 
-                <div className="flex flex-col  gap-2  md:grid md:grid-cols-2 md:gap-3 lg:flex lg:flex-row lg:justify-around lg:gap-4">  {/* mt-5 */}
+                <div className="flex flex-col  gap-2  md:grid md:grid-cols-2 md:gap-3 lg:flex lg:flex-row lg:justify-around lg:gap-4">   
                     <Select onValueChange={setSelectedBrand} value={selectedBrand} defaultValue="" disabled={!selectedTipo}>
                         <SelectTrigger className="text-base">
                             <SelectValue placeholder="Brand" />
@@ -215,7 +211,6 @@ const AdminSearchBar = ({veicoli}: AdminSearchBarProps) => {
                         />
                         <div className={clsx('w-full', {'pointer-events-none opacity-40':!checkPrezzo})}>
                             <MySliderRange 
-                                //className="order-1 lg:order-none"
                                 className=""
                                 min={0}
                                 max={100000}
@@ -223,11 +218,9 @@ const AdminSearchBar = ({veicoli}: AdminSearchBarProps) => {
                                 label="Prezzo"
                                 ticksCount={6}
                                 value={[prezzo.valueA, prezzo.valueB]}
-                                //defaultValue={[4000,20000]}
                                 xFactor={0}
                                 onRangeChange={onRangePrezzoChange}
                                 styles={{
-                                    //rail: { backgroundColor: 'red', height: 15 },
                                     track: { backgroundColor: '#2d7dd2' },
                                     handle: { borderWidth: 1, height: 24, width: 24, marginTop: -10,   boxShadow: '0 0 0 1px #C6C6C6'   },
                                 }}
@@ -244,26 +237,22 @@ const AdminSearchBar = ({veicoli}: AdminSearchBarProps) => {
                         />
                         <div className={clsx('w-full', {'pointer-events-none opacity-40':!checkKm})}>
                             <MySliderRange 
-                                //className="order-2 lg:order-none"
                                 min={0}
                                 max={400000}
                                 step={500}
                                 label="Km"
                                 ticksCount={6}
                                 value={[km.valueA, km.valueB]}
-                                //defaultValue={[4000,20000]}
                                 xFactor={0}
                                 onRangeChange={onRangeKmChange}
                                 styles={{
-                                    //rail: { backgroundColor: 'red', height: 15 },
                                     track: { backgroundColor: '#2d7dd2' },
                                     handle: { borderWidth: 1, height: 24, width: 24, marginTop: -10,   boxShadow: '0 0 0 1px #C6C6C6'   },
                                 }}
                             />
                         </div>
                     </div>
-                </div>  
-                
+                </div>                  
             </div>
         </div>
     )

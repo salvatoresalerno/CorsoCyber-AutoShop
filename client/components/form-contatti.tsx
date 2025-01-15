@@ -31,9 +31,7 @@ const contattiSchema = z.object({   //schema validazione campi form
     messaggio: z    
         .string()
         .trim() 
-        //.regex(/^[a-zA-Z0-9]+$/, { message: "Nome può contenere solo lettere e numeri" })
         .regex(/^[a-zA-Z0-9\s.,!?'"()-]+$/, { message: "Il campo può contenere solo lettere, numeri, spazi e punteggiatura" })
-
         .min(1, { message: "Messaggio non può essere vuoto" })
         .max(30, { message: "Messaggio deve essere max 500 caratteri" }),
 });  
@@ -56,28 +54,13 @@ export default function ContattiForm() {
                 telefono: "",
                 messaggio: "",             
               }
-        });
+    });
 
       
 
-    /* const submitForm = (event: React.FormEvent) => {
-        event.preventDefault();   
-
-        const form = event.currentTarget as HTMLFormElement;
-        const formData = new FormData(form);
-        
-        handlerInviaMail(formData);
-
-        form.reset();
-        
-        setTimeout(() => {  //--> dopo 10 sec. resetto error e succ (aternativa al banner di notifica che scompare!)
-            setSuccess(null);  //messo 10 sec. perchè il timeout parte appena invio il form, cosi includo anche il tempo 
-            setError(null)   //di invio mail e il messaggio rimane visibile per un tempo ragionevole
-        }, 10000);
-    } */
+    
 
     const onSubmit = async (data: ContattiFormInputs) => {
-        //handlerInviaMail(data);
         setLoading(true);
 
         const { message, error } = await sendContattiMail(data);
@@ -97,48 +80,6 @@ export default function ContattiForm() {
             setSuccess(null);  //messo 10 sec. perchè il timeout parte appena invio il form, cosi includo anche il tempo 
             setError(null)   //di invio mail e il messaggio rimane visibile per un tempo ragionevole
         }, 10000);
-    }
-
-    const handlerInviaMail = async (formData: ContattiFormInputs) => {
-        setLoading(true);
-
-        const nome = formData.nome; //formData.get("nome")?.toString().trim();
-        const email = formData.email;   //formData.get("email")?.toString().trim();
-        const telefono = formData.telefono;     //formData.get("telefono")?.toString().trim();
-        const messaggio = formData.messaggio;   //formData.get("messaggio")?.toString().trim();
-
-        try {
-            const response = await fetch('/api/sendInfo', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({                    
-                    text: `
-                           <p>Il sig. <strong>${nome}</strong> ha richiesto informazioni.</p>
-                           <br />
-                           <p ><strong>Contatti:</strong></p>
-                           <ul>
-                            <li><strong>Email:</strong> <a href="mailto:${email}">${email}</a></li>
-                            <li><strong>Telefono:</strong> ${telefono}</li>
-                           </ul> 
-                           <br />
-                           <p><strong>Messaggio</strong></p>
-                           <p>${messaggio}</p>`
-                }),
-            })
-            if (response.ok) {
-                setSuccess('Messaggio inviato con successo!');
-            } else {
-                setError("Errore durante l'invio del messaggio.");
-            }
-            
-        } catch (error) {
-            console.log(error);
-            setError('Errore sconisciuto.');
-        } finally {
-            setLoading(false);
-        }
     }    
 
     return (<>     

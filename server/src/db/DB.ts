@@ -1,13 +1,6 @@
-interface Utente {
-    username: string,
-    password: string,
-    ruolo: Ruolo,
-}
+ 
 
-enum Ruolo {
-    USER = "USER",
-    ADMIN = "ADMIN"
-}
+ 
 enum TipoVeicolo {
     AUTO = "AUTO",
     MOTO = "MOTO"
@@ -36,24 +29,12 @@ interface Veicolo {
 }
 
 interface DB {
-    utenti: Utente[],
     veicoli: Veicolo[],
 }
 
 
 export const DB: DB = {
-    utenti: [
-    {
-        username: "admin",
-        password: "passwordAdmin123",
-        ruolo: Ruolo.ADMIN,
-    },
-    {
-        username: "user",
-        password: "passwordUser123",
-        ruolo: Ruolo.USER
-    }, 
-    ],
+  
     veicoli: [
         {
             brand: "Toyota",

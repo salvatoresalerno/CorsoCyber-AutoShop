@@ -22,6 +22,7 @@ import { headers } from "next/headers";
 import { getVeicoliStato } from "../action";
 import { Stato, Veicolo } from "@/lib/types";
 import { decodeEscapedHtml } from "@/lib/utils";
+import ErrorComponent from "@/components/errorComponent";
 
 
 
@@ -32,10 +33,14 @@ const MainUser = async () => {
   const currentHeaders = headers();
   const currentUserHeader = currentHeaders.get('X-Current-User');
   const currentUser = currentUserHeader ? JSON.parse(currentUserHeader) : null;
-
    
 
-  const { data: veicoli  } = await getVeicoliStato(Stato.VENDESI);  //veicoli usari (in Vendita) per vetrina random e per estrarre brand, modello, ecc nel cruscotto
+  const { data: veicoli, error  } = await getVeicoliStato(Stato.VENDESI);  //veicoli usari (in Vendita) per vetrina random e per estrarre brand, modello, ecc nel cruscotto
+  
+  if (error) {
+    return (<ErrorComponent/>);
+  }
+
   const data: Veicolo[] | null = veicoli ? 
   veicoli.map((item) => ({
     id: item.id,  

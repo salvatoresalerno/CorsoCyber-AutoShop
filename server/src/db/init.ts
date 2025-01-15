@@ -15,7 +15,7 @@ export const InitializingDB = async () => {
 
     try {
         await rootConnection.query(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME};`);
-        await rootConnection.query(`USE ${process.env.DB_NAME}`);
+        await rootConnection.query(`USE ${process.env.DB_NAME};`);
 
         const initQueries = `
             CREATE USER IF NOT EXISTS '${process.env.DB_USER}'@'%' IDENTIFIED BY '${process.env.DB_USER_PASSWORD}';
@@ -170,14 +170,8 @@ export const InitializingDB = async () => {
 
         await rootConnection.query(initQueries);
 
-        const password = process.env.SUPERADMIN_PASSWORD || 'adminPassword';
+        const password = process.env.SUPERADMIN_PASSWORD || 'admin.Password25';
         const hashedPassword = await hashPassword(password);
-
-       /*  const adminSetup = `
-            SET @default_role = 'SUPERADMIN';
-            INSERT INTO users (email, username, password) VALUES (?, ?, ?);
-            SET @default_role = NULL;
-        `; */
        
         const adminSetup = `
             SET @default_role = 'SUPERADMIN';
@@ -189,7 +183,6 @@ export const InitializingDB = async () => {
             SET @default_role = NULL;
         `;
         await rootConnection.query(adminSetup, [
-           // process.env.SUPERADMIN_EMAIL,
             process.env.SUPERADMIN_EMAIL,
             process.env.SUPERADMIN_USERNAME,
             hashedPassword
