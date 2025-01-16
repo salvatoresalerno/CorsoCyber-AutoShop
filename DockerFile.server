@@ -2,7 +2,7 @@
 FROM node:latest
 
 # Crea una directory di lavoro
-WORKDIR /test_deploy1/server
+WORKDIR /CorsoCyber-AutoShop/server
 
 # Copia i file package.json e package-lock.json
 COPY package*.json ./
