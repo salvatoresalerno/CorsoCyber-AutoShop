@@ -20,9 +20,8 @@ export const UPLOAD_DIR_AVATAR = path.join(__dirname, '../uploads/avatar');  //d
 
 
  
- 
-
-dotenv.config({ path: '../.env' });
+dotenv.config();
+//dotenv.config({ path: '../.env' });
 
 const app: Express = express();
 const port = process.env.PORT || 5000;

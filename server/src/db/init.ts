@@ -3,7 +3,9 @@ import dotenv from "dotenv";
 import { hashPassword } from "../utils";
 import { insertVehicles } from "./addVeicoli";
 
-dotenv.config({ path: '../.env' });
+//dotenv.config({ path: '../../.env' });
+dotenv.config();
+
 
 export const InitializingDB = async () => {
     const rootConnection: Connection = await mysql.createConnection({

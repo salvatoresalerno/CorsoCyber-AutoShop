@@ -2,7 +2,7 @@
 FROM node:latest
 
 # Imposta la directory di lavoro
-WORKDIR /CorsoCyber-AutoShop/client
+WORKDIR /CorsoCyber-AutoShop
 
 # Copia il package.json e package-lock.json
 COPY package*.json ./

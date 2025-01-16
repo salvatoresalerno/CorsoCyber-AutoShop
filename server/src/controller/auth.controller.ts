@@ -7,7 +7,8 @@ import { Ruolo } from '../types/types';
 import dotenv from "dotenv"; 
 import { hashPassword, verifyPassword } from '../utils';
 
-dotenv.config({ path: '../.env' });
+//dotenv.config({ path: '../.env' });
+dotenv.config();
 
 const REFRESH_TOKEN_EXPIRY =  Number(process.env.REFRESH_TOKEN_EXPIRY) || 7 * 24 * 60 * 60 * 1000;  // 7 giorni
 

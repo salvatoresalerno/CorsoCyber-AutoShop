@@ -10,9 +10,9 @@ services:
       dockerfile: Dockerfile  # Usa il Dockerfile per Next.js
     container_name: client-container
     ports:
-      - "3000:80"
+      - "3000:3000"
     networks:
-      - myapp-network
+      - corso-network
     depends_on:
       - server
       - mysql
@@ -44,7 +44,7 @@ services:
     #environment:
     #  - DB_HOST=${DB_HOST:-mysql}
     #  - DB_USER=${DB_USER:-myuser} 
-    #  - DB_USER_PASSWORD=${DB_PASSWORD:-changeme} 
+    #  - DB_USER_PASSWORD=${DB_USER_PASSWORD:-changeme} 
     #  - DB_NAME=${DB_NAME:-myappdb} 
     env_file:
       - .env
@@ -58,8 +58,10 @@ services:
     image: mysql:8.0
     container_name: mysql-container
     environment:
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-changeme} 
-      - MYSQL_DATABASE=${DB_NAME:-myappdb}     
+      #- MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-changeme} 
+      #- MYSQL_DATABASE=${DB_NAME:-myappdb}           
+      - MYSQL_ROOT_PASSWORD: 22dj78dj
+      - MYSQL_DATABASE: pippo           
     ports:
       - "3306:3306"
     networks:
