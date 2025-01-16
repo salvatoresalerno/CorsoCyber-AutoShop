@@ -45,7 +45,7 @@ services:
     #  - DB_HOST=${DB_HOST:-mysql}
     #  - DB_USER=${DB_USER:-myuser} 
     #  - DB_USER_PASSWORD=${DB_USER_PASSWORD:-changeme} 
-    #  - DB_NAME=${DB_NAME:-myappdb} 
+    #  - DB_NAME=${DB_NAME:-myappdb}
     env_file:
       - .env
     networks:
