@@ -31,6 +31,8 @@ const signinSchema = z.object({   //schema validazione campi form
 
 export type SigninFormInputs = z.infer<typeof signinSchema>; 
 
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+
 
 export const LoginForm = ({ruolo}: FormLoginProps) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -49,7 +51,7 @@ export const LoginForm = ({ruolo}: FormLoginProps) => {
 
     
     try {
-      const response = await fetch('http://localhost:5000/api/auth/signin', {
+      const response = await fetch(`${apiBaseUrl}/api/auth/signin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

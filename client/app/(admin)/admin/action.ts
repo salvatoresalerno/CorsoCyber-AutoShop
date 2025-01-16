@@ -5,6 +5,8 @@ import { ExtendedUser, ResponseResult, Veicolo } from "@/lib/types";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+
 
 export async function getBrandAndModel() {
   const token = cookies().get("token")?.value;
@@ -13,7 +15,7 @@ export async function getBrandAndModel() {
   }
 
   try {
-    const res = await fetch('http://localhost:5000/api/veicoli/brand_model', {
+    const res = await fetch(`${apiBaseUrl}/api/veicoli/brand_model`, {
       method: 'GET',
       headers: {       
         Cookie: `token=${token}; `
@@ -48,7 +50,7 @@ export async function getBrand() {
   }
 
   try {
-    const res = await fetch('http://localhost:5000/api/veicoli/brand', {
+    const res = await fetch(`${apiBaseUrl}/api/veicoli/brand`, {
       method: 'GET',
       headers: {       
         Cookie: `token=${token}; `
@@ -82,7 +84,7 @@ export async function uploadImageWithData(formData: FormData, id?: string) {
   try {
     let response;
     if (!id) {  //salva
-      response = await fetch('http://localhost:5000/api/veicoli/addVeicolo', {
+      response = await fetch(`${apiBaseUrl}/api/veicoli/addVeicolo`, {
         method: 'POST',
         body: formData,
         headers: {       
@@ -90,7 +92,7 @@ export async function uploadImageWithData(formData: FormData, id?: string) {
         },
       });
     } else {
-      response = await fetch('http://localhost:5000/api/veicoli/updVeicolo', {
+      response = await fetch(`${apiBaseUrl}/api/veicoli/updVeicolo`, {
         method: 'PUT',
         body: formData,
         headers: {       
@@ -121,7 +123,7 @@ export async function loadVeicoloById(id: string) {
   }
 
   try {
-    const res = await fetch(`http://localhost:5000/api/veicoli/getVeicolo/${id}`, {
+    const res = await fetch(`${apiBaseUrl}/api/veicoli/getVeicolo/${id}`, {
       method: 'GET',
       headers: {       
         Cookie: `token=${token}; `
@@ -157,7 +159,7 @@ export async function deleteVeicoloByID(id: string): Promise<ResponseResult> {
     redirect('/login');      
   }
   try {
-      const res = await fetch(`http://localhost:5000/api/veicoli/deleteVeicolo`, {
+      const res = await fetch(`${apiBaseUrl}/api/veicoli/deleteVeicolo`, {
         method: 'DELETE',
         headers: {    
           'Content-Type': 'application/json',   
@@ -191,7 +193,7 @@ export async function loadUserList() {
   }
 
   try {
-    const res = await fetch(`http://localhost:5000/api/admin/getUsers`, {
+    const res = await fetch(`${apiBaseUrl}/api/admin/getUsers`, {
       method: 'GET',
       headers: {       
         Cookie: `token=${token}; `
@@ -222,7 +224,7 @@ export async function setBanned(id: string, banned: number): Promise<ResponseRes
     redirect('/login');      
   }
   try {
-      const res = await fetch(`http://localhost:5000/api/admin/setBanned`, {
+      const res = await fetch(`${apiBaseUrl}/api/admin/setBanned`, {
         method: 'PUT',
         headers: {    
           'Content-Type': 'application/json',   
@@ -261,7 +263,7 @@ export async function deleteAdminByID(id: string): Promise<ResponseResult> {
     redirect('/login');      
   }
   try {
-      const res = await fetch(`http://localhost:5000/api/admin/delAdmin`, {
+      const res = await fetch(`${apiBaseUrl}/api/admin/delAdmin`, {
         method: 'DELETE',
         headers: {    
           'Content-Type': 'application/json',   

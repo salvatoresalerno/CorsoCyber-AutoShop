@@ -16,8 +16,11 @@ RUN npm install -g typescript
 # Copia il codice sorgente
 COPY ./server ./
 
+# Compila il TypeScript in JavaScript
+RUN npm run build
+
 # Compila TypeScript (assicurati che ci sia un file tsconfig.json configurato)
-RUN tsc
+#RUN tsc
 
 # Espone la porta del server
 EXPOSE 5000

@@ -26,6 +26,8 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 5000;
 
+const apiBaseUrl_client = process.env.NEXT_API_URL;
+
 app.use(cookieParser()); 
 app.use(express.json());
 
@@ -38,7 +40,7 @@ app.use(express.json());
 
 app.use(
   cors({
-      origin: 'http://localhost:3000', 
+      origin: apiBaseUrl_client, //'http://localhost:3000', 
       credentials: true, 
       //allowedHeaders: ['Content-Type']
   })
@@ -84,7 +86,7 @@ app.use("/api/admin", adminRoutes);
 
 
 app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port} test .ENV->DB_NAME=${process.env.DB_NAME}`);
+  console.log(`[server]: Server is running at ${apiBaseUrl_client} - [port]:${port} test .ENV->DB_NAME=${process.env.DB_NAME}`);
 });
 
 

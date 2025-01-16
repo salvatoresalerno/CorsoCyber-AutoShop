@@ -50,6 +50,8 @@ const mailDataSchema = z.object({
 
 export type MailData = z.infer<typeof mailDataSchema>;
 
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+
 
 const CardComponent_V2 = ({veicolo, user}: CardProps) => {
 
@@ -128,7 +130,7 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
                 <div className="relative w-[200px] h-[150px] mx-auto lg:mx-0 overflow-hidden border rounded-lg">
                     {/*L'img viene caricata cosi perchè non sono presenti le img per ogni veicolo, quindi quando non trovata carico il placheholder random in base al tipo di veicolo */}
                     <Image 
-                        src={`http://localhost:5000/uploads/${src}`}
+                        src={`${apiBaseUrl}/uploads/${src}`}
                         alt={`${veicolo.brand} ${veicolo.modello} ${veicolo.anno}`}
                         fill
                         sizes="33vw"

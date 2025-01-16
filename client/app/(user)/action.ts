@@ -8,13 +8,13 @@ import { cookies } from 'next/headers';
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 
-
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 
 
 export async function logoutUserAction(id: string) {
   try {
-    const response = await fetch('http://localhost:5000/api/auth/logout', {
+    const response = await fetch(`${apiBaseUrl}/api/auth/logout`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
@@ -81,7 +81,7 @@ export const SignUpAction = async (formData: SignupFormInputs, ruolo: string | n
   try {
     let response;
     if (!update) {
-      response = await fetch('http://localhost:5000/api/auth/signup', {
+      response = await fetch(`${apiBaseUrl}/api/auth/signup`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
@@ -90,7 +90,7 @@ export const SignUpAction = async (formData: SignupFormInputs, ruolo: string | n
       }); 
     } else {
       const token = cookies().get("token")?.value;
-      response = await fetch('http://localhost:5000/api/auth/updAdmin', {
+      response = await fetch(`${apiBaseUrl}/api/auth/updAdmin`, {
         method: 'PUT',
         headers: {
           "Content-Type": "application/json",
@@ -128,7 +128,7 @@ export async function getCurrentUser() {
     });    
   }
   
-  const res = await fetch('http://localhost:5000/api/auth/getCurrentUser', { 
+  const res = await fetch(`${apiBaseUrl}/api/auth/getCurrentUser`, { 
     method: 'POST',
     //credentials: 'include', 
     headers: {
@@ -149,7 +149,7 @@ export async function getCurrentUser() {
         })
       }
       
-      const refreshRes = await fetch('http://localhost:5000/api/auth/refresh', { 
+      const refreshRes = await fetch(`${apiBaseUrl}/api/auth/refresh`, { 
         method: 'POST', credentials: 'include', 
         headers: {
           "Content-Type": "application/json",
@@ -193,7 +193,7 @@ export async function getFilteredVeicoli(params: FilterParams): Promise<DataFilt
    
   try {
     
-    const res = await fetch('http://localhost:5000/api/veicoli/getFilteredVeicoli', {
+    const res = await fetch(`${apiBaseUrl}/api/veicoli/getFilteredVeicoli`, {
       method: 'POST',       
       headers: {
         "Content-Type": "application/json",
@@ -231,7 +231,7 @@ export async function setVeicoloVenduto(id: string): Promise<ResponseResult> {
     redirect('/login');      
   }
   try {
-      const res = await fetch(`http://localhost:5000/api/veicoli/setVenduto`, {
+      const res = await fetch(`${apiBaseUrl}/api/veicoli/setVenduto`, {
         method: 'PUT',
         headers: {    
           'Content-Type': 'application/json',   
@@ -268,7 +268,7 @@ export async function getProfilo(username: string | undefined): Promise<UserData
   }
 
   try {
-    const res = await fetch(`http://localhost:5000/api/user/getProfilo/${username}`, {
+    const res = await fetch(`${apiBaseUrl}/api/user/getProfilo/${username}`, {
       method: 'GET',
       headers: {       
         Cookie: `token=${token}; `
@@ -310,7 +310,7 @@ export async function setProfilo(formData: ProfileFormInputs): Promise<ResponseR
   const cellulare = formData.cellulare;
 
   try {
-      const res = await fetch('http://localhost:5000/api/user/setProfilo', {
+      const res = await fetch(`${apiBaseUrl}/api/user/setProfilo`, {
         method: 'PUT',
         headers: {    
           'Content-Type': 'application/json',   
@@ -347,7 +347,7 @@ export async function uploadProfilo(formData: FormData) {
 
   try {
    
-    const response = await fetch('http://localhost:5000/api/user/updProfilo', {
+    const response = await fetch(`${apiBaseUrl}/api/user/updProfilo`, {
       method: 'PUT',
       body: formData,
       headers: {       
@@ -377,7 +377,7 @@ export async function geAvatar(username: string | undefined) {
   }
 
   try {
-    const res = await fetch(`http://localhost:5000/api/user/getProfileImage/${username}`, {
+    const res = await fetch(`${apiBaseUrl}/api/user/getProfileImage/${username}`, {
       method: 'GET',
       headers: {       
         Cookie: `token=${token}; `

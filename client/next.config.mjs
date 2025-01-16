@@ -3,7 +3,7 @@
 //import dotenv from 'dotenv';
 
 //dotenv.config({ path: '../.env' });
-
+const hostName = process.env.IMAGE_HOSTNAME;
 
 const nextConfig = {
     /* env: {        
@@ -17,7 +17,7 @@ const nextConfig = {
       remotePatterns: [
         {
           protocol: 'http',
-          hostname: 'localhost',  //dominio backend per preview image in upload form
+          hostname:  hostName,      //'localhost',  //dominio backend per preview image in upload form
           port: '5000',  
           pathname: '/uploads/**', // Consenti solo i percorsi relativi specifici
           search: '',

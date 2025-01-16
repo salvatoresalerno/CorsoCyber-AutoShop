@@ -5,13 +5,13 @@ FROM node:latest
 WORKDIR /CorsoCyber-AutoShop
 
 # Copia il package.json e package-lock.json
-COPY package*.json ./
+COPY ./client/package*.json ./
 
 # Installa le dipendenze
 RUN npm install
 
 # Copia il resto dei file del progetto
-COPY /client ./
+COPY ./client ./
 
 # Costruisce l'applicazione Next.js
 RUN npm run build

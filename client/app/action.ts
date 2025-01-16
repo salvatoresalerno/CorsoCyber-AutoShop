@@ -8,13 +8,15 @@ import { DataResult, ResponseResult, Stato, User } from "@/lib/types";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+const api_BaseUrl = process.env.NEXT_API_URL;  //chiamate api route interne
 
 
 //preleva i veicoli in base allo stato: venduto/inVendita
 export async function getVeicoliStato(stato: Stato): Promise<DataResult> {
     
   try {
-    const res = await fetch(`http://localhost:5000/api/veicoli/getVeicoliStato/${stato}`, {
+    const res = await fetch(`${apiBaseUrl}/api/veicoli/getVeicoliStato/${stato}`, {
       method: 'GET',             
     });  
 
@@ -49,7 +51,7 @@ export async function refreshProcess(user: User) {
     });
   }
 
-  const refreshRes = await fetch('http://localhost:5000/api/auth/refresh', { 
+  const refreshRes = await fetch(`${apiBaseUrl}/api/auth/refresh`, { 
     method: 'POST', credentials: 'include', 
     headers: {
       "Content-Type": "application/json",
@@ -88,7 +90,7 @@ export async function getAuthenticate() {
   }
  
   try {
-    const res = await fetch('http://localhost:5000/api/auth/getAuth', { 
+    const res = await fetch(`${apiBaseUrl}/api/auth/getAuth`, { 
       method: 'POST',
       credentials: 'include', 
       headers: {
@@ -146,7 +148,7 @@ export async function getAuthenticate() {
 export async function sendOrderMail(mailData: MailData): Promise<ResponseResult> {
 
   try {
-    const response = await fetch('http://localhost:3000/api/sendMail', {
+    const response = await fetch(`${api_BaseUrl}/api/sendMail`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
@@ -184,7 +186,7 @@ export async function sendOrderMail(mailData: MailData): Promise<ResponseResult>
 export async function sendContattiMail(mailData: ContattiFormInputs): Promise<ResponseResult> {
 
   try {
-    const response = await fetch('http://localhost:3000/api/sendInfo', {
+    const response = await fetch(`${api_BaseUrl}/api/sendInfo`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
