@@ -10,7 +10,7 @@ services:
       dockerfile: Dockerfile  # Usa il Dockerfile per Next.js
     container_name: client-container
     ports:
-      - "3000:3000"
+      - "3000:80"
     networks:
       - myapp-network
     depends_on:
