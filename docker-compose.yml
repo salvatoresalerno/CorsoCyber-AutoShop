@@ -36,7 +36,7 @@ services:
   server:
     build:
       context: .   
-      dockerfile: Dockerfile.server  # Usa il Dockerfile del server
+      dockerfile: DockerFile.server  # Usa il Dockerfile del server
     container_name: server-container
     ports:
       - "5000:5000"
