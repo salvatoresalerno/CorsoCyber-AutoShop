@@ -9,7 +9,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
-const api_BaseUrl = process.env.NEXT_API_URL;  //chiamate api route interne
+//const api_BaseUrl = process.env.NEXT_API_URL;  //chiamate api route interne
 
 
 //preleva i veicoli in base allo stato: venduto/inVendita
@@ -148,7 +148,7 @@ export async function getAuthenticate() {
 export async function sendOrderMail(mailData: MailData): Promise<ResponseResult> {
 
   try {
-    const response = await fetch(`${api_BaseUrl}/api/sendMail`, {
+    const response = await fetch(`${apiBaseUrl}/api/sendMail`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
@@ -186,7 +186,7 @@ export async function sendOrderMail(mailData: MailData): Promise<ResponseResult>
 export async function sendContattiMail(mailData: ContattiFormInputs): Promise<ResponseResult> {
 
   try {
-    const response = await fetch(`${api_BaseUrl}/api/sendInfo`, {
+    const response = await fetch(`${apiBaseUrl}/api/sendInfo`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',

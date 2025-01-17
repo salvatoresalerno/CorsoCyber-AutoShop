@@ -1,9 +1,11 @@
 # Ignora l'intero file .env per il progetto
 .env
+.env*
 
 # Node.js (Server)
 server/node_modules/
 server/.env
+server/.env*
 server/.npm/
 server/logs/
 server/temp/
@@ -18,6 +20,7 @@ server/uploads
 client/.next/
 client/node_modules/
 client/.env.local
+client/.env*
 client/._env.local
 client/.env.development.local
 client/.env.test.local

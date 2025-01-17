@@ -26,7 +26,8 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 5000;
 
-const apiBaseUrl_client = process.env.NEXT_API_URL;
+//const apiBaseUrl_client = process.env.NEXT_API_URL;
+const apiBaseUrl_client = process.env.NEXT_PUBLIC_API_URL;
 
 app.use(cookieParser()); 
 app.use(express.json());
