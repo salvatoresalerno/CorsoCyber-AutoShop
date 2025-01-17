@@ -166,6 +166,7 @@ export const refresh = async (req: Request, res: Response) => {
     const { user_id, username, email, role } = req.body;
 
     if (!refreshToken) {
+        console.error('Refresh token mancante.')
         res.status(401).json({ error: 'Refresh token mancante.' });
         return;
     }
@@ -173,6 +174,7 @@ export const refresh = async (req: Request, res: Response) => {
     const { refresh_token, refresh_token_exp } = await getRefreshToken(user_id);
 
     if (!refresh_token || !refresh_token_exp) {
+        console.error('Refresh token non valido o scaduto.')
         res.status(401).json({ error: 'Refresh token non valido o scaduto.' });
         return;
     }
