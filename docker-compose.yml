@@ -19,18 +19,18 @@ services:
       - mysql
 
   # Servizio per Nginx
-  #nginx:
-  #  image: nginx:latest
-  #  container_name: nginx-container
-  #  ports:
-  #    - "8080:80"
-  #  volumes:
-  #    - ./nginx/default.conf:/etc/nginx/conf.d/default.conf      
-  #  networks:
-  #    - corso-network
-  #  restart: always
-  #  depends_on:  
-  #    - server
+  nginx:
+    image: nginx:latest
+    container_name: nginx-container
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf      
+    networks:
+      - corso-network
+    restart: always
+    depends_on:  
+      - server
 
   # Servizio per il server (Node.js/Express)
   server:
