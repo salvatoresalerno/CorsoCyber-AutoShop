@@ -27,7 +27,7 @@ export async function logoutUserAction(id: string) {
     cookies().set({
       name: 'token',
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: 'strict',
       value: '',
       path: '/',
@@ -36,7 +36,7 @@ export async function logoutUserAction(id: string) {
     cookies().set({
       name: 'refreshToken',
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: 'strict',
       value: '',
       path: '/',
@@ -50,7 +50,7 @@ export async function logoutUserAction(id: string) {
     cookies().set({
       name: 'token',
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: 'strict',
       value: '',
       path: '/',
@@ -59,7 +59,7 @@ export async function logoutUserAction(id: string) {
     cookies().set({
       name: 'refreshToken',
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: 'strict',
       value: '',
       path: '/',
