@@ -136,6 +136,7 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
                         fill
                         sizes="33vw"
                         priority
+                        unoptimized
                         onError={() => veicolo.tipo === TipoVeicolo.AUTO ? setSrc("placeholder/auto/auto" +  randomNumber() + ".jpg") : setSrc("placeholder/moto/moto" +  randomNumber() + ".jpg")}                        
                     />
                 </div>
