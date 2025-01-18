@@ -8,7 +8,7 @@ import { DataResult, ResponseResult, Stato, User } from "@/lib/types";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL  + '/v1';
 //const api_BaseUrl = process.env.NEXT_API_URL;  //chiamate api route interne
 
 

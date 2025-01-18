@@ -5,6 +5,8 @@
 //dotenv.config({ path: '../.env' });
 const hostName = process.env.IMAGE_HOSTNAME;
 
+
+
 const nextConfig = {
     /* env: {        
         HOST_MAIL:process.env.HOST_MAIL,

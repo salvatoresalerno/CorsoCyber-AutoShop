@@ -5,7 +5,7 @@ import { ExtendedUser, ResponseResult, Veicolo } from "@/lib/types";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL + '/v1';
 
 
 export async function getBrandAndModel() {

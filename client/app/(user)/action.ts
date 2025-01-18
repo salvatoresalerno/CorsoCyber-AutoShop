@@ -8,7 +8,7 @@ import { cookies } from 'next/headers';
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL + '/v1';
 
 
 

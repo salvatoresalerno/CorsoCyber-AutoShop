@@ -79,10 +79,10 @@ const poolConfig: PoolOptions = {
 export const poolConnection: Pool = mysql.createPool(poolConfig);
 
 
-app.use("/api/auth", authRoutes);
-app.use("/api/veicoli", veicoliRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/admin", adminRoutes);
+app.use("/v1/api/auth", authRoutes);
+app.use("/v1/api/veicoli", veicoliRoutes);
+app.use("/v1/api/user", userRoutes);
+app.use("/v1/api/admin", adminRoutes);
 
 
 

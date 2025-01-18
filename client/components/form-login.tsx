@@ -52,7 +52,7 @@ export const LoginForm = ({ruolo}: FormLoginProps) => {
 
     
     try {
-      const response = await fetch(`${apiBaseUrl}/api/auth/signin`, {
+      const response = await fetch(`${apiBaseUrl}/v1/api/auth/signin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
