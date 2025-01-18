@@ -27,7 +27,7 @@ const app: Express = express();
 const port = process.env.PORT || 5000;
 
 //const apiBaseUrl_client = process.env.NEXT_API_URL;
-const apiBaseUrl_client = process.env.NEXT_PUBLIC_API_URL;
+const apiBaseUrl_client = process.env.ORIGIN_API_URL;
 
 app.use(cookieParser()); 
 app.use(express.json());
@@ -37,7 +37,7 @@ app.use(express.json());
   await fs.mkdir(UPLOAD_DIR_AVATAR, { recursive: true });
 })();
 
- 
+ console.log('ORIGIN: ', apiBaseUrl_client)
 
 app.use(
   cors({

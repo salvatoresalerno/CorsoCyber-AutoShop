@@ -146,9 +146,11 @@ export async function getAuthenticate() {
 
 
 export async function sendOrderMail(mailData: MailData): Promise<ResponseResult> {
+  const apiBaseRouteApiUrl = process.env.ORIGIN_API_URL;
+
 
   try {
-    const response = await fetch(`${apiBaseUrl}/api/sendMail`, {
+    const response = await fetch(`${apiBaseRouteApiUrl}/api/sendMail`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
@@ -184,9 +186,9 @@ export async function sendOrderMail(mailData: MailData): Promise<ResponseResult>
   
 }
 export async function sendContattiMail(mailData: ContattiFormInputs): Promise<ResponseResult> {
-
+  const apiBaseRouteApiUrl = process.env.ORIGIN_API_URL;
   try {
-    const response = await fetch(`${apiBaseUrl}/api/sendInfo`, {
+    const response = await fetch(`${apiBaseRouteApiUrl}/api/sendInfo`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',

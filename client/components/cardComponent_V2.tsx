@@ -53,6 +53,7 @@ export type MailData = z.infer<typeof mailDataSchema>;
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 
+
 const CardComponent_V2 = ({veicolo, user}: CardProps) => {
 
     const [loading, setLoading] = useState<boolean>(false);

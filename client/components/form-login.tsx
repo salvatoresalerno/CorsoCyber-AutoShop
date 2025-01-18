@@ -62,6 +62,8 @@ export const LoginForm = ({ruolo}: FormLoginProps) => {
       });
 
       const {message, errors} = await response.json();
+
+      console.log()
       
       if (errors) {
         setErrorMessage(errors || 'Login Fallito');

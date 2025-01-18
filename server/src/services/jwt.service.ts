@@ -101,6 +101,8 @@ export const getRefreshToken = async (user_id:string) => {
       
       const [result] = await poolConnection.execute(query, values);
 
+      console.log('result ref.token: ', [result])
+
       return (result as UserRefresh[])[0] ?? null
       
   } catch (error) {
