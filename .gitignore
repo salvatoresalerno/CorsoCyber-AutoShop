@@ -19,7 +19,8 @@ server/*.pid
 server/*.seed
 server/*.pid.lock
 server/*.txt
-server/uploads
+server/uploads/veicoli
+server/uploads/avatar
 
 # Next.js (Client)
 client/.next/

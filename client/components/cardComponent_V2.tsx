@@ -136,7 +136,7 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
                         fill
                         sizes="33vw"
                         priority
-                        onError={() => veicolo.tipo === TipoVeicolo.AUTO ? setSrc("veicoli/auto" +  randomNumber() + ".jpg") : setSrc("veicoli/moto" +  randomNumber() + ".jpg")}                        
+                        onError={() => veicolo.tipo === TipoVeicolo.AUTO ? setSrc("placeholder/auto" +  randomNumber() + ".jpg") : setSrc("placeholder/moto" +  randomNumber() + ".jpg")}                        
                     />
                 </div>
                 <div className="flex-1">
