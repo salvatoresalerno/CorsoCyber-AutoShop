@@ -186,6 +186,7 @@ export async function sendOrderMail(mailData: MailData): Promise<ResponseResult>
   
 }
 export async function sendContattiMail(mailData: ContattiFormInputs): Promise<ResponseResult> {
+   
   const apiBaseRouteApiUrl = process.env.ORIGIN_API_URL;
   try {
     const response = await fetch(`${apiBaseRouteApiUrl}/api/sendInfo`, {
