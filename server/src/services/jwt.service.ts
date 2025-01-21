@@ -18,7 +18,7 @@ export const generateToken = async (user: User): Promise<string> => {
   const signedToken = await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('1min') // Token valido per 1 ora
+    .setExpirationTime('1h') // Token valido per 1 ora
     .sign(getSigningKey());
 
   // Cripta il token firmato

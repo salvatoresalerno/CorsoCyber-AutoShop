@@ -7,8 +7,10 @@ services:
       context: .   
       dockerfile: Dockerfile  # Usa il Dockerfile per Next.js
     container_name: client-container
-    ports:
-      - "3000:3000"
+    # ports:
+    #  - "3000:3000"
+    expose:
+      - "3000"
     networks:
       - corso-network
     depends_on:
@@ -34,8 +36,10 @@ services:
       context: .   
       dockerfile: DockerFile.server  # Usa il Dockerfile del server
     container_name: server-container
-    ports:
-      - "5000:5000"
+    # ports:
+    #  - "5000:5000"
+    expose:
+      - "5000"
     restart: always
     # environment:
     #  - DB_HOST=${DB_HOST:-mysql}
@@ -57,8 +61,10 @@ services:
       # - MYSQL_DATABASE=${DB_NAME:-myappdb}
       - MYSQL_ROOT_PASSWORD=22dj78dj
       - MYSQL_DATABASE=pippo           
-    ports:
-      - "3306:3306"
+    # ports:
+    #  - "3306:3306"
+    expose:
+      - "3306"
     networks:
       - corso-network
     volumes:

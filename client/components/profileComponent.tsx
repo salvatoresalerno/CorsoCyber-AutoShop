@@ -57,12 +57,15 @@ const profileSchema = z.object({   //schema validazione campi form
     .trim()
     .regex(
       /^(\d{5})?$/,
-      "Il numero deve contenere al massimo un '/' come separatore e deve avere da 10 a 14 cifre"
+      "Cap deve essere di 5 cifre"
     ),
-  provincia: z    
+  provincia: z   
     .string()
     .trim()
-    .max(3, { message: "Provincia deve essere max 3 caratteri" }),
+    .refine(val => val === "" || /^[A-Za-z]{2,3}$/.test(val), {
+      message: "Provincia può contenere solo lettere 2/3",
+    }),
+
   image: z
     .instanceof(File, { message: 'Il file deve essere un\'immagine' })  
     .refine((file) => file.type.startsWith('image/'), {

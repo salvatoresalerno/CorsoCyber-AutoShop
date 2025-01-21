@@ -58,10 +58,11 @@ export const profiloValidator = [
         .matches(/^\d{5}$/).withMessage("Il campo deve contenere esattamente 5 cifre")
         .escape(), 
     body("provincia")
-        .optional()
+        //.optional()
         .isString()
         .trim()
-        .isLength({ max: 3 }).withMessage("Provincia deve essere max 3 caratteri")
+        .isLength({min: 0, max: 3 }).withMessage("Provincia deve essere tra 2 e 3 caratteri")
+        .matches(/^[A-Za-z]+$/).withMessage('Provincia deve contenere solo lettere.')
         .escape(), 
     body("telefono")
         .optional()
@@ -77,7 +78,7 @@ export const profiloValidator = [
         .escape(), 
 ]
 export const profiloValidator2 = [   
-    body("id")  //da verificare------------------------
+    body("id")   
         .isArray({ max: 1 })
         .withMessage('Il campo non può essere vuoto')
         .bail()     
@@ -184,12 +185,16 @@ export const profiloValidator2 = [
         .customSanitizer((value:string[]) => value.map((item: string) => item.trim()))  
         .custom((value:string[]) => {
             if (value.length > 0) {
-                const nome = value[0]; 
-                if (typeof nome !== "string") {
+                const provincia = value[0]; 
+                if (typeof provincia !== "string") {
                     throw new Error("Il campo deve essere una stringa");
                 }
-                if (nome.length > 3) {
-                    throw new Error("Provincia deve essere al massimo di 3 caratteri");
+                if (provincia.length < 2 || provincia.length > 3) {
+                    throw new Error("Provincia deve essere al tra 2 e 3 caratteri");
+                }
+                const regex = /^[A-Za-z]+$/;
+                if (!regex.test(provincia)) {
+                    throw new Error("Provincia può contenere solo lettere");
                 }
             }
             return true;  
