@@ -5,6 +5,7 @@
 import { MailData } from "@/components/cardComponent_V2";
 import { ContattiFormInputs } from "@/components/form-contatti";
 import { DataResult, ResponseResult, Stato, User } from "@/lib/types";
+import { escapeHtml } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -156,10 +157,10 @@ export async function sendOrderMail(mailData: MailData): Promise<ResponseResult>
           'Content-Type': 'application/json',
       },
       body: JSON.stringify({                    
-          text: `<p>Il sig. <strong>${mailData.username}</strong> ha effettuato un nuovo ordine.</p>
-                <p>Veicolo ordinato: ${mailData.brand} ${mailData.modello}</p>
-                <p>immatricolazione: ${mailData.anno}</p>
-                <p>Alimentazione: ${mailData.alimentazione}</p>`
+          text: `<p>Il sig. <strong>${escapeHtml(mailData.username)}</strong> ha effettuato un nuovo ordine.</p>
+                <p>Veicolo ordinato: ${escapeHtml(mailData.brand)} ${escapeHtml(mailData.modello)}</p>
+                <p>immatricolazione: ${escapeHtml(mailData.anno)}</p>
+                <p>Alimentazione: ${escapeHtml(mailData.alimentazione)}</p>`
       }),
     });
 
@@ -195,16 +196,16 @@ export async function sendContattiMail(mailData: ContattiFormInputs): Promise<Re
           'Content-Type': 'application/json',
       },
       body: JSON.stringify({                    
-          text: `<p>Il sig. <strong>${mailData.nome}</strong> ha richiesto informazioni.</p>
+          text: `<p>Il sig. <strong>${escapeHtml(mailData.nome)}</strong> ha richiesto informazioni.</p>
                   <br />
                   <p ><strong>Contatti:</strong></p>
                   <ul>
-                  <li><strong>Email:</strong> <a href="mailto:${mailData.email}">${mailData.email}</a></li>
-                  <li><strong>Telefono:</strong> ${mailData.telefono}</li>
+                  <li><strong>Email:</strong> <a href="mailto:${escapeHtml(mailData.email)}">${escapeHtml(mailData.email)}</a></li>
+                  <li><strong>Telefono:</strong> ${escapeHtml(mailData.telefono)}</li>
                   </ul> 
                   <br />
                   <p><strong>Messaggio</strong></p>
-                  <p>${mailData.messaggio}</p>`
+                  <p>${escapeHtml(mailData.messaggio)}</p>`
       }),
     });     
 

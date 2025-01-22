@@ -31,9 +31,10 @@ const contattiSchema = z.object({   //schema validazione campi form
     messaggio: z    
         .string()
         .trim() 
-        .regex(/^[a-zA-Z0-9\s.,!?'"()-]+$/, { message: "Il campo può contenere solo lettere, numeri, spazi e punteggiatura" })
+        //.regex(/^[a-zA-Z0-9\s.,!?'"()-]+$/, { message: "Il campo può contenere solo lettere, numeri, spazi e punteggiatura" })
+        //.regex(/^[a-zA-ZÀ-ÿ0-9\s.,!?:;_'"()-]+$/, { message: "Il campo può contenere solo lettere, numeri, spazi e punteggiatura" })
         .min(1, { message: "Messaggio non può essere vuoto" })
-        .max(30, { message: "Messaggio deve essere max 500 caratteri" }),
+        .max(500, { message: "Messaggio deve essere max 500 caratteri" }),
 });  
 
 export type ContattiFormInputs = z.infer<typeof contattiSchema>; 
@@ -61,7 +62,7 @@ export default function ContattiForm() {
     
 
     const onSubmit = async (data: ContattiFormInputs) => {
-        setLoading(true);
+        setLoading(true);        
 
         const { message, error } = await sendContattiMail(data);
 

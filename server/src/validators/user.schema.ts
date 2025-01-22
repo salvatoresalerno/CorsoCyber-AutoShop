@@ -189,12 +189,14 @@ export const profiloValidator2 = [
                 if (typeof provincia !== "string") {
                     throw new Error("Il campo deve essere una stringa");
                 }
-                if (provincia.length < 2 || provincia.length > 3) {
+                if (provincia === '') return true;
+                const regex = /^[A-Za-z]{2,3}$/
+                /* if (provincia.length < 2 || provincia.length > 3) {
                     throw new Error("Provincia deve essere al tra 2 e 3 caratteri");
-                }
-                const regex = /^[A-Za-z]+$/;
+                } 
+                const regex = /^[A-Za-z]+$/;*/
                 if (!regex.test(provincia)) {
-                    throw new Error("Provincia può contenere solo lettere");
+                    throw new Error("Provincia può contenere solo lettere 2/3");
                 }
             }
             return true;  
