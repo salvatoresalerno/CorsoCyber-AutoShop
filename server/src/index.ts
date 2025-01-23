@@ -22,12 +22,11 @@ export const UPLOAD_DIR_AVATAR = path.join(__dirname, '../uploads/avatar');  //d
 
  
 dotenv.config();
-//dotenv.config({ path: '../.env' });
 
 const app: Express = express();
 const port = process.env.PORT || 5000;
 
-//const apiBaseUrl_client = process.env.NEXT_API_URL;
+
 const apiBaseUrl_client = process.env.ORIGIN_API_URL;
 
 app.use(cookieParser()); 

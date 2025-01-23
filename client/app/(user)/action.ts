@@ -10,7 +10,26 @@ import { NextResponse } from "next/server";
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL + '/v1';
 
-
+export async function logoutNoUser() {
+  cookies().set({
+    name: 'token',
+    httpOnly: true,
+    secure: false,
+    sameSite: 'strict',
+    value: '',
+    path: '/',
+    maxAge: -1, // imposto scadenza immediata
+  });
+  cookies().set({
+    name: 'refreshToken',
+    httpOnly: true,
+    secure: false,
+    sameSite: 'strict',
+    value: '',
+    path: '/',
+    maxAge: -1, // imposto scadenza immediata
+  });
+}
 
 export async function logoutUserAction(id: string) {
   try {

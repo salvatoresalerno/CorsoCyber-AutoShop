@@ -1,4 +1,4 @@
-import { FilterParams, Veicolo } from "@/lib/types";
+import { FilterParams, Ruolo, Veicolo } from "@/lib/types";
 import { getFilteredVeicoli } from "@/app/(user)/action";
 import ErrorComponent from "@/components/errorComponent";
 import CardComponent_V2 from "@/components/cardComponent_V2";
@@ -14,7 +14,9 @@ export default async function RisultatiPage({ params }: { params: { slug: string
     //recupero User eventualmente esistente in headers
     const currentHeaders = headers();
     const currentUserHeader = currentHeaders.get('X-Current-User');
-    const currentUser = currentUserHeader ? JSON.parse(currentUserHeader) : null;
+    let currentUser = currentUserHeader ? JSON.parse(currentUserHeader) : null;
+
+    if ((currentUser?.role === Ruolo.ADMIN) || (currentUser?.role === Ruolo.SUPERADMIN)) currentUser = null;
      
     let titolo: string = '';
 

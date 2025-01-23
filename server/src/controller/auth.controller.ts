@@ -270,3 +270,23 @@ export const logout = async (req: Request, res: Response) => {
         });
     }
 };
+export const securityLogout = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.body
+
+        const query = "UPDATE session SET  refresh_token = ?, refresh_token_exp = ? WHERE user_id = ?";
+        const values = [null, null, id];   
+        await poolConnection.execute(query, values);
+
+        res.status(200).json({ 
+            message: 'Logout effettuato con successo',
+            error: null 
+        });
+        
+    } catch (error) {
+        res.status(200).json({ 
+            message: null,
+            error: 'errore durante il LogOut' 
+        });
+    }
+};

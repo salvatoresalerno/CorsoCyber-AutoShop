@@ -4,6 +4,7 @@ import NavBarResponsive from "@/components/navbar-resp";
 import React from "react";
 import { headers } from "next/headers";
 import { geAvatar } from "./action";
+import { Ruolo } from "@/lib/types";
 
  
 export default async function PublicLayout({
@@ -17,7 +18,11 @@ export default async function PublicLayout({
   //recupero User eventualmente esistente in headers
   const currentHeaders = headers();
   const currentUserHeader = currentHeaders.get('X-Current-User');
-  const currentUser = currentUserHeader ? JSON.parse(currentUserHeader) : null;
+  let currentUser = currentUserHeader ? JSON.parse(currentUserHeader) : null;
+
+
+  if ((currentUser?.role === Ruolo.ADMIN) || (currentUser?.role === Ruolo.SUPERADMIN)) currentUser = null;
+
 
   const { data } = currentUser ? await geAvatar(currentUser?.username) : {data: null};
  

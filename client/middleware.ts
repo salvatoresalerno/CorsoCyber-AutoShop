@@ -12,7 +12,6 @@ export async function middleware(request: NextRequest) {
 
   const response = NextResponse.next();
 
-
   if (request.nextUrl.pathname.startsWith('/admin/dashboard')  && request.method === 'POST') {  //intercetto server action del ramo admin/dasboard
     
     const getAuthResponse = await getAuthenticate();
@@ -56,6 +55,7 @@ export async function middleware(request: NextRequest) {
 
   console.log('user, token, refreshT: ', user, token, refreshToken);
 
+ 
   if (token) {
     response.cookies.set('token', token, {
       httpOnly: true,
@@ -63,7 +63,7 @@ export async function middleware(request: NextRequest) {
       sameSite: 'strict',
       path: '/',
       //senza scadenza (session)
-    });
+    });    
   }
 
   if (refreshToken) {
@@ -86,8 +86,10 @@ export async function middleware(request: NextRequest) {
   response.headers.set('X-Current-User', requestHeaders.get('X-Current-User') || '');
   response.headers.set('Cache-Control', 'no-store');
 
-  if(request.nextUrl.pathname==='/' || request.nextUrl.pathname.startsWith('/risultati')) {   
-    return response       
+  console.log('PATH:  ', request.nextUrl.pathname)
+
+  if(request.nextUrl.pathname === '/' || request.nextUrl.pathname.startsWith('/risultati')) {   
+    return response;       
   }
 
   if (user && user.role === Ruolo.USER && request.nextUrl.pathname.startsWith('/private')){  //solo per user

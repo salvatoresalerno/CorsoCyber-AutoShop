@@ -21,7 +21,7 @@ const UserMenu = ({user, avatar}: UserMenuProps) => {
     const [avatarImage, setAvatarImage] = useState<string | undefined>(undefined);
 
     const router = useRouter();
-
+    
     useEffect(()=>{
 
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';  
@@ -32,7 +32,9 @@ const UserMenu = ({user, avatar}: UserMenuProps) => {
     const logout = async () => {
       await logoutUserAction(user.id);  //non gestisco i messaggi di logout
       
-      router.refresh();
+      //router.refresh();
+      router.push('/');
+       
     };    
 
     const handleClose = () => {

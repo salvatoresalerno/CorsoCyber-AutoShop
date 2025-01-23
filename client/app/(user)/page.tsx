@@ -20,7 +20,7 @@ import ContattiForm from "@/components/form-contatti";
 import CardComponent_V2 from "@/components/cardComponent_V2";
 import { headers } from "next/headers";
 import { getVeicoliStato } from "../action";
-import { Stato, Veicolo } from "@/lib/types";
+import { Ruolo, Stato, Veicolo } from "@/lib/types";
 import { decodeEscapedHtml } from "@/lib/utils";
 import ErrorComponent from "@/components/errorComponent";
 
@@ -32,9 +32,10 @@ const MainUser = async () => {
   //recupero User eventualmente esistente in headers
   const currentHeaders = headers();
   const currentUserHeader = currentHeaders.get('X-Current-User');
-  const currentUser = currentUserHeader ? JSON.parse(currentUserHeader) : null;
-   
+  let currentUser = currentUserHeader ? JSON.parse(currentUserHeader) : null;
 
+  if ((currentUser?.role === Ruolo.ADMIN) || (currentUser?.role === Ruolo.SUPERADMIN)) currentUser = null;
+   
   const { data: veicoli, error  } = await getVeicoliStato(Stato.VENDESI);  //veicoli usari (in Vendita) per vetrina random e per estrarre brand, modello, ecc nel cruscotto
   
   if (error) {

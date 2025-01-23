@@ -379,7 +379,7 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
             {loading && <Spinner />}   
             {errorMessage && <span className="text-red-500">{errorMessage}</span>} 
             {successMessage && <span className="text-green-500 text-balance mt-2 ">{successMessage}</span>}
-            <Button type="button" variant="outline" className={'px-3 text-orange-400 border-orange-400 hover:bg-orange-400/80 hover:text-white'} onClick={()=>setEditProfile(false)}>
+            <Button type="button"  className={'px-3 bg-transparent text-orange-400 border border-orange-400  hover:bg-orange-400/80 hover:text-white'} onClick={()=>setEditProfile(false)}>
               Annulla            
             </Button>
             
@@ -418,9 +418,10 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
                 />                
             </div>
             <h2 className="text-3xl font-bold text-center">{profiloData.username}</h2>
-            <p className="text-xl font-medium  text-center">{`${profiloData.nome} ${profiloData.cognome}`}</p>                
-            <p className="mt-10 text-xl font-normal text-center">{`${profiloData.via}   ${profiloData.cap ? ' - ' + profiloData.cap : ''} ${profiloData.provincia ? '- (' + profiloData.provincia + ')' : ''}`}</p> 
-            <p className="mt-10 text-xl font-normal text-center">{`${profiloData.telefono} ${!profiloData.telefono || !profiloData.cellulare ? '' : ' - '} ${profiloData.cellulare}`}</p>
+            <p className="text-xl font-medium  text-center">{`${profiloData.nome} ${profiloData.cognome}`}</p>   
+            {profiloData.via && <p className="mt-10 text-xl font-normal text-center">{profiloData.via}</p>}
+            {(profiloData.citta || profiloData.cap || profiloData.provincia) && <p className="mt-10 text-xl font-normal text-center">{`${profiloData.cap ? profiloData.cap : '' } ${profiloData.citta ? profiloData.citta : '' } ${profiloData.provincia ? '(' + profiloData.provincia + ')' : '' }` } </p>}
+            {(profiloData.telefono || profiloData.cellulare) && <p className="mt-10 text-xl font-normal text-center">{`${profiloData.telefono}${!profiloData.telefono || !profiloData.cellulare ? '' : ' - '}${profiloData.cellulare}`}</p>}
           </div>
           <div className="text-end mt-5">
             {!editProfile && <Button className="space-x-2 bg-orange-400 hover:bg-orange-400/80" onClick={()=>setEditProfile(true)}>
