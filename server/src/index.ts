@@ -8,6 +8,7 @@ import authRoutes from './routers/auth.routes';
 import veicoliRoutes from './routers/veicoli.routes';
 import userRoutes from './routers/user.routes';
 import adminRoutes from './routers/admin.routes';
+import mailRoutes from './routers/mail.routes';
 import cors from 'cors'; 
 import fs from 'fs/promises';
 import path from 'path'; 
@@ -83,6 +84,7 @@ app.use("/v1/api/auth", authRoutes);
 app.use("/v1/api/veicoli", veicoliRoutes);
 app.use("/v1/api/user", userRoutes);
 app.use("/v1/api/admin", adminRoutes);
+app.use("/v1/api/mail", mailRoutes);
 
 
 

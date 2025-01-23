@@ -87,7 +87,7 @@ export default function ContattiForm() {
         <h2 className="font-semibold text-3xl text-center my-5">Richiedi Info</h2>   
         <form onSubmit={handleSubmit(onSubmit)}  className='flex flex-col  gap-2 w-full p-2 md:py-10'>
             <div className='flex flex-col gap-2 xl:flex-row xl:gap-4  w-full'>
-                <div className="w-1/3">
+                <div className="w-full xl:w-1/3">
                     <input                   
                         className="h-10 px-3 py-[6px] rounded-[4px] outline-none w-full text-[15px] text-[#555555] bg-white shadow-form border border-[#ccc] xl:text-lg" 
                         placeholder='Il tuo nome'     
@@ -95,7 +95,7 @@ export default function ContattiForm() {
                     />
                     <ErrorValidationComponent error={errors.nome?.message} />  
                 </div>  
-                <div className="w-1/3">             
+                <div className="w-full xl:w-1/3">             
                     <input 
                         className="h-10 px-3 py-[6px] rounded-[4px] outline-none w-full text-[15px] text-[#555555] bg-white shadow-form border border-[#ccc] xl:text-lg" 
                         placeholder='Email'
@@ -104,7 +104,7 @@ export default function ContattiForm() {
                     />
                     <ErrorValidationComponent error={errors.email?.message} /> 
                 </div>
-                <div className="w-1/3">
+                <div className="w-full xl:w-1/3">
                     <input 
                         className="h-10 px-3 py-[6px] rounded-[4px] outline-none w-full text-[15px] text-[#555555] bg-white shadow-form border border-[#ccc] xl:text-lg" 
                         placeholder='Telefono'

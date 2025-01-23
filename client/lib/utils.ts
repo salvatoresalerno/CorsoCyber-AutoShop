@@ -81,7 +81,9 @@ export function escapeHtml(unsafe: string): string {
       .replace(/</g, "&lt;")     // '<' --> '&lt;'
       .replace(/>/g, "&gt;")     // '>' --> '&gt;'
       .replace(/"/g, "&quot;")   // '"' --> '&quot;'
-      .replace(/'/g, "&#39;")
+      //.replace(/'/g, "&#39;")
+      .replace(/`/g, "&#96;")
+      .replace(/'/g, "&#x27;")
       .replace(/\//g, "&#x2F;");   // "'" --> '&#39;'
 }
 
@@ -91,7 +93,9 @@ export function decodeEscapedHtml(encodedString: string): string {
     .replace(/&lt;/g, "<")       // '&lt;' --> '<'
     .replace(/&gt;/g, ">")       // '&gt;' --> '>'
     .replace(/&quot;/g, '"')     // '&quot;' --> '"'
-    .replace(/&#39;/g, "'")      // '&#39;' --> "'"
+    //.replace(/&#39;/g, "'")      // '&#39;' --> "'"
+    .replace(/&#x27;/g, "'")      // '&#x39;' --> "'"
+    .replace(/&#96;/g, "'")      // '&#96;' --> "`"
     .replace(/&#x2F;/g, "/");    // '&#x2F;' --> '/'
 } 
 

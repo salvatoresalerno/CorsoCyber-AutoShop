@@ -5,7 +5,6 @@
 import { MailData } from "@/components/cardComponent_V2";
 import { ContattiFormInputs } from "@/components/form-contatti";
 import { DataResult, ResponseResult, Stato, User } from "@/lib/types";
-import { escapeHtml } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -147,20 +146,21 @@ export async function getAuthenticate() {
 
 
 export async function sendOrderMail(mailData: MailData): Promise<ResponseResult> {
-  const apiBaseRouteApiUrl = process.env.ORIGIN_API_URL;
 
+  console.log('chiamato action Order')
+   
+  const token = cookies().get("token")?.value;
 
   try {
-    const response = await fetch(`${apiBaseRouteApiUrl}/api/sendMail`, {
+    const response = await fetch(`${apiBaseUrl}/api/mail/sendOrder`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({                    
-          text: `<p>Il sig. <strong>${escapeHtml(mailData.username)}</strong> ha effettuato un nuovo ordine.</p>
-                <p>Veicolo ordinato: ${escapeHtml(mailData.brand)} ${escapeHtml(mailData.modello)}</p>
-                <p>immatricolazione: ${escapeHtml(mailData.anno)}</p>
-                <p>Alimentazione: ${escapeHtml(mailData.alimentazione)}</p>`
+          Cookie: `token=${token}; `, // Passa il cookie manualmente
+      },      
+      body: JSON.stringify({ 
+            username: mailData.username, brand: mailData.brand, modello: mailData.modello, 
+            alimentazione: mailData.alimentazione, anno: mailData.anno
       }),
     });
 
@@ -186,27 +186,16 @@ export async function sendOrderMail(mailData: MailData): Promise<ResponseResult>
 
   
 }
-export async function sendContattiMail(mailData: ContattiFormInputs): Promise<ResponseResult> {
+ 
+export async function sendContattiMail(mailData: ContattiFormInputs): Promise<ResponseResult> {   
    
-  const apiBaseRouteApiUrl = process.env.ORIGIN_API_URL;
   try {
-    const response = await fetch(`${apiBaseRouteApiUrl}/api/sendInfo`, {
+    const response = await fetch(`${apiBaseUrl}/api/mail/sendInfo`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
       },
-      body: JSON.stringify({                    
-          text: `<p>Il sig. <strong>${escapeHtml(mailData.nome)}</strong> ha richiesto informazioni.</p>
-                  <br />
-                  <p ><strong>Contatti:</strong></p>
-                  <ul>
-                  <li><strong>Email:</strong> <a href="mailto:${escapeHtml(mailData.email)}">${escapeHtml(mailData.email)}</a></li>
-                  <li><strong>Telefono:</strong> ${escapeHtml(mailData.telefono)}</li>
-                  </ul> 
-                  <br />
-                  <p><strong>Messaggio</strong></p>
-                  <p>${escapeHtml(mailData.messaggio)}</p>`
-      }),
+      body: JSON.stringify({ nome: mailData.nome, email: mailData.email, telefono: mailData.telefono, messaggio: mailData.messaggio }),
     });     
 
     if (response.ok) {

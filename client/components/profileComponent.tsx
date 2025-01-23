@@ -202,8 +202,8 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
   
 
   return (
-    <div className="flex justify-center gap-4 mt-14 p-10">
-      {editProfile && <div className="w-1/3 bg-white p-4 rounded-xl">
+    <div className="flex flex-col-reverse md:flex-row justify-center gap-4 mt-14 p-10">
+      {editProfile && <div className="w-full md:w-1/2 lg:w-1/3 bg-white p-4 rounded-xl">
         <h2 className="font-light mb-2">Il mio profilo</h2>
         <form  onSubmit={handleSubmit(onSubmit)}>
           <div className="flex gap-3"> 
@@ -386,15 +386,15 @@ export const ProfileComponent = ( {profiloData}: ProfileComponentProps ) => {
           </div>    
         </form>      
       </div>}  
-      <div className="w-1/3 flex justify-center ">                
-        <div className="relative flex flex-col justify-between bg-white rounded-xl pt-24 p-4 min-w-80">
+      <div className="w-full md:w-1/2 lg:w-1/3 flex justify-center ">                
+        <div className="relative flex flex-col justify-between bg-white rounded-xl pt-24 p-4 w-full">
           <div>
-            <div className={cn(`absolute flex justify-center rounded-full -top-[72px] left-1/2 transform -translate-x-1/2 `, editProfile && "hover:cursor-pointer  group")}>
-                <Avatar className="w-36 h-36 ring-8 ring-[#f5f7f8]" onClick={handleAvatarClick}>
+            <div className={cn(`absolute flex justify-center bg-[#f5f7f8] rounded-full -top-[72px] left-1/2 transform -translate-x-1/2 `, editProfile && "hover:cursor-pointer  group")}>
+                <Avatar className="w-36 h-36  ring-8 ring-[#f5f7f8]" onClick={handleAvatarClick}>
                     <AvatarImage 
                       src={avatarImage} 
                     />
-                    <AvatarFallback className="border">{profiloData.username[0].toUpperCase()}</AvatarFallback>                    
+                    <AvatarFallback className="bg-[#f5f7f8] border">{profiloData.username[0].toUpperCase()}</AvatarFallback>                    
                 </Avatar>
                 {editProfile && <CiEdit className="absolute h-4 w-4 xl:h-5 xl:w-5  bottom-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />}
                 <Controller
