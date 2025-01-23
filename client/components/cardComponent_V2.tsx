@@ -5,7 +5,7 @@
 import { Alimentazione, Stato, TipoVeicolo, User, Veicolo } from "@/lib/types";
 import { formatEuro } from "@/lib/utils";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Spinner } from "./spinner";
 import { setVeicoloVenduto } from "@/app/(user)/action";
 import { z } from 'zod';
@@ -26,12 +26,12 @@ const mailDataSchema = z.object({
     brand: z
         .string()
         .trim()
-        .nonempty("Il campo Brand è obbligatorio.")
+        .min(1, {message: "Il campo Brand è obbligatorio."})
         .max(20, { message: "Brand deve essere max 20 caratteri" }),
     modello: z
         .string()
         .trim()
-        .nonempty("Il campo Modello è obbligatorio")
+        .min(1, {message: "Il campo Modello è obbligatorio"})
         .max(20, { message: "Modello deve essere max 20 caratteri" }),
     alimentazione: z    
         .nativeEnum(Alimentazione)
@@ -41,7 +41,7 @@ const mailDataSchema = z.object({
         }),    
     anno: z
         .string()
-        .nonempty("Il campo Anno è obbligatorio")
+        .min(1, {message: "Il campo Anno è obbligatorio"})
         .refine((val) => {
         const year = parseInt(val);
         return year >= 1900 && year <= new Date().getFullYear();
@@ -60,12 +60,12 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const [src, setSrc] = useState<string>(veicolo.image);
-    //const [prezzo, setPrezzo] = useState<string>('');  --> per bug Mozilla
+    const [prezzo, setPrezzo] = useState<string>('');  //--> per bug Mozilla
     const [acquistato, setAcquistato] = useState<boolean>(false);
 
-    /* useEffect(() => {    --> per bug Mozilla     
+      useEffect(() => {    //--> per bug Mozilla     
         setPrezzo(formatEuro(veicolo.prezzo));
-    }, [veicolo.prezzo]); */
+    }, [veicolo.prezzo]);  
 
     const handlerInviaMail = async () => {
         setLoading(true);
@@ -141,8 +141,8 @@ const CardComponent_V2 = ({veicolo, user}: CardProps) => {
                     />
                 </div>
                 <div className="flex-1">
-                   {/*  <h2 className="flex items-baseline lg:items-end justify-center font-semibold text-2xl text-orange-400 h-[40%] ">{`€ ${prezzo}`}</h2>  --> per bug Mozilla  */}
-                    <h2 className="flex items-baseline lg:items-end justify-center font-semibold text-2xl text-orange-400 h-[40%] ">{`€ ${formatEuro(veicolo.prezzo)}`}</h2> 
+                    <h2 className="flex items-baseline lg:items-end justify-center font-semibold text-2xl text-orange-400 h-[40%] ">{`€ ${prezzo}`}</h2> {/*  --> per bug Mozilla */}  
+                    {/* <h2 className="flex items-baseline lg:items-end justify-center font-semibold text-2xl text-orange-400 h-[40%] ">{`€ ${formatEuro(veicolo.prezzo)}`}</h2> */}
                     <div className="flex items-end h-[60%]">
                         {loading ? <Spinner /> : '' } 
                         {error && <p className="text-red-500 mt-2">{error}</p>}

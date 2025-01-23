@@ -35,12 +35,12 @@ const addFormSchema = z.object({   //schema validazione campi form
   brand: z
     .string()
     .trim()
-    .nonempty("Il campo Brand è obbligatorio.")
+    .min(1, {message: "Il campo Brand è obbligatorio."})
     .max(20, { message: "Brand deve essere max 20 caratteri" }),
   modello: z
     .string()
     .trim()
-    .nonempty("Il campo Modello è obbligatorio")
+    .min(1, {message: "Il campo Modello è obbligatorio"})
     .max(20, { message: "Modello deve essere max 20 caratteri" }),
   alimentazione: z    
     .nativeEnum(Alimentazione)
@@ -50,21 +50,21 @@ const addFormSchema = z.object({   //schema validazione campi form
     }),    
   anno: z
     .string()
-    .nonempty("Il campo Anno è obbligatorio")
+    .min(1, {message: "Il campo Anno è obbligatorio"})
     .refine((val) => {
       const year = parseInt(val);
       return year >= 1900 && year <= new Date().getFullYear();
     }, { message: `L'Anno deve essere compreso tra 1900 e ${new Date().getFullYear()}` }),     
   km: z    
     .string()
-    .nonempty("Il campo Km è obbligatorio")
+    .min(1, {message: "Il campo Km è obbligatorio"})
     .refine((val) => {
       const km = parseInt(val);
       return km >= 0 && km <= 400000;
     }, { message: 'I Km devono essere compresi tra 0 e 400000' }), 
   prezzo: z    
   .string()
-  .nonempty("Il campo Prezzo è obbligatorio")
+  .min(1, {message: "Il campo Prezzo è obbligatorio"})
   .refine((val) => {
     const km = parseInt(val);
     return km >= 0 && km <= 100000;
