@@ -2,6 +2,7 @@
 import { Request, Response } from  'express';
 import { poolConnection } from '../index';
 import { Profilo } from '../types/types';
+import { escapeHtml } from '../utils';
 
 
 export const getProfilo = async (req: Request, res: Response): Promise<void>  => {
@@ -53,6 +54,7 @@ export const setProfilo = async (req: Request, res: Response) => {
     }
 };
 export const setProfilo2 = async (req: Request, res: Response) => {
+    
     try {
         const id = req.body.id?.[0];
         const nome = req.body.nome?.[0];

@@ -38,7 +38,7 @@ export default async function InVendita() {
           <AdminSearchBar veicoli={data ? data : []}/>
           <hr className="my-5"/>
           <VeicoliTable 
-              className="px-10 pb-10"
+              className="px-10 pb-10 select-none"
               veicoli={data}
               stato={Stato.VENDUTO}
           />

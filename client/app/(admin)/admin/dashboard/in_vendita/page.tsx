@@ -37,7 +37,7 @@ export default async function InVendita() {
             <AdminSearchBar veicoli={veicoliDataEscaped ? veicoliDataEscaped : []}/>
             <hr className="my-5"/>
             <VeicoliTable 
-                className="px-10 pb-10"
+                className="px-10 pb-10 select-none"
                 veicoli={veicoliDataEscaped}
                 stato={Stato.VENDESI}
             />

@@ -128,7 +128,7 @@ const AdminSearchBar = ({veicoli}: AdminSearchBarProps) => {
     }
    
     return(
-        <div className="container mx-auto  w-full">
+        <div className="container mx-auto w-full select-none">
             <div className="border rounded-lg mt-10 mx-14 p-6 space-y-5"> 
                 <RadioGroup className="flex gap-4 text-base md:justify-end lg:justify-start"  value={selectedTipo} onValueChange={onSelectedTipo}>
                     <div className="flex items-center space-x-2">

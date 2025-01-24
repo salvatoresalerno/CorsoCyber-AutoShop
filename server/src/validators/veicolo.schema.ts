@@ -2,6 +2,7 @@
 
 import { body, CustomValidator, param  } from "express-validator";
 import { Alimentazione, Stato, TipoVeicolo } from "../types/types";
+import { escapeHtml } from "../utils";
 
 
 
@@ -187,23 +188,8 @@ export const addVeicoloValidator = [  //valida i campi come array (formidable re
       .optional()
       .isArray({ max: 1 })  
       .withMessage('massimo 1 elemento')
-      .customSanitizer((value:string[]) => value.map((item: string) => item.trim()))
-      .custom((value:string[]) => {
-        if (value.length > 0) {
-            const model = value[0]; 
-            if (typeof model !== "string") {
-                throw new Error("Il campo deve essere una stringa");
-            }
-            if (model.length === 0) {
-                throw new Error("image non può essere vuoto");
-            }
-        }
-        return true;  
-      })
-      .escape(),
-      
-      
-  ];
+      .customSanitizer((value:string[]) => value.map((item: string) => escapeHtml(item.trim()))),
+];
 
   
 export const getVeicoloValidator = [

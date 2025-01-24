@@ -84,7 +84,7 @@ export function escapeHtml(unsafe: string): string {
       //.replace(/'/g, "&#39;")
       .replace(/`/g, "&#96;")
       .replace(/'/g, "&#x27;")
-      .replace(/\//g, "&#x2F;");   // "'" --> '&#39;'
+      .replace(/\//g, "&#x2F;");  
 }
 
 export function decodeEscapedHtml(encodedString: string): string {
