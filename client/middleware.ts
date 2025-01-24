@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
     if (token && refreshToken) {
       response.cookies.set('token', token, {
         httpOnly: true,
-        secure: false, //process.env.NODE_ENV === 'production',
+        secure: true, //process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         path: '/',
         //senza scadenza (session)
@@ -38,7 +38,7 @@ export async function middleware(request: NextRequest) {
 
       response.cookies.set('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: false,   
+        secure: true,   
         sameSite: 'strict',
         path: '/',
         maxAge: REFRESH_TOKEN_EXPIRY,
@@ -59,7 +59,7 @@ export async function middleware(request: NextRequest) {
   if (token) {
     response.cookies.set('token', token, {
       httpOnly: true,
-      secure: false, //process.env.NODE_ENV === 'production',
+      secure: true, //process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       path: '/',
       //senza scadenza (session)
@@ -69,7 +69,7 @@ export async function middleware(request: NextRequest) {
   if (refreshToken) {
     response.cookies.set('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: false,   
+      secure: true,   
       sameSite: 'strict',
       path: '/',
       maxAge: REFRESH_TOKEN_EXPIRY,

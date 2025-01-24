@@ -139,7 +139,7 @@ export const signInUser = async (req: Request, res: Response) => {
 
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         sameSite: 'strict',  
         path: '/',
         maxAge: REFRESH_TOKEN_EXPIRY,  
@@ -147,7 +147,7 @@ export const signInUser = async (req: Request, res: Response) => {
     
     res.cookie('token', token, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         sameSite: 'strict',  
         path: '/',
         //maxAge: 3600000, // 1 ora -> senza scadenza (session)
