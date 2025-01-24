@@ -14,7 +14,7 @@ services:
     networks:
       - corso-network
     depends_on:
-      - nginx
+    #  - nginx
       - server
       - mysql
   # Servizio per Nginx
