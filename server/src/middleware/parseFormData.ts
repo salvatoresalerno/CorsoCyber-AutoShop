@@ -2,6 +2,7 @@ import formidable from 'formidable';
 import { Request, Response, NextFunction } from 'express';
 import { UPLOAD_DIR_AVATAR } from '..';
 import path from 'path';
+import fs from 'fs';
 
 export const parseFormData = (PUBLIC_UPLOAD_PATH: string) => {
 
@@ -30,7 +31,16 @@ export const parseFormData = (PUBLIC_UPLOAD_PATH: string) => {
       }
 
       if (files.image) {
-        const imageFile = Array.isArray(files.image) ? files.image[0] : files.image;
+        const imageFile = Array.isArray(files.image) ? files.image[0] : files.image;     
+        
+        const validExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+        const fileExtension = path.extname(imageFile.originalFilename || '').toLowerCase();
+
+        if (!validExtensions.includes(fileExtension)) {
+          // Rimuovi il file caricato
+          fs.unlinkSync(imageFile.filepath);
+          return res.status(400).json({ error: 'Tipo di file non valido.' });
+        }
 
         const relativePath = path
           .join(PUBLIC_UPLOAD_PATH, path.basename(imageFile.filepath))
