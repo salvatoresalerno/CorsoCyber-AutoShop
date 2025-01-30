@@ -15,7 +15,7 @@ export const infoValidator = [
     .normalizeEmail()    
     .isLength({max: 255}).withMessage('La mail deve essere lunga max 255 caratteri'),
   body("telefono")
-    .optional()
+    //.optional()
     .isString()
     .trim()
     .matches(/^\d{1,3}(\/?\d{1,11})?$/).withMessage("Il campo telefono non è valido")

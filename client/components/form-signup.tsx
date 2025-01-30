@@ -111,6 +111,7 @@ export const SignUpForm = ({ruolo, admin}: SignUpFormProps) => {
 
         if (!window.grecaptcha || !recaptchaReady) {                      
             setErrorMessage("reCAPTCHA non è pronto"); 
+            setLoading(false);
             return;  
         }
 

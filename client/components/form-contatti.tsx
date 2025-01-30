@@ -21,12 +21,13 @@ const contattiSchema = z.object({   //schema validazione campi form
     email: z
         .string()
         .trim()
+        .min(1, { message: "Email non può essere vuoto" })
         .email("Formato email non valido.")
         .max(255, {message: "la mail deve essere massimo 255 caratteri"}),
     telefono: z
         .string()
         .trim()
-        .refine(val => val === "" || /^\d{1,3}(\/?\d{1,11})?$/.test(val), {
+        .refine(val =>  /^\d{1,3}(\/?\d{1,11})?$/.test(val), {
           message: "Il numero deve contenere al massimo un '/' come separatore e deve avere da 10 a 14 cifre",
         }),
     messaggio: z    
@@ -80,6 +81,7 @@ export default function ContattiForm() {
         
         if (!window.grecaptcha || !recaptchaReady) {                      
             setError("reCAPTCHA non è pronto"); 
+            setLoading(false);
             return;  
         }
 
