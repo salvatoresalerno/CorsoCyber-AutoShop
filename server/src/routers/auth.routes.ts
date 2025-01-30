@@ -4,6 +4,7 @@ import { logOutValidator, signInValidator, signUpValidator, updAdminValidator } 
 import { getAuth, getCurrentUser, logout, refresh, signInUser, signUp, updAdmin } from "../controller/auth.controller";
 import { validateReq } from "../middleware/validateRequest";
 import { authenticate } from "../middleware/authenticate";
+import { validateRecaptcha } from "../middleware/validateRecaptcha";
 
 
 const router: Router = Router();
@@ -12,7 +13,7 @@ router.post('/signup', signUpValidator, validateReq, signUp );
 router.put('/updAdmin', authenticate, updAdminValidator, validateReq, updAdmin );
 
 
-router.post('/signin', signInValidator, validateReq, signInUser);
+router.post('/signin', validateRecaptcha, signInValidator, validateReq, signInUser);
 
 router.post('/getCurrentUser', authenticate, getCurrentUser);
 

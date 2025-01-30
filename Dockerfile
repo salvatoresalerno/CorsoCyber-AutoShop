@@ -1,5 +1,6 @@
 # Usa un'immagine ufficiale di Node.js
-FROM node:latest  # node:20-alpine --> versione più leggera
+# node:20-alpine --> versione più leggera
+FROM node:latest  
 
 # Imposta la directory di lavoro
 WORKDIR /CorsoCyber-AutoShop

@@ -8,8 +8,9 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Ruolo } from "@/lib/types";
+import { useRecaptcha } from "@/hooks/useRecaptcha";
 
 type FormLoginProps = {
   ruolo: string;
@@ -36,8 +37,23 @@ const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 
 export const LoginForm = ({ruolo}: FormLoginProps) => {
+
+  useRecaptcha();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [recaptchaReady, setRecaptchaReady] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkRecaptcha = () => {
+      if (window.grecaptcha) {
+        window.grecaptcha.ready(() => setRecaptchaReady(true));
+      } else {
+        setTimeout(checkRecaptcha, 500);
+      }
+    };
+    checkRecaptcha();
+  }, []);
 
   const {register, handleSubmit, reset, formState: { errors } } = useForm<SigninFormInputs>({
     resolver: zodResolver(signinSchema),
@@ -50,15 +66,22 @@ export const LoginForm = ({ruolo}: FormLoginProps) => {
     setLoading(true);        
     setErrorMessage("");
 
+    try { 
+
+      if (!window.grecaptcha || !recaptchaReady) throw new Error("reCAPTCHA non è pronto");
+
+      const tokenREC = await window.grecaptcha.execute(
+        process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!,
+        { action: "submit" }
+      );   
     
-    try {
       const response = await fetch(`${apiBaseUrl}/v1/api/auth/signin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ email: formData.email, password: formData.password, role: ruolo }),
+        body: JSON.stringify({ email: formData.email, password: formData.password, role: ruolo, tREC: tokenREC }),
       });
 
       const {message, errors} = await response.json();
