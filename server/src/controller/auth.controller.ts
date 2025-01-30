@@ -88,7 +88,7 @@ export const signInUser = async (req: Request, res: Response) => {
 
     if (user === null) {         
         res.status(200).json({ 
-            errors:  'Errore Imprevisto, riprovare più tardi',
+            error:  'Errore Imprevisto, riprovare più tardi',
             message: null
         });          
         return;         
@@ -96,7 +96,7 @@ export const signInUser = async (req: Request, res: Response) => {
 
     if (user && user.length === 0) {        
         res.status(200).json({ 
-            errors:  'Credenziali Errate',
+            error:  'Credenziali Errate',
             message: null
         });         
         return;         
@@ -105,7 +105,7 @@ export const signInUser = async (req: Request, res: Response) => {
     //blocco se accedo con ruolo errato (es. admin che accede nella sezione user o viceversa)
     if (((user[0].role === Ruolo.USER) && role === Ruolo.ADMIN) || (((user[0].role === Ruolo.ADMIN) || (user[0].role === Ruolo.SUPERADMIN)) && role === Ruolo.USER)){
         res.status(200).json({ 
-            errors:  'Credenziali Errate',
+            error:  'Credenziali Errate',
             message: null
         }); 
         return   
@@ -115,7 +115,7 @@ export const signInUser = async (req: Request, res: Response) => {
 
     if (!isValid) {        
         res.status(200).json({ 
-            errors:  'Credenziali Errate',
+            error:  'Credenziali Errate',
             message: null
         });
         return;         
@@ -123,7 +123,7 @@ export const signInUser = async (req: Request, res: Response) => {
 
     if (user[0].banned) {
         res.status(200).json({ 
-            errors:  'Utente Bannato',
+            error:  'Utente Bannato',
             message: null
         });         
         return;
@@ -209,7 +209,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 
     if(!payload) {
         res.status(200).json({ 
-            errors:  'Errore Imprevisto, riprovare più tardi',
+            error:  'Errore Imprevisto, riprovare più tardi',
             user: null
         });  
         return
@@ -219,14 +219,14 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 
     if (!user) {       
         res.status(200).json({ 
-            errors:  'Errore Imprevisto, riprovare più tardi',
+            error:  'Errore Imprevisto, riprovare più tardi',
             user: null
         });          
         return;         
     }
     
     res.status(200).json({ 
-        errors:  '',
+        error:  '',
         user: user
     });  
 }
@@ -236,14 +236,14 @@ export const getAuth = async (req: Request, res: Response) => {
 
     if(!payload) {
         res.status(200).json({ 
-            errors:  'Errore Imprevisto, riprovare più tardi',
+            error:  'Errore Imprevisto, riprovare più tardi',
             isAuth: false
         });  
         return
     }
 //potrei controllare presenza id nel db, per ora basta un payload valido
     res.status(200).json({ 
-        errors:  '',
+        error:  '',
         isAuth: true
     });
     return

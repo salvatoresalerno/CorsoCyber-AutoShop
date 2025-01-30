@@ -84,12 +84,12 @@ export const LoginForm = ({ruolo}: FormLoginProps) => {
         body: JSON.stringify({ email: formData.email, password: formData.password, role: ruolo, tREC: tokenREC }),
       });
 
-      const {message, errors} = await response.json();
+      const {message, error} = await response.json();
 
       console.log()
       
-      if (errors) {
-        setErrorMessage(errors || 'Login Fallito');
+      if (error) {
+        setErrorMessage(error || 'Login Fallito');
       } 
 
       if (message && ruolo === Ruolo.USER) { //refresh componenti server per aggiornare layout dopo login (alternativa stato globale!)
