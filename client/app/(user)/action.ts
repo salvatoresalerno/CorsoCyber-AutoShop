@@ -88,8 +88,7 @@ export async function logoutUserAction(id: string) {
 }
 
 
-
-export const SignUpAction = async (formData: SignupFormInputs, ruolo: string | null = null, update?: boolean): Promise<ResponseResult> => {
+export const SignUpAction = async (formData: SignupFormInputs, tokenREC: string, ruolo: string | null = null, update?: boolean): Promise<ResponseResult> => {
 
   const id = formData.id;  
   const username = formData.username;
@@ -105,7 +104,7 @@ export const SignUpAction = async (formData: SignupFormInputs, ruolo: string | n
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, email, password, confirmPassword, ruolo }),
+        body: JSON.stringify({ username, email, password, confirmPassword, ruolo, tREC: tokenREC }),
       }); 
     } else {
       const token = cookies().get("token")?.value;

@@ -187,7 +187,7 @@ export async function sendOrderMail(mailData: MailData): Promise<ResponseResult>
   
 }
  
-export async function sendContattiMail(mailData: ContattiFormInputs): Promise<ResponseResult> {   
+export async function sendContattiMail(mailData: ContattiFormInputs, tokenREC: string): Promise<ResponseResult> {   
    
   try {
     const response = await fetch(`${apiBaseUrl}/api/mail/sendInfo`, {
@@ -195,7 +195,7 @@ export async function sendContattiMail(mailData: ContattiFormInputs): Promise<Re
       headers: {
           'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ nome: mailData.nome, email: mailData.email, telefono: mailData.telefono, messaggio: mailData.messaggio }),
+      body: JSON.stringify({ nome: mailData.nome, email: mailData.email, telefono: mailData.telefono, messaggio: mailData.messaggio, tREC: tokenREC }),
     });     
 
     if (response.ok) {

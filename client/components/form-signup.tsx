@@ -13,6 +13,7 @@ import Link from "next/link";
 import { ExtendedUser, Ruolo } from "@/lib/types";
 import { useRouter } from 'next/navigation';
 import { cn } from "@/lib/utils"; 
+import { useRecaptcha } from "@/hooks/useRecaptcha";
 
 
 const signupSchema = z.object({   //schema validazione campi form
@@ -56,9 +57,12 @@ type SignUpFormProps = {
 
 export const SignUpForm = ({ruolo, admin}: SignUpFormProps) => {   
 
+    useRecaptcha();
+
     const [loading, setLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
+    const [recaptchaReady, setRecaptchaReady] = useState<boolean>(false);
 
     const {register, handleSubmit, reset, setValue, formState: { errors } } = useForm<SignupFormInputs>({
         resolver: zodResolver(signupSchema),
@@ -73,6 +77,17 @@ export const SignUpForm = ({ruolo, admin}: SignUpFormProps) => {
     });
 
     const router = useRouter();
+
+    useEffect(() => {
+        const checkRecaptcha = () => {
+          if (window.grecaptcha) {
+            window.grecaptcha.ready(() => setRecaptchaReady(true));
+          } else {
+            setTimeout(checkRecaptcha, 500);
+          }
+        };
+        checkRecaptcha();
+    }, []);
 
     useEffect(() => {
         if (admin) {
@@ -94,16 +109,26 @@ export const SignUpForm = ({ruolo, admin}: SignUpFormProps) => {
         let message: string = '';
         let error: string = '';
 
+        if (!window.grecaptcha || !recaptchaReady) {                      
+            setErrorMessage("reCAPTCHA non è pronto"); 
+            return;  
+        }
+
+        const tokenREC = await window.grecaptcha.execute(
+            process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!,
+            { action: "submit" }
+        );  
+
         if (ruolo === Ruolo.USER) {
-            const res = await SignUpAction(data);
+            const res = await SignUpAction(data, tokenREC);
             message = res.message;
             error = res.error;
         } else if (ruolo === Ruolo.ADMIN) {
             let res;
             if (admin) {  //sono in update                
-                res = await SignUpAction(data, Ruolo.ADMIN, true);
+                res = await SignUpAction(data, tokenREC, Ruolo.ADMIN, true);
             } else { //salvataggio normale
-                res = await SignUpAction(data, Ruolo.ADMIN);
+                res = await SignUpAction(data, tokenREC, Ruolo.ADMIN);
             }          
             error = res.error;
             message = res.message;

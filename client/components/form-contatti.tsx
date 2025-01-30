@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Spinner } from "./spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ErrorValidationComponent } from "./ErrorValidationComponent";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { sendContattiMail } from "@/app/action";
+import { useRecaptcha } from "@/hooks/useRecaptcha";
 
 
 
@@ -42,9 +43,12 @@ export type ContattiFormInputs = z.infer<typeof contattiSchema>;
 
 export default function ContattiForm() {
 
+    useRecaptcha();
+
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const [recaptchaReady, setRecaptchaReady] = useState<boolean>(false);
 
     const {register, handleSubmit, reset, formState: { errors } } = useForm<ContattiFormInputs>({
             resolver: zodResolver(contattiSchema),
@@ -58,13 +62,33 @@ export default function ContattiForm() {
     });
 
       
-
+    useEffect(() => {
+        const checkRecaptcha = () => {
+            if (window.grecaptcha) {
+            window.grecaptcha.ready(() => setRecaptchaReady(true));
+            } else {
+            setTimeout(checkRecaptcha, 500);
+            }
+        };
+        checkRecaptcha();
+    }, []);
     
 
     const onSubmit = async (data: ContattiFormInputs) => {
-        setLoading(true);        
+        setLoading(true); 
+        
+        
+        if (!window.grecaptcha || !recaptchaReady) {                      
+            setError("reCAPTCHA non è pronto"); 
+            return;  
+        }
 
-        const { message, error } = await sendContattiMail(data);
+        const tokenREC = await window.grecaptcha.execute(
+            process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!,
+            { action: "submit" }
+        );  
+
+        const { message, error } = await sendContattiMail(data, tokenREC);
 
         if (message) {
             setSuccess(message);

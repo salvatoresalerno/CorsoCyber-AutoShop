@@ -9,7 +9,7 @@ import { validateRecaptcha } from "../middleware/validateRecaptcha";
 
 const router: Router = Router();
 
-router.post('/signup', signUpValidator, validateReq, signUp );
+router.post('/signup', validateRecaptcha, signUpValidator, validateReq, signUp );
 router.put('/updAdmin', authenticate, updAdminValidator, validateReq, updAdmin );
 
 
@@ -20,9 +20,6 @@ router.post('/getCurrentUser', authenticate, getCurrentUser);
 router.post('/refresh', refresh);  
 
 router.post('/getAuth', authenticate, getAuth);
-
-//router.post('/securityLogout', securityLogout);
-
 
 router.post('/logout', logOutValidator, validateReq, logout);
 
