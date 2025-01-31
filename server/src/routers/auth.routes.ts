@@ -10,8 +10,8 @@ import { validateRecaptcha } from "../middleware/validateRecaptcha";
 const router: Router = Router();
 
 router.post('/signup', validateRecaptcha, signUpValidator, validateReq, signUp );
-router.put('/updAdmin', authenticate, updAdminValidator, validateReq, updAdmin );
 
+router.put('/updAdmin', authenticate, updAdminValidator, validateReq, updAdmin );
 
 router.post('/signin', validateRecaptcha, signInValidator, validateReq, signInUser);
 

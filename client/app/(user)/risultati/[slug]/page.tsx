@@ -21,10 +21,15 @@ export default async function RisultatiPage({ params }: { params: { slug: string
     let titolo: string = '';
 
     //NB questa pagina è normalmente pubblica, ma se loggato posso acquistare i veicoli, quindi saranno visibili i pulsanti 
-
-    const filtri: FilterParams = JSON.parse(decodeURIComponent(params.slug));
+    let filtri;
+    try {
+      filtri = JSON.parse(decodeURIComponent(params.slug)) as FilterParams;
+    } catch (error) {
+        if (error) return (<ErrorComponent/>);
+    }
+    
  
-    const {data: veicoli, suggerito, error} = await getFilteredVeicoli(filtri);
+    const {data: veicoli, suggerito, error} = await getFilteredVeicoli(filtri!);
 
     const data: Veicolo[] | null = veicoli ? 
         veicoli.map((item) => ({
@@ -57,7 +62,7 @@ export default async function RisultatiPage({ params }: { params: { slug: string
             <h2 className="text-2xl text-center font-semibold my-10">{titolo}</h2>
             <div className="bg-[#FFEFE5]">                    
                 <div className="container mx-auto p-5">
-                    <h1 className="text-2xl text-left font-semibold my-5  pl-2">{`Hai cercato: ${filtri.brand} - ${filtri.model}`}</h1>
+                    <h1 className="text-2xl text-left font-semibold my-5  pl-2">{`Hai cercato: ${filtri?.brand} - ${filtri?.model}`}</h1>
                     <div className="grid grid-cols-1 justify-items-center sm:grid-cols-2 xl:grid-cols-3 gap-4 p-2 sm:p-4">
                         {data && data.map((veicolo, index) => {
                             return ( 
