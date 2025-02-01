@@ -28,7 +28,8 @@ const signinSchema = z.object({   //schema validazione campi form
     .regex(/[A-Z]/, "La password deve contenere almeno una lettera maiuscola")
     .regex(/\d/, "La password deve contenere almeno un numero")
     //.regex(/[$!%=[\]#\-.\(\)]/, "La password deve contenere almeno un carattere speciale tra !$%=[]#-.()"),  
-    .regex(/[\!\$\%\=\[\]\#\-\.\(\)]/, "La password deve contenere almeno un carattere speciale tra !$%=[]#-.()"),  
+    .regex(/[\!\$\%\=\[\]\#\-\.\(\)]/, "La password deve contenere almeno un carattere speciale tra !$%=[]#-.()")
+    .regex(/^[A-Za-z\d\!\$\%\=\[\]\#\-\.\(\)]+$/, "La password può contenere solo lettere, numeri e i caratteri speciali consentiti"),  
 });
 
 export type SigninFormInputs = z.infer<typeof signinSchema>; 

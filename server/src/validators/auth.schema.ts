@@ -32,7 +32,8 @@ export const signUpValidator = [
         .matches(/[A-Z]/).withMessage('La password deve contenere almeno una lettera maiuscola')
         .matches(/[0-9]/).withMessage('La password deve contenere almeno un numero')
         //.matches(/[$!%=[\]#\-.\(\)]/).withMessage('La password deve contenere almeno un carattere speciale tra !$%=[]#-.( )'),
-        .matches(/[\!\$\%\=\[\]\#\-\.\(\)]/).withMessage('La password deve contenere almeno un carattere speciale tra !$%=[]#-.()'),
+        .matches(/[\!\$\%\=\[\]\#\-\.\(\)]/).withMessage('La password deve contenere almeno un carattere speciale tra !$%=[]#-.()')
+        .matches(/^[A-Za-z\d\!\$\%\=\[\]\#\-\.\(\)]+$/).withMessage('La password può contenere solo lettere, numeri e i caratteri speciali consentiti'),
     body("confirmPassword")
         .trim()
         .notEmpty().withMessage('Il campo non può essere vuoto')
@@ -74,7 +75,8 @@ export const updAdminValidator = [
         .matches(/[A-Z]/).withMessage('La password deve contenere almeno una lettera maiuscola')
         .matches(/[0-9]/).withMessage('La password deve contenere almeno un numero')
         //.matches(/[$!%=[\]#\-.\(\)]/).withMessage('La password deve contenere almeno un carattere speciale tra !$%=[]#-.( )'),
-        .matches(/[\!\$\%\=\[\]\#\-\.\(\)]/).withMessage('La password deve contenere almeno un carattere speciale tra !$%=[]#-.()'),
+        .matches(/[\!\$\%\=\[\]\#\-\.\(\)]/).withMessage('La password deve contenere almeno un carattere speciale tra !$%=[]#-.()')
+        .matches(/^[A-Za-z\d\!\$\%\=\[\]\#\-\.\(\)]+$/).withMessage('La password può contenere solo lettere, numeri e i caratteri speciali consentiti'),
     body("confirmPassword")
         .trim()
         .notEmpty().withMessage('Il campo non può essere vuoto')
@@ -101,7 +103,8 @@ export const signInValidator = [
         .matches(/[A-Z]/).withMessage('La password deve contenere almeno una lettera maiuscola')
         .matches(/[0-9]/).withMessage('La password deve contenere almeno un numero')
         //.matches(/[$!%=[\]#\-.\(\)]/).withMessage('La password deve contenere almeno un carattere speciale tra !$%=[]#-.( )'),
-        .matches(/[\!\$\%\=\[\]\#\-\.\(\)]/).withMessage('La password deve contenere almeno un carattere speciale tra !$%=[]#-.()'),
+        .matches(/[\!\$\%\=\[\]\#\-\.\(\)]/).withMessage('La password deve contenere almeno un carattere speciale tra !$%=[]#-.()')
+        .matches(/^[A-Za-z\d\!\$\%\=\[\]\#\-\.\(\)]+$/).withMessage('La password può contenere solo lettere, numeri e i caratteri speciali consentiti'),
      body("role")
         .isString()
         .trim()
