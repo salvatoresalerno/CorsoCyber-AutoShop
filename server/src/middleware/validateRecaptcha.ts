@@ -5,6 +5,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 export const validateRecaptcha = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  
   const recaptchaToken = req.body.tREC;
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
 
@@ -19,8 +20,7 @@ export const validateRecaptcha = async (req: Request, res: Response, next: NextF
 
   try {
     // Chiamata all'API di Google per la verifica del token
-
-    const recaptchaUrl = `https://www.google.com/recaptcha/api/siteverify`;
+    /* const recaptchaUrl = `https://www.google.com/recaptcha/api/siteverify`;
     const response = await fetch(recaptchaUrl, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -31,23 +31,14 @@ export const validateRecaptcha = async (req: Request, res: Response, next: NextF
       });
 
 
-    /* const response = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptchaToken}`, {
-      method: 'POST',
-    }); */
-
     const data = await response.json();
 
-   /*  if (!data.success) {
-      // Se la verifica non è riuscita, restituisce un errore
-      return res.status(400).json({ error: 'Recaptcha verification failed', details: data['error-codes'] });
-    } */
-
-      console.log('data REC: ',data )
+    console.log('data REC: ',data )
 
     if (!data.success || data.score < 0.5) {
         res.status(403).json({ message: "", error: "Verifica reCAPTCHA fallita" });
         return;
-    }
+    }*/
 
     delete req.body.tREC;
 
