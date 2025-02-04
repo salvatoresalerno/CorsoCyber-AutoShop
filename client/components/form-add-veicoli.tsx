@@ -406,6 +406,7 @@ export const AddVeicoliForm = ({ data }: AddFormProps) => {
               fill
               sizes="(max-width: 640px) 256px, 320px"
               priority
+              unoptimized
             />
           </div>}
         </div>
