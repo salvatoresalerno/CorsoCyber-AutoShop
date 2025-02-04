@@ -9,6 +9,8 @@ export const parseFormData = (PUBLIC_UPLOAD_PATH: string) => {
   const PUBLIC_UPLOAD_DIR = path.join(__dirname, `../../uploads/${PUBLIC_UPLOAD_PATH}`);
 
   return (req: Request, res: Response, next: NextFunction) => {
+    let fileErrorFlag = false; //segnala eventuali errori sul file
+
     const form = formidable({
       uploadDir: PUBLIC_UPLOAD_DIR,
       keepExtensions: true,
@@ -17,11 +19,22 @@ export const parseFormData = (PUBLIC_UPLOAD_PATH: string) => {
         const validMimetypes = ['image/jpeg', 'image/png', 'image/webp'];
         const validExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
 
+        if (!originalFilename) return false; // Nessun file caricato
+
         const hasValidMimetype = !!mimetype && validMimetypes.includes(mimetype);
         const hasValidExtension =
           !!originalFilename && validExtensions.some((ext) => originalFilename.toLowerCase().endsWith(ext));
 
-        return hasValidMimetype && hasValidExtension;
+        const validFilter = hasValidMimetype && hasValidExtension;
+
+        if (!validFilter) fileErrorFlag = true;  //file presente ma non valido
+
+        return validFilter;
+      },
+      filename: (name, ext, part) => {
+        // Mantiene solo l'estensione finale valida
+        const cleanExt = ['.jpg', '.jpeg', '.png', '.webp'].includes(ext) ? ext : '.jpg';
+        return `${Date.now()}-${Math.random().toString(36).substring(7)}${cleanExt}`;
       },
     });
 
@@ -53,6 +66,10 @@ export const parseFormData = (PUBLIC_UPLOAD_PATH: string) => {
             relativePath, // Questo è il percorso che salverai nel DB
           },
         };
+      } else {  //file non caricato o non valido
+        if (fileErrorFlag) {
+          return res.status(400).json({ error: 'File non valido.' });
+        }
       }
 
       req.body = fields; // Inserisco i fields in req.body
