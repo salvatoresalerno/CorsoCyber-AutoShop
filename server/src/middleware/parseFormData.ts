@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { UPLOAD_DIR_AVATAR } from '..';
 import path from 'path';
 import fs from 'fs';
+import sharp from 'sharp';
 
 export const parseFormData = (PUBLIC_UPLOAD_PATH: string) => {
 
@@ -38,7 +39,7 @@ export const parseFormData = (PUBLIC_UPLOAD_PATH: string) => {
       },
     });
 
-    form.parse(req, (err, fields, files) => {
+    form.parse(req, async (err, fields, files) => {
       if (err) {
         return res.status(400).json({ error: 'Errore nel parsing.' });
       }
@@ -52,6 +53,13 @@ export const parseFormData = (PUBLIC_UPLOAD_PATH: string) => {
         if (!validExtensions.includes(fileExtension)) {
           // Rimuovi il file caricato
           fs.unlinkSync(imageFile.filepath);
+          return res.status(400).json({ error: 'Tipo di file non valido.' });
+        }
+
+        try {  //controllo contenuto file tramite i metatdati
+          await sharp(imageFile.filepath).metadata(); 
+        } catch (err) {
+          fs.unlinkSync(imageFile.filepath); // Rimuovi il file caricato
           return res.status(400).json({ error: 'Tipo di file non valido.' });
         }
 
